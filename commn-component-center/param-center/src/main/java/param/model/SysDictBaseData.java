@@ -1,0 +1,47 @@
+package param.model;
+
+import com.key.win.common.model.basic.MybatisID;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+
+@Data
+@EqualsAndHashCode(callSuper = false)
+public class SysDictBaseData extends MybatisID {
+
+    /**
+     * 字典排序
+     */
+    @ApiModelProperty("字典排序")
+    private Integer sort;
+
+    /**
+     * 字典标签
+     */
+    @ApiModelProperty("字典标签")
+    private String label;
+
+    /**
+     * 字典键值
+     */
+    @ApiModelProperty("字典键值")
+    private String value;
+
+    /**
+     * 字典类型
+     */
+    @ApiModelProperty("字典类型")
+    private Long type;
+    @ApiModelProperty("扩展属性1")
+    private String attr1;
+    @ApiModelProperty("扩展属性2")
+    private String attr2;
+    @ApiModelProperty("扩展属性3")
+    private String attr3;
+    @ApiModelProperty("扩展属性4")
+    private String attr4;
+    @ApiModelProperty("扩展属性5")
+    private String attr5;
+
+}

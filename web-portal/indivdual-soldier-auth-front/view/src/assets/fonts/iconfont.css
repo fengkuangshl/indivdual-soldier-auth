@@ -1,0 +1,83 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 2937232 */
+  src: url('iconfont.woff2?t=1648196490084') format('woff2'),
+       url('iconfont.woff?t=1648196490084') format('woff'),
+       url('iconfont.ttf?t=1648196490084') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-maximizing:before {
+  content: "\e62a";
+}
+
+.icon-close:before {
+  content: "\e6e9";
+}
+
+.icon-maximize:before {
+  content: "\e7bf";
+}
+
+.icon-icon_min:before {
+  content: "\e603";
+}
+
+.icon-contact:before {
+  content: "\e634";
+}
+
+.icon-contact1:before {
+  content: "\e712";
+}
+
+.icon-chat:before {
+  content: "\e69d";
+}
+
+.icon-organization:before {
+  content: "\e97b";
+}
+
+.icon-file:before {
+  content: "\e6e1";
+}
+
+.icon-weixinfang:before {
+  content: "\e61b";
+}
+
+.icon-weixin:before {
+  content: "\e665";
+}
+
+.icon-user:before {
+  content: "\e696";
+}
+
+.icon-password:before {
+  content: "\e734";
+}
+
+.icon-quanping:before {
+  content: "\e8fa";
+}
+
+.icon-tuichuquanping:before {
+  content: "\e8fb";
+}
+
+.icon-quxiaoquanping_o:before {
+  content: "\eb98";
+}
+
+.icon-quanping_o:before {
+  content: "\eb99";
+}
+

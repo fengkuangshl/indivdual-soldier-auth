@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.3.0.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.key.win</groupId>
+    <artifactId>indivdual-soldier-auth</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <description>indivdual-soldier-auth project for Spring Boot</description>
+
+
+    <modules>
+        <module>inner-intergration</module>
+        <module>business-center</module>
+        <module>job-center</module>
+        <module>web-portal</module>
+        <module>commn-component-center</module>
+        <module>system-center</module>
+    </modules>
+
+
+    <properties>
+        <java.version>1.8</java.version>
+        <core.version>1.0-SNAPSHOT</core.version>
+        <mybatis-plus.version>3.3.2</mybatis-plus.version>
+        <commons-collections4.version>4.1</commons-collections4.version>
+        <commons-lang3.version>3.9</commons-lang3.version>
+        <fastjson.version>1.2.70</fastjson.version>
+        <druid.version>1.1.14</druid.version>
+        <redssion.version>3.11.6</redssion.version>
+        <hutool.version>5.1.0</hutool.version>
+        <spring-boot-starter-json.version>2.3.0.RELEASE</spring-boot-starter-json.version>
+        <commons-beanutils.version>1.9.3</commons-beanutils.version>
+        <commons-lang3.version>3.9</commons-lang3.version>
+        <commons-codec.version>1.11</commons-codec.version>
+        <commons-io.version>2.6</commons-io.version>
+        <commons-net.version>3.6</commons-net.version>
+        <log4j2.version>2.15.0</log4j2.version>
+        <spring-cloud-context.version>2.2.5.RELEASE</spring-cloud-context.version>
+        <hutool.version>5.1.0</hutool.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j2.version}</version>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <!--电子围栏 -->
+            <dependency>
+                <groupId>com.key.win</groupId>
+                <artifactId>electronic-fence-center</artifactId>
+                <version>${core.version}</version>
+            </dependency>
+            <!--事件日志 -->
+            <dependency>
+                <groupId>com.key.win</groupId>
+                <artifactId>event-log-center</artifactId>
+                <version>${core.version}</version>
+            </dependency>
+            <!--即时聊天 -->
+            <dependency>
+                <groupId>com.key.win</groupId>
+                <artifactId>im-center</artifactId>
+                <version>${core.version}</version>
+            </dependency>
+            <!--音视频会议 -->
+            <dependency>
+                <groupId>com.key.win</groupId>
+                <artifactId>meeting-center</artifactId>
+                <version>${core.version}</version>
+            </dependency>
+            <!--sos报警 -->
+            <dependency>
+                <groupId>com.key.win</groupId>
+                <artifactId>sos-center</artifactId>
+                <version>${core.version}</version>
+            </dependency>
+            <!-- 附件中心 -->
+            <dependency>
+                <groupId>com.key.win</groupId>
+                <artifactId>file-center</artifactId>
+                <version>${core.version}</version>
+            </dependency>
+            <!-- 基础数据 -->
+            <dependency>
+                <groupId>com.key.win</groupId>
+                <artifactId>param-center</artifactId>
+                <version>${core.version}</version>
+            </dependency>
+            <!-- websocket -->
+            <dependency>
+                <groupId>com.key.win</groupId>
+                <artifactId>websocket-center</artifactId>
+                <version>${core.version}</version>
+            </dependency>
+            <!--基础模块 -->
+            <dependency>
+                <groupId>com.key.win</groupId>
+                <artifactId>basic-spring-boot-starter</artifactId>
+                <version>${core.version}</version>
+            </dependency>
+            <!--公共模块 -->
+            <dependency>
+                <groupId>com.key.win</groupId>
+                <artifactId>common-spring-boot-starter</artifactId>
+                <version>${core.version}</version>
+            </dependency>
+            <!--数据日志-->
+            <dependency>
+                <groupId>com.key.win</groupId>
+                <artifactId>data-log-spring-boot-starter</artifactId>
+                <version>${core.version}</version>
+            </dependency>
+            <!--多数据源-->
+            <dependency>
+                <groupId>com.key.win</groupId>
+                <artifactId>db-spring-boot-starter</artifactId>
+                <version>${core.version}</version>
+            </dependency>
+            <!-- 系统日志 -->
+            <dependency>
+                <groupId>com.key.win</groupId>
+                <artifactId>log-spring-boot-starter</artifactId>
+                <version>${core.version}</version>
+            </dependency>
+            <!--MongoDB-->
+            <dependency>
+                <groupId>com.key.win</groupId>
+                <artifactId>mongo-spring-boot-starter</artifactId>
+                <version>${core.version}</version>
+            </dependency>
+            <!-- mybatis-plus -->
+            <dependency>
+                <groupId>com.key.win</groupId>
+                <artifactId>mybatis-plus-spring-boot-starter</artifactId>
+                <version>${core.version}</version>
+            </dependency>
+            <!--redis据源-->
+            <dependency>
+                <groupId>com.key.win</groupId>
+                <artifactId>redis-spring-boot-starter</artifactId>
+                <version>${core.version}</version>
+            </dependency>
+            <!-- security -->
+            <dependency>
+                <groupId>com.key.win</groupId>
+                <artifactId>security-spring-boot-starter</artifactId>
+                <version>${core.version}</version>
+            </dependency>
+            <!-- API测试文档 -->
+            <dependency>
+                <groupId>com.key.win</groupId>
+                <artifactId>swagger-spring-boot-starter</artifactId>
+                <version>${core.version}</version>
+            </dependency>
+            <!--系统权鉴-->
+            <dependency>
+                <groupId>com.key.win</groupId>
+                <artifactId>system-center</artifactId>
+                <version>${core.version}</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-json</artifactId>
+                <version>${spring-boot-starter-json.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>${commons-beanutils.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>${commons-codec.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-net</groupId>
+                <artifactId>commons-net</artifactId>
+                <version>${commons-net.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-context</artifactId>
+                <version>${spring-cloud-context.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>2.5.0</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <target>${java.version}</target>
+                        <source>${java.version}</source>
+                        <encoding>UTF-8</encoding>
+                        <compilerArgs>
+                            <arg>-parameters</arg>
+                        </compilerArgs>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.2.0</version>
+                    <configuration>
+                        <archive>
+                            <addMavenDescriptor>false</addMavenDescriptor>
+                        </archive>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.yml</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.tld</include>
+                    <include>**/*.p12</include>
+                    <include>**/*.conf</include>
+                    <include>**/*.txt</include>
+                    <include>**/*.wsdl</include>
+                    <include>**/*.xsd</include>
+                    <include>**/*.ftl</include>
+                    <include>**/*.lua</include>
+                    <include>**/*.json</include>
+                    <include>processes/*</include>
+                    <include>**/spring.factories</include>
+                    <include>META-INF/services/*</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.tld</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/view</directory>
+                <includes>
+                    <include>**/*.*</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>aliyun-repos</id>
+            <url>https://maven.aliyun.com/repository/public</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+</project>

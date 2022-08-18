@@ -1,0 +1,45 @@
+server:
+  port: 9902
+
+spring:
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      max-file-size: 300MB
+      max-request-size: 300MB
+  application:
+    name: indivdual-soldier-auth
+  web:
+    request:
+      white: /user/login,/user/refresh/**,/user/register,/swagger-ui.html/**,/swagger-resources/**,/v2/**,/webjars/**,/csrf,/favicon.ico,/error,/,/single-soldier-wireless/**
+  tx:
+    manager:
+      enabled: true
+    service:
+      pointcut:
+        expression: execution (* com.key.win..service.impl.*Impl.*(..))
+      method:
+        timeout: -1
+  global:
+    token:
+      expires: 86400
+    refresh:
+      token:
+        expires: 604800
+        isRefreshSelf: true
+    method:
+      security:
+        enable: false
+#mybatis是独立节点，需要单独配置
+mybatis-plus:
+  global-config:
+    banner: false
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath*:com/key/**/dao/*.xml
+  typeEnumsPackage: com.key.win.*.enums.**
+logging:
+  level:
+    root: info
+    com.key.win: debug

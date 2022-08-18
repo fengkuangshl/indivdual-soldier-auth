@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.key.win.system.dao.SysUserGroupDao">
+
+	<delete id="deleteUserGroup">
+		delete from sys_user_group
+		<where>
+			<if test="userId != null">
+				and user_id = #{userId}
+			</if>
+			<if test="groupId != null">
+				and group_id = #{groupId}
+			</if>
+		</where>
+	</delete>
+
+    <insert id="saveBatchUserIdAndGroupIds">
+        INSERT INTO
+        sys_user_group(id,create_date,create_user_id,create_user_name,enable_flag,update_date,update_user_id,update_user_name,version,user_id,group_id)
+        VALUES
+        <foreach collection="groupIds" item="groupId" separator=",">
+            ('${@com.key.win.base.util.DefaultIdentifierGeneratorUtils@getGeneratorLongId()}',current_timestamp(),'${@com.key.win.base.auth.AuthenticationUtil@getUserId()}','${@com.key.win.base.auth.AuthenticationUtil@getUserName()}',1,null,null,null,0,#{userId},#{groupId})
+        </foreach>
+    </insert>
+
+    <insert id="saveBatchUserIdsAndGroupId">
+        INSERT INTO
+        sys_user_group(id,create_date,create_user_id,create_user_name,enable_flag,update_date,update_user_id,update_user_name,version,user_id,group_id)
+        VALUES
+        <foreach collection="userIds" item="userId" separator=",">
+            ('${@com.key.win.base.util.DefaultIdentifierGeneratorUtils@getGeneratorLongId()}',current_timestamp(),'${@com.key.win.base.auth.AuthenticationUtil@getUserId()}','${@com.key.win.base.auth.AuthenticationUtil@getUserName()}',1,null,null,null,0,#{userId},#{groupId})
+        </foreach>
+    </insert>
+</mapper>
