@@ -1,7 +1,10 @@
 <template>
   <el-aside :width="collapseMenuState ? '64px' : '200px'" style="overflow:hidden">
-    <div>
+    <div  v-if="collapseMenuState == false" style="padding: 10px 20px 10px 20px;" >
       <img src="../../assets/keywin.png" alt="" />
+    </div>
+    <div  v-if="collapseMenuState == true" style="padding: 10px 20px 10px 10px;">
+      <img src="../../assets/logo.png" alt="" />
     </div>
     <el-menu background-color="#333744" text-color="#fff" active-text-color="#409EFF" unique-opened :collapse="collapseMenuState" :collapse-transition="false" router :default-active="activePath">
       <!-- 一级菜单 -->
@@ -14,7 +17,7 @@
           </template>
           <!--二级菜单-->
           <template v-for="subItem in item.subMenus">
-            <el-menu-item v-if="subItem.isHidden === false && subItem.isMenu === 1" :index="subItem.url.replace('#!', '/')" :key="subItem.id" @click="saveActivePath(subItem.url.replace('#!', '/'))">
+            <el-menu-item v-if="subItem.isHidden === false && subItem.isMenu === 1" :index="subItem.url" :key="subItem.id" @click="saveActivePath(subItem.url)">
               <!-- 二级菜单模板区 -->
               <template slot="title">
                 <i :class="subItem.css"></i>
@@ -65,7 +68,6 @@ export default class LeftMenu extends Vue {
   > div {
     display: flex;
     align-items: center;
-    padding: 10px 20px 10px 20px;
     img {
       width: 156px;
       height: 40px;
