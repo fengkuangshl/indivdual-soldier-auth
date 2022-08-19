@@ -153,13 +153,16 @@ export default class HeaderNav extends Vue {
     console.log('userInfoCenter')
   }
 
-  logout(): void {
-    local.clear(settings.accessToken)
-    MenuModule.changeMenu([])
-    PermissionModule.clearRoutes()
-    UserModule.clearUser()
-    LogoutApi()
-    this.$router.push('/login')
+  async logout(): Promise<void> {
+    const { code, msg } = await LogoutApi()
+    if (code !== 200) {
+      this.$message.error(msg || '用户密码修改失败!')
+    } else {
+      local.clear(settings.accessToken)
+      MenuModule.changeMenu([])
+      UserModule.clearUser()
+      PermissionModule.clearRoutes()
+    }
   }
 
   dropdownClick(): void {

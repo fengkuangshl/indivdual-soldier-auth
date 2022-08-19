@@ -34,21 +34,21 @@
     </select>
     <insert id="saveBatchRoleIdAndPermissions">
         INSERT INTO
-        sys_role_permission(id,create_date,create_user_id,create_user_name,enable_flag,update_date,update_user_id,update_user_name,version,role_id,permission_id)
+        sys_role_permission(create_date,create_user_id,create_user_name,enable_flag,update_date,update_user_id,update_user_name,version,role_id,permission_id)
         VALUES
         <foreach collection="permissions" item="permissionId"
                  separator=",">
-            ('${@com.key.win.base.util.DefaultIdentifierGeneratorUtils@getGeneratorLongId()}',current_timestamp(),'${@com.key.win.base.auth.AuthenticationUtil@getUserId()}','${@com.key.win.base.auth.AuthenticationUtil@getUserName()}',1,null,null,null,0,#{roleId},#{permissionId})
+            (current_timestamp(),'${@com.key.win.common.auth.AuthenticationUtil@getUserId()}','${@com.key.win.common.auth.AuthenticationUtil@getUserName()}',1,null,null,null,0,#{roleId},#{permissionId})
         </foreach>
     </insert>
 
     <insert id="saveBatchRoleIdsAndPermissionId">
         INSERT INTO
-        sys_role_permission(id,create_date,create_user_id,create_user_name,enable_flag,update_date,update_user_id,update_user_name,version,role_id,permission_id)
+        sys_role_permission(create_date,create_user_id,create_user_name,enable_flag,update_date,update_user_id,update_user_name,version,role_id,permission_id)
         VALUES
         <foreach collection="roleIds" item="roleId"
                  separator=",">
-            ('${@com.key.win.base.util.DefaultIdentifierGeneratorUtils@getGeneratorLongId()}',current_timestamp(),'${@com.key.win.base.auth.AuthenticationUtil@getUserId()}','${@com.key.win.base.auth.AuthenticationUtil@getUserName()}',1,null,null,null,0,#{roleId},#{permissionId})
+            (current_timestamp(),'${@com.key.win.common.auth.AuthenticationUtil@getUserId()}','${@com.key.win.common.auth.AuthenticationUtil@getUserName()}',1,null,null,null,0,#{roleId},#{permissionId})
         </foreach>
     </insert>
 </mapper>

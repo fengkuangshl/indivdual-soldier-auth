@@ -32,14 +32,6 @@ class PermissionStore extends VuexModule implements IPermissionState {
         meta: {
           title: '首页'
         }
-      },
-      {
-        path: '/test',
-        name: 'Test',
-        component: () => import(/* webpackChunkName: "test" */ '@/views/index/test/Test.vue'),
-        meta: {
-          title: 'Test-DataTable'
-        }
       }
     ]
   }
@@ -74,13 +66,18 @@ class PermissionStore extends VuexModule implements IPermissionState {
     this.routes.push(this.defaultRout)
     this.routes.push(this.route404)
     this.dynamicRoutes = [this.indexRoute, this.defaultRout, this.route404]
-    router.addRoutes(this.dynamicRoutes)
+    // router.addRoutes(this.dynamicRoutes)
+    router.addRoute(this.indexRoute)
+    router.addRoute(this.defaultRout)
+    router.addRoute(this.route404)
   }
 
   @Mutation
   public CLEAR_ROUTES(): void {
     this.routes = []
     this.dynamicRoutes = []
+    router.replace({ path: '/login' })
+    location.reload()
   }
 
   @Action({ commit: 'CLEAR_ROUTES' })

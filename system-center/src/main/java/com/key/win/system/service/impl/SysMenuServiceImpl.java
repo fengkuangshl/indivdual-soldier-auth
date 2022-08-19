@@ -142,8 +142,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
 
     @Override
     public void setMenuToRole(Long roleId, Set<Long> menuIds) {
+        sysRoleMenuDao.deleteBySelective(roleId, null);
         if (!CollectionUtils.isEmpty(menuIds)) {
-            sysRoleMenuDao.deleteBySelective(roleId, null);
             sysRoleMenuDao.saveBatchRoleIdAndMenuIds(roleId, menuIds);
             /*for (String menuId : menuIds) {
                 SysRoleMenu sysRoleMenu = new SysRoleMenu();

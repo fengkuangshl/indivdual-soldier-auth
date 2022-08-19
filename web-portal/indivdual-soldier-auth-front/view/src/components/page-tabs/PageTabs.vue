@@ -286,7 +286,7 @@ export default class PageTabs extends Vue {
         padding-right: 12px;
         //border-bottom: 1px solid #fff;
         color: #409eff;
-        border-top: solid 1px #000;
+        border-top: solid 1px #b3b3b3;
         background-color: #fcfcfc;
         .el-icon-close {
           width: 12px;

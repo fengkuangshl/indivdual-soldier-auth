@@ -13,7 +13,7 @@ public class IndivdualSoldierAuthConstantUtils {
     public static final String MODEL_ENABLE_FLAG = "enableFlag";
     public static final String MODEL_ID_MONGO = "_id";
 
-    public static final String REDIS_ROOT_KEY_PREFIX = "indivdual_soldier_wireless_auth:";
+    public static final String REDIS_ROOT_KEY_PREFIX = "indivdual_soldier_auth:";
     public static final String TOKEN = "token";
     public static final String REFRESH_TOKEN = "refresh:" + TOKEN;
     public static final String REDIS_TOKEN_KEY_PREFIX = REDIS_ROOT_KEY_PREFIX + TOKEN + ":";

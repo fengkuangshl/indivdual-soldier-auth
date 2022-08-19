@@ -223,11 +223,11 @@ public class DataUpdateInterceptor extends AbstractSqlParserHandler implements I
                 "sys_organ_device " +
                 "(id,create_date,create_user_id,create_user_name,enable_flag,update_date,update_user_id,update_user_name,version,organ_id,device_id) " +
                 "VALUES " +
-                "('${@com.key.win.base.util.DefaultIdentifierGeneratorUtils@getGeneratorLongId()}',current_timestamp(),'${@com.key.win.base.auth.AuthenticationUtil@getUserId()}','${@com.key.win.base.auth.AuthenticationUtil@getUserName()}',1,null,null,null,0,#{organId},#{deviceId})," +
-                "('${@com.key.win.base.util.DefaultIdentifierGeneratorUtils@getGeneratorLongId()}',current_timestamp(),'${@com.key.win.base.auth.AuthenticationUtil@getUserId()}','${@com.key.win.base.auth.AuthenticationUtil@getUserName()}',1,null,null,null,0,#{organId},#{deviceId})," +
-                "('${@com.key.win.base.util.DefaultIdentifierGeneratorUtils@getGeneratorLongId()}',current_timestamp(),'${@com.key.win.base.auth.AuthenticationUtil@getUserId()}','${@com.key.win.base.auth.AuthenticationUtil@getUserName()}',1,null,null,null,0,#{organId},#{deviceId})," +
-                "('${@com.key.win.base.util.DefaultIdentifierGeneratorUtils@getGeneratorLongId()}',current_timestamp(),'${@com.key.win.base.auth.AuthenticationUtil@getUserId()}','${@com.key.win.base.auth.AuthenticationUtil@getUserName()}',1,null,null,null,0,#{organId},#{deviceId})," +
-                "('${@com.key.win.base.util.DefaultIdentifierGeneratorUtils@getGeneratorLongId()}',current_timestamp(),'${@com.key.win.base.auth.AuthenticationUtil@getUserId()}','${@com.key.win.base.auth.AuthenticationUtil@getUserName()}',1,null,null,null,0,#{organId},#{deviceId})";
+                "('${@com.key.win.base.util.DefaultIdentifierGeneratorUtils@getGeneratorLongId()}',current_timestamp(),'${@com.key.win.common.auth.AuthenticationUtil@getUserId()}','${@com.key.win.common.auth.AuthenticationUtil@getUserName()}',1,null,null,null,0,#{organId},#{deviceId})," +
+                "('${@com.key.win.base.util.DefaultIdentifierGeneratorUtils@getGeneratorLongId()}',current_timestamp(),'${@com.key.win.common.auth.AuthenticationUtil@getUserId()}','${@com.key.win.common.auth.AuthenticationUtil@getUserName()}',1,null,null,null,0,#{organId},#{deviceId})," +
+                "('${@com.key.win.base.util.DefaultIdentifierGeneratorUtils@getGeneratorLongId()}',current_timestamp(),'${@com.key.win.common.auth.AuthenticationUtil@getUserId()}','${@com.key.win.common.auth.AuthenticationUtil@getUserName()}',1,null,null,null,0,#{organId},#{deviceId})," +
+                "('${@com.key.win.base.util.DefaultIdentifierGeneratorUtils@getGeneratorLongId()}',current_timestamp(),'${@com.key.win.common.auth.AuthenticationUtil@getUserId()}','${@com.key.win.common.auth.AuthenticationUtil@getUserName()}',1,null,null,null,0,#{organId},#{deviceId})," +
+                "('${@com.key.win.base.util.DefaultIdentifierGeneratorUtils@getGeneratorLongId()}',current_timestamp(),'${@com.key.win.common.auth.AuthenticationUtil@getUserId()}','${@com.key.win.common.auth.AuthenticationUtil@getUserName()}',1,null,null,null,0,#{organId},#{deviceId})";
         ss = ss.toUpperCase().replaceAll(" ", "").trim();
         if (ss.contains("(ID,") || ss.contains(",ID,")) {
             System.out.println("包含Id");
