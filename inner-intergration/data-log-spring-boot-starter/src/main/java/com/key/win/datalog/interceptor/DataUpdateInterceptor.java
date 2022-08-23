@@ -1,6 +1,7 @@
 package com.key.win.datalog.interceptor;
 
 import com.baomidou.mybatisplus.core.enums.SqlMethod;
+import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.*;
@@ -34,6 +35,7 @@ import java.sql.Statement;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -99,7 +101,7 @@ public class DataUpdateInterceptor extends AbstractSqlParserHandler implements I
         SysDataLogUtil.addDataChange(change);
         // 插入
         if (SqlCommandType.INSERT.equals(mappedStatement.getSqlCommandType())) {
-            return insertProcess(mappedStatement, sql, invocation, parameterObject, change);
+            return insertProcess(mappedStatement, sql, invocation, parameterObject, change, tableInfo);
         }
         // 更新
         if (SqlCommandType.UPDATE.equals(mappedStatement.getSqlCommandType())) {
@@ -149,16 +151,17 @@ public class DataUpdateInterceptor extends AbstractSqlParserHandler implements I
         return statement;
     }
 
-    private Object insertProcess(MappedStatement mappedStatement, String sql, Invocation invocation, Object parameterObject, DataChangeVo change) throws InvocationTargetException, IllegalAccessException {
+    private Object insertProcess(MappedStatement mappedStatement, String sql, Invocation invocation, Object parameterObject, DataChangeVo change, TableInfo tableInfo) throws InvocationTargetException, IllegalAccessException {
         List<Map<String, Object>> valueList = new ArrayList<>();
-        insertProcessBefore(mappedStatement, sql, valueList);
+        insertProcessBefore(mappedStatement, sql, valueList, tableInfo);
         Object proceed = invocation.proceed();
-        insertProcessAfter(mappedStatement, parameterObject, sql, valueList,change);
+        insertProcessAfter(mappedStatement, parameterObject, sql, valueList, change);
         return proceed;
     }
 
-    private void insertProcessBefore(MappedStatement mappedStatement, String sql, List<Map<String, Object>> valueList) {
+    private void insertProcessBefore(MappedStatement mappedStatement, String sql, List<Map<String, Object>> valueList, TableInfo tableInfo) {
         String insertSql = getInsertSql(sql);
+        Map<String, TableFieldInfo> propertyToTableFieldInfoMap = tableInfo.getFieldList().stream().collect(Collectors.toMap(TableFieldInfo::getColumn, a -> a, (k1, k2) -> k1));
         String[] isa = insertSql.split("VALUES");
         String insertTop = isa[0];
         String patterInsertTop = "(?i)\\(\\s*[^\\(]+\\)";
@@ -184,8 +187,8 @@ public class DataUpdateInterceptor extends AbstractSqlParserHandler implements I
             Map<String, Object> columnMap = new LinkedHashMap<>();
             for (int j = 0; j < columnValues.length; j++) {
                 String columnValue = columnValues[j];
-                String column = columns[j].toUpperCase();
-                columnMap.put(column, columnValue);
+                TableFieldInfo info = propertyToTableFieldInfoMap.get(columns[j]);
+                columnMap.put(info.getProperty(), columnValue);
             }
             valueList.add(columnMap);
             //change.setNewData(valueList);
@@ -218,8 +221,8 @@ public class DataUpdateInterceptor extends AbstractSqlParserHandler implements I
         return invocation.proceed();
     }
 
-    private void insertProcessAfter(MappedStatement mappedStatement, Object parameterObject, String sql, List<Map<String, Object>> valueList,DataChangeVo change) {
-        MybatisID id = null;
+    private void insertProcessAfter(MappedStatement mappedStatement, Object parameterObject, String sql, List<Map<String, Object>> valueList, DataChangeVo change) {
+
         String insertSql = getInsertSql(sql);
         String insertSqlForToUpperCase = insertSql.toUpperCase();
         //sql直是否包含Id
@@ -227,24 +230,24 @@ public class DataUpdateInterceptor extends AbstractSqlParserHandler implements I
             logger.info("在insert包含ID,直接使用该ID");
             change.setNewData(valueList);
         } else if (parameterObject instanceof MybatisID) {//传进来的实体包含了Id
-            id = (MybatisID) parameterObject;
-            valueList.get(0).put("ID", id.getId().toString());
+            MybatisID id = (MybatisID) parameterObject;
+            valueList.get(0).put(IndivdualSoldierAuthConstantUtils.MODEL_ID, id.getId().toString());
             change.setNewData(valueList);
         } else if (parameterObject instanceof List) {//list中的实体包含Id
             valueList.clear();
             List list = (List) parameterObject;
             for (Object o : list) {
                 if (o instanceof MybatisID) {
-                    id = (MybatisID) o;
+                    MybatisID id = (MybatisID) o;
                     //valueList.get(0).put("ID", id.getId().toString());
                     Map<String, Object> entityToMap = EntityUtils.entityToMap(id);
-                    entityToMap.put(IndivdualSoldierAuthConstantUtils.MODEL_ID_TO_UPPER_CASE, entityToMap.remove(IndivdualSoldierAuthConstantUtils.MODEL_ID));
+                    //entityToMap.put(IndivdualSoldierAuthConstantUtils.MODEL_ID_TO_UPPER_CASE, entityToMap.remove(IndivdualSoldierAuthConstantUtils.MODEL_ID));
                     valueList.add(entityToMap);
                 } else {
                     logger.error("list中的Entity中Id不存在,不做任何处理！");
                 }
             }
-            if(!CollectionUtils.isEmpty(valueList)){
+            if (!CollectionUtils.isEmpty(valueList)) {
                 change.setNewData(valueList);
             }
         } else if (parameterObject instanceof Map) {//map中的实体包含Id
@@ -254,7 +257,7 @@ public class DataUpdateInterceptor extends AbstractSqlParserHandler implements I
                 idObject = map.get(IndivdualSoldierAuthConstantUtils.MODEL_ID);
             }
             if (idObject != null) {
-                valueList.get(0).put("ID", idObject.toString());
+                valueList.get(0).put(IndivdualSoldierAuthConstantUtils.MODEL_ID, idObject.toString());
                 change.setNewData(valueList);
             } else {
                 logger.error("Map中Id不存在,不做任何处理！");

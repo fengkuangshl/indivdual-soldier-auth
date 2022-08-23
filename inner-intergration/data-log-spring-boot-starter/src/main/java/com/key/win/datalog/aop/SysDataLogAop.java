@@ -7,6 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.key.win.basic.util.IndivdualSoldierAuthConstantUtils;
 import com.key.win.basic.util.JsonUtils;
 import com.key.win.common.model.basic.MybatisID;
 import com.key.win.datalog.annotation.DataLog;
@@ -37,7 +38,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class SysDataLogAop {
 
-    private  final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     //日志记录基础类
     private final BaseDataLog baseDataLog;
@@ -141,7 +142,7 @@ public class SysDataLogAop {
                 Map<String, String> columnVaue = (Map<String, String>) newDatas.get(i);
                 StringBuilder sb = new StringBuilder();
                 SysDataLog sysDataLog = new SysDataLog();
-                sysDataLog.setFkId(columnVaue.get("ID"));
+                sysDataLog.setFkId(columnVaue.get(IndivdualSoldierAuthConstantUtils.MODEL_ID));
                 sb.append(StrUtil.format("新插入数据：[{}]", change.getTableName()));
                 sb.append(StrUtil.LF);
                 sb.append(JsonUtils.toJsonNoException(columnVaue));
@@ -171,7 +172,7 @@ public class SysDataLogAop {
             SqlSession sqlSession = change.getSqlSessionFactory().openSession();
             try {
                 Map<String, Object> map = new HashMap<>(1);
-                map.put(Constants.WRAPPER, Wrappers.query().in("id", ids));
+                map.put(Constants.WRAPPER, Wrappers.query().in(IndivdualSoldierAuthConstantUtils.MODEL_ID, ids));
                 List<?> newData = sqlSession.selectList(change.getSqlStatement(), map);
                 change.setNewData(Optional.ofNullable(newData).orElse(new ArrayList<>()));
             } finally {

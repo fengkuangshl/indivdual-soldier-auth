@@ -1,6 +1,7 @@
 package com.key.win.datalog.handle;
 
 import cn.hutool.core.collection.CollUtil;
+import com.key.win.basic.util.IndivdualSoldierAuthConstantUtils;
 import com.key.win.datalog.annotation.DataLog;
 import com.key.win.datalog.model.SysDataLog;
 import com.key.win.datalog.service.SysDataLogService;
@@ -18,7 +19,7 @@ import java.util.List;
  */
 public class SysDataLogHandle extends BaseDataLog {
 
-    private  final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private SysDataLogService dataLogService;
@@ -26,13 +27,13 @@ public class SysDataLogHandle extends BaseDataLog {
     @Override
     public void setting() {
         // 设置排除某张表、某些字段
-        this.addExcludeTableName("createDate")
-                .addExcludeFieldName("updateDate")
-                .addExcludeFieldName("createUserId")
-                .addExcludeFieldName("updateUserId")
-                .addExcludeFieldName("createUserName")
-                .addExcludeFieldName("updateUserName")
-                .addExcludeFieldName("enableFlag");
+        this.addExcludeTableName(IndivdualSoldierAuthConstantUtils.MODEL_CREATE_DATE)
+                .addExcludeFieldName(IndivdualSoldierAuthConstantUtils.MODEL_UPDATE_DATE)
+                .addExcludeFieldName(IndivdualSoldierAuthConstantUtils.MODEL_CREATE_USER_ID)
+                .addExcludeFieldName(IndivdualSoldierAuthConstantUtils.MODEL_UPDATE_USER_ID)
+                .addExcludeFieldName(IndivdualSoldierAuthConstantUtils.MODEL_CREATE_USER_NAME)
+                .addExcludeFieldName(IndivdualSoldierAuthConstantUtils.MODEL_UPDATE_USER_NAME)
+                .addExcludeFieldName(IndivdualSoldierAuthConstantUtils.MODEL_ENABLE_FLAG);
     }
 
     @Override
