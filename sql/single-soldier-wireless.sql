@@ -198,3 +198,68 @@ CREATE TABLE `sys_user_group` (
   `group_id` int(11) NOT NULL COMMENT '组Id',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4;
+-- ---------------------------------------------------------
+-- -----------------------sys_log----------------------------------
+DROP TABLE IF EXISTS `sys_log`;
+CREATE TABLE `sys_log` (
+   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id自增',
+   `create_date` datetime  DEFAULT NULL COMMENT '创建时间',
+   `create_user_id` int(11) NOT NULL COMMENT '创建者Id',
+   `create_user_name` varchar(255) DEFAULT NULL COMMENT '创建者名称',
+   `enable_flag` bit(1) NOT NULL COMMENT '是否删除1:正常，0：删除',
+   `update_date` datetime  DEFAULT NULL COMMENT '更新时间',
+   `update_user_id` int(11)  DEFAULT NULL COMMENT '更新者Id',
+   `update_user_name` varchar(255)  DEFAULT NULL COMMENT '更新者名称',
+   `version` int(3) NOT NULL COMMENT '版本号',
+   `module` VARCHAR (3000) COMMENT '模块名',
+   `params` text COMMENT '方法参数',
+   `remark` text COMMENT '备注',
+   `flag` TINYINT (1) NOT NULL,
+   PRIMARY KEY (`id`)
+) ENGINE = INNODB AUTO_INCREMENT = 16 DEFAULT CHARSET = utf8mb4;
+
+-- ---------------------------------------------------------
+-- ---------data_log-----------------------------------
+DROP TABLE IF EXISTS `sys_data_log`;
+CREATE TABLE `sys_data_log` (
+    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id自增',
+    `create_date` datetime  DEFAULT NULL COMMENT '创建时间',
+    `create_user_id` int(11) NOT NULL COMMENT '创建者Id',
+    `create_user_name` varchar(255) DEFAULT NULL COMMENT '创建者名称',
+    `enable_flag` bit(1) NOT NULL COMMENT '是否删除1:正常，0：删除',
+    `update_date` datetime  DEFAULT NULL COMMENT '更新时间',
+    `update_user_id` int(11)  DEFAULT NULL COMMENT '更新者Id',
+    `update_user_name` varchar(255)  DEFAULT NULL COMMENT '更新者名称',
+    `version` int(3) NOT NULL COMMENT '版本号',
+    `content` VARCHAR(2000),
+    `fk_id` VARCHAR(255),
+    PRIMARY KEY (`id`)
+) ENGINE = INNODB AUTO_INCREMENT = 16 DEFAULT CHARSET = utf8mb4;
+-- ---------------------------------------------------------
+-- ---------sys_user_group-----------------------------------
+DROP TABLE IF EXISTS `DEVICE_CUSTOMER_INFO`;
+CREATE TABLE `DEVICE_CUSTOMER_INFO` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id自增',
+  `create_date` datetime  DEFAULT NULL COMMENT '创建时间',
+  `create_user_id` int(11) NOT NULL COMMENT '创建者Id',
+  `create_user_name` varchar(255) DEFAULT NULL COMMENT '创建者名称',
+  `enable_flag` bit(1) NOT NULL COMMENT '是否删除1:正常，0：删除',
+  `update_date` datetime  DEFAULT NULL COMMENT '更新时间',
+  `update_user_id` int(11)  DEFAULT NULL COMMENT '更新者Id',
+  `update_user_name` varchar(255)  DEFAULT NULL COMMENT '更新者名称',
+  `version` int(3) NOT NULL COMMENT '版本号',
+  `sequence` varchar(25) NOT NULL COMMENT '客户编号',
+  `auth_device_code` varchar(8) NOT NULL COMMENT '授权码',
+  `expire_device_date` datetime  DEFAULT NULL COMMENT  '客户设备授权到期日',
+  `auth_device_Num` int(3) NOT NULL COMMENT '授权设备数',
+  `enabled_verification` bit(1) NOT NULL COMMENT '是否校验日期：1-启用，0-禁用',
+  `company_name` varchar(50) NOT NULL COMMENT '公司名称',
+  `company_address` varchar(255) DEFAULT NULL COMMENT '公司地址',
+  `company_phone` varchar(15) DEFAULT NULL COMMENT '公司电话',
+  `lead_name` varchar(255) DEFAULT NULL COMMENT '负责人姓名',
+  `lead_mobile` varchar(255) DEFAULT NULL COMMENT '负责人手机',
+  `lead_phone` varchar(255) DEFAULT NULL COMMENT '负责人座机',
+  `project_no` varchar(25) NOT NULL COMMENT '项目号',
+  `project_name` varchar(25) DEFAULT NULL COMMENT '项目名称',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4;

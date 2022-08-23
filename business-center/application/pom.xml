@@ -29,6 +29,10 @@
             <groupId>com.key.win</groupId>
             <artifactId>system-center</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.key.win</groupId>
+            <artifactId>device-auth-center</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

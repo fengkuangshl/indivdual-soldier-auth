@@ -12,6 +12,7 @@ public class IndivdualSoldierAuthConstantUtils {
     public static final String MODEL_UPDATE_USER_NAME = "updateUserName";
     public static final String MODEL_ENABLE_FLAG = "enableFlag";
     public static final String MODEL_ID_MONGO = "_id";
+    public static final String MODEL_ID_TO_UPPER_CASE = "ID";
 
     public static final String REDIS_ROOT_KEY_PREFIX = "indivdual_soldier_auth:";
     public static final String TOKEN = "token";

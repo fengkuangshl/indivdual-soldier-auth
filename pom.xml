@@ -22,7 +22,7 @@
         <module>business-center</module>
         <module>job-center</module>
         <module>web-portal</module>
-        <module>commn-component-center</module>
+        <module>common-component-center</module>
         <module>system-center</module>
     </modules>
 
@@ -109,6 +109,13 @@
             <dependency>
                 <groupId>com.key.win</groupId>
                 <artifactId>websocket-center</artifactId>
+                <version>${core.version}</version>
+            </dependency>
+
+            <!-- websocket -->
+            <dependency>
+                <groupId>com.key.win</groupId>
+                <artifactId>device-auth-center</artifactId>
                 <version>${core.version}</version>
             </dependency>
             <!--基础模块 -->

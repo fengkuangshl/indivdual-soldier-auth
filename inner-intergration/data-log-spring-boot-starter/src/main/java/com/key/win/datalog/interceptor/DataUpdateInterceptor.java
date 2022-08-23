@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.*;
 import com.baomidou.mybatisplus.extension.handlers.AbstractSqlParserHandler;
+import com.key.win.base.util.EntityUtils;
+import com.key.win.basic.util.IndivdualSoldierAuthConstantUtils;
+import com.key.win.common.model.basic.MybatisID;
 import com.key.win.datalog.annotation.IgnoreDataLog;
 import com.key.win.datalog.handle.BaseDataLog;
 import com.key.win.datalog.util.SysDataLogUtil;
@@ -12,6 +15,7 @@ import com.key.win.datalog.vo.DataChangeVo;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.ibatis.executor.statement.StatementHandler;
+import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.plugin.*;
@@ -24,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
 import java.sql.Statement;
 import java.util.*;
@@ -49,42 +54,16 @@ public class DataUpdateInterceptor extends AbstractSqlParserHandler implements I
         if (SysDataLogUtil.getDataChangeList() == null) {
             return invocation.proceed();
         }
-        Statement statement;
-        Object firstArg = invocation.getArgs()[0];
+        Statement statement = getStatement(invocation);
 
-        if (Proxy.isProxyClass(firstArg.getClass())) {
-            statement = (Statement) SystemMetaObject.forObject(firstArg).getValue("h.statement");
-        } else {
-            statement = (Statement) firstArg;
-        }
-        MetaObject stmtMetaObj = SystemMetaObject.forObject(statement);
-        try {
-            statement = (Statement) stmtMetaObj.getValue("stmt.statement");
-        } catch (Exception e) {
-            // do nothing
-        }
-        if (stmtMetaObj.hasGetter("delegate")) {
-            //Hikari
-            try {
-                statement = (Statement) stmtMetaObj.getValue("delegate");
-            } catch (Exception ignored) {
-
-            }
-        }
-
-        String originalSql = statement.toString();
-        originalSql = originalSql.replaceAll("[\\s]+", StringPool.SPACE);
-        int index = indexOfSqlStart(originalSql);
-        if (index > 0) {
-            originalSql = originalSql.substring(index);
-        }
-        logger.info("执行SQL：" + originalSql);
+        String originalSql = getOriginalSql(statement);
 
         StatementHandler statementHandler = PluginUtils.realTarget(invocation.getTarget());
         MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
         this.sqlParser(metaObject);
         MappedStatement mappedStatement = (MappedStatement) metaObject.getValue("delegate.mappedStatement");
-
+        BoundSql boundSql = (BoundSql) metaObject.getValue("delegate.boundSql");
+        Object parameterObject = boundSql.getParameterObject();
         // 获取执行Sql
         String sql = originalSql.replace("where", "WHERE");
 
@@ -120,70 +99,173 @@ public class DataUpdateInterceptor extends AbstractSqlParserHandler implements I
         SysDataLogUtil.addDataChange(change);
         // 插入
         if (SqlCommandType.INSERT.equals(mappedStatement.getSqlCommandType())) {
-            String insertSql = sql.toUpperCase().replaceAll(" ", "").replaceAll("'", "").trim();
-            if (insertSql.contains("(ID,") || insertSql.contains(",ID,")) {
-                logger.info("包含Id,进行Id分隔！");
-                String[] isa = insertSql.split("VALUES");
-                String insertTop = isa[0];
-                String patterInsertTop = "(?i)\\(\\s*[^\\(]+\\)";
-                Pattern r = Pattern.compile(patterInsertTop);
-                Matcher m = r.matcher(insertTop);
-                String[] columns = {};
-                while (m.find()) {
-                    String group = m.group();
-                    String express = group.substring(1, group.length() - 1);
-                    logger.info("columns:{}", express);
-                    columns = express.split(",");
-                }
-                List<Map<String, String>> valueList = new ArrayList<>();
-                String[] values = isa[1].split("\\),\\(");
-                for (int i = 0; i < values.length; i++) {
-                    String v = values[i];
-                    if (i == 0) {
-                        v = v.substring(1);
-                    }
-                    if (i == values.length - 1) {
-                        v = v.substring(0, v.length() - 1);
-                    }
-                    String[] columnValues = v.split(",");
-                    Map<String, String> columnMap = new LinkedHashMap<>();
-                    for (int j = 0; j < columnValues.length; j++) {
-                        String columnValue = columnValues[j];
-                        String column = columns[j];
-                        columnMap.put(column, columnValue);
-                    }
-                    valueList.add(columnMap);
-                    change.setNewData(valueList);
-                }
-            } else {
-                logger.error("Id不存在,不做任何处理！");
-            }
+            return insertProcess(mappedStatement, sql, invocation, parameterObject, change);
         }
-        // 更新或者删除
-        if (SqlCommandType.UPDATE.equals(mappedStatement.getSqlCommandType()) || SqlCommandType.DELETE.equals(mappedStatement.getSqlCommandType())) {
-            // 设置sql用于执行完后查询新数据
-            String selectSql = "AND " + sql.substring(sql.lastIndexOf("WHERE") + 5);
-            // 同表对同条数据操作多次只进行一次对比
-            if (SysDataLogUtil.getDataChangeList().stream().anyMatch(c -> tableName.equals(c.getTableName())
-                    && selectSql.equals(c.getWhereSql()))) {
-                return invocation.proceed();
-            }
-            change.setWhereSql(selectSql);
-            Map<String, Object> map = new HashMap<>(1);
-            map.put(Constants.WRAPPER, Wrappers.query().eq("1", 1).last(selectSql));
-            // 查询更新前数据
-            SqlSessionFactory sqlSessionFactory = GlobalConfigUtils.currentSessionFactory(entityType);
-            change.setSqlSessionFactory(sqlSessionFactory);
-            change.setSqlStatement(tableInfo.getSqlStatement(SqlMethod.SELECT_LIST.getMethod()));
-            SqlSession sqlSession = sqlSessionFactory.openSession();
-            try {
-                List<?> oldData = sqlSession.selectList(change.getSqlStatement(), map);
-                change.setOldData(Optional.ofNullable(oldData).orElse(new ArrayList<>()));
-            } finally {
-                SqlSessionUtils.closeSqlSession(sqlSession, sqlSessionFactory);
-            }
+        // 更新
+        if (SqlCommandType.UPDATE.equals(mappedStatement.getSqlCommandType())) {
+            return updateProcess(invocation, mappedStatement, sql, tableName, tableInfo, entityType, change);
+        }
+        // 删除
+        if (SqlCommandType.DELETE.equals(mappedStatement.getSqlCommandType())) {
+            logger.info("DELETE操作什么也不做！！");
         }
         return invocation.proceed();
+    }
+
+    private String getOriginalSql(Statement statement) {
+        String originalSql = statement.toString();
+        originalSql = originalSql.replaceAll("[\\s]+", StringPool.SPACE);
+        int index = indexOfSqlStart(originalSql);
+        if (index > 0) {
+            originalSql = originalSql.substring(index);
+        }
+        logger.info("执行SQL：" + originalSql);
+        return originalSql;
+    }
+
+    private Statement getStatement(Invocation invocation) {
+        Statement statement;
+        Object firstArg = invocation.getArgs()[0];
+
+        if (Proxy.isProxyClass(firstArg.getClass())) {
+            statement = (Statement) SystemMetaObject.forObject(firstArg).getValue("h.statement");
+        } else {
+            statement = (Statement) firstArg;
+        }
+        MetaObject stmtMetaObj = SystemMetaObject.forObject(statement);
+        try {
+            statement = (Statement) stmtMetaObj.getValue("stmt.statement");
+        } catch (Exception e) {
+            // do nothing
+        }
+        if (stmtMetaObj.hasGetter("delegate")) {
+            //Hikari
+            try {
+                statement = (Statement) stmtMetaObj.getValue("delegate");
+            } catch (Exception ignored) {
+
+            }
+        }
+        return statement;
+    }
+
+    private Object insertProcess(MappedStatement mappedStatement, String sql, Invocation invocation, Object parameterObject, DataChangeVo change) throws InvocationTargetException, IllegalAccessException {
+        List<Map<String, Object>> valueList = new ArrayList<>();
+        insertProcessBefore(mappedStatement, sql, valueList);
+        Object proceed = invocation.proceed();
+        insertProcessAfter(mappedStatement, parameterObject, sql, valueList,change);
+        return proceed;
+    }
+
+    private void insertProcessBefore(MappedStatement mappedStatement, String sql, List<Map<String, Object>> valueList) {
+        String insertSql = getInsertSql(sql);
+        String[] isa = insertSql.split("VALUES");
+        String insertTop = isa[0];
+        String patterInsertTop = "(?i)\\(\\s*[^\\(]+\\)";
+        Pattern r = Pattern.compile(patterInsertTop);
+        Matcher m = r.matcher(insertTop);
+        String[] columns = {};
+        while (m.find()) {
+            String group = m.group();
+            String express = group.substring(1, group.length() - 1);
+            logger.info("columns:{}", express);
+            columns = express.split(",");
+        }
+        String[] values = isa[1].split("\\),\\(");
+        for (int i = 0; i < values.length; i++) {
+            String v = values[i];
+            if (i == 0) {
+                v = v.substring(1);
+            }
+            if (i == values.length - 1) {
+                v = v.substring(0, v.length() - 1);
+            }
+            String[] columnValues = v.split(",");
+            Map<String, Object> columnMap = new LinkedHashMap<>();
+            for (int j = 0; j < columnValues.length; j++) {
+                String columnValue = columnValues[j];
+                String column = columns[j].toUpperCase();
+                columnMap.put(column, columnValue);
+            }
+            valueList.add(columnMap);
+            //change.setNewData(valueList);
+        }
+    }
+
+    private Object updateProcess(Invocation invocation, MappedStatement mappedStatement, String sql, String tableName, TableInfo tableInfo, Class<?> entityType, DataChangeVo change) throws InvocationTargetException, IllegalAccessException {
+
+        // 设置sql用于执行完后查询新数据
+        String selectSql = "AND " + sql.substring(sql.lastIndexOf("WHERE") + 5);
+        // 同表对同条数据操作多次只进行一次对比
+        if (SysDataLogUtil.getDataChangeList().stream().anyMatch(c -> tableName.equals(c.getTableName())
+                && selectSql.equals(c.getWhereSql()))) {
+            return invocation.proceed();
+        }
+        change.setWhereSql(selectSql);
+        Map<String, Object> map = new HashMap<>(1);
+        map.put(Constants.WRAPPER, Wrappers.query().eq("1", 1).last(selectSql));
+        // 查询更新前数据
+        SqlSessionFactory sqlSessionFactory = GlobalConfigUtils.currentSessionFactory(entityType);
+        change.setSqlSessionFactory(sqlSessionFactory);
+        change.setSqlStatement(tableInfo.getSqlStatement(SqlMethod.SELECT_LIST.getMethod()));
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            List<?> oldData = sqlSession.selectList(change.getSqlStatement(), map);
+            change.setOldData(Optional.ofNullable(oldData).orElse(new ArrayList<>()));
+        } finally {
+            SqlSessionUtils.closeSqlSession(sqlSession, sqlSessionFactory);
+        }
+        return invocation.proceed();
+    }
+
+    private void insertProcessAfter(MappedStatement mappedStatement, Object parameterObject, String sql, List<Map<String, Object>> valueList,DataChangeVo change) {
+        MybatisID id = null;
+        String insertSql = getInsertSql(sql);
+        String insertSqlForToUpperCase = insertSql.toUpperCase();
+        //sql直是否包含Id
+        if (insertSqlForToUpperCase.contains("(ID,") || insertSqlForToUpperCase.contains(",ID,") || insertSqlForToUpperCase.contains(",ID)")) {
+            logger.info("在insert包含ID,直接使用该ID");
+            change.setNewData(valueList);
+        } else if (parameterObject instanceof MybatisID) {//传进来的实体包含了Id
+            id = (MybatisID) parameterObject;
+            valueList.get(0).put("ID", id.getId().toString());
+            change.setNewData(valueList);
+        } else if (parameterObject instanceof List) {//list中的实体包含Id
+            valueList.clear();
+            List list = (List) parameterObject;
+            for (Object o : list) {
+                if (o instanceof MybatisID) {
+                    id = (MybatisID) o;
+                    //valueList.get(0).put("ID", id.getId().toString());
+                    Map<String, Object> entityToMap = EntityUtils.entityToMap(id);
+                    entityToMap.put(IndivdualSoldierAuthConstantUtils.MODEL_ID_TO_UPPER_CASE, entityToMap.remove(IndivdualSoldierAuthConstantUtils.MODEL_ID));
+                    valueList.add(entityToMap);
+                } else {
+                    logger.error("list中的Entity中Id不存在,不做任何处理！");
+                }
+            }
+            if(!CollectionUtils.isEmpty(valueList)){
+                change.setNewData(valueList);
+            }
+        } else if (parameterObject instanceof Map) {//map中的实体包含Id
+            Map map = (Map) parameterObject;
+            Object idObject = map.get(IndivdualSoldierAuthConstantUtils.MODEL_ID_TO_UPPER_CASE);
+            if (idObject == null) {
+                idObject = map.get(IndivdualSoldierAuthConstantUtils.MODEL_ID);
+            }
+            if (idObject != null) {
+                valueList.get(0).put("ID", idObject.toString());
+                change.setNewData(valueList);
+            } else {
+                logger.error("Map中Id不存在,不做任何处理！");
+            }
+        } else {
+            logger.error("Id不存在,不做任何处理！");
+        }
+    }
+
+    private String getInsertSql(String sql) {
+        return sql.replaceAll(" ", "").replaceAll("'", "").trim();
     }
 
     @Override
