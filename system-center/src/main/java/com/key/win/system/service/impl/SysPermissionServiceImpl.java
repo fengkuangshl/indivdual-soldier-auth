@@ -27,10 +27,6 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionDao, SysP
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-
-    @Autowired
-    private SysRolePermissionDao sysRolePermissionDao;
-
     @Override
     public List<SysPermission> findSysPermission(SysPermission sysPermission) {
         LambdaQueryWrapper<SysPermission> lambdaQueryWrapper = new LambdaQueryWrapper<SysPermission>();
@@ -81,7 +77,7 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionDao, SysP
                 logger.error("权限标识[{}]已锁定，不允许修改！", sysPermission.getPermission());
                 throw new BizException("权限标识已锁定，不允许修改！!");
             }
-            BeanUtils.copyProperties(sysPermission, po);
+            BeanUtils.copyPropertiesToPartField(sysPermission, po);
         } else {
             po = sysPermission;
             List<SysPermission> sysOrgans = this.findSysPermissionByPermission(sysPermission.getPermission());
@@ -90,31 +86,12 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionDao, SysP
                 throw new BizException("权限标识已存在！");
             }
         }
-        return this.saveOrUpdate(sysPermission);
+        return this.saveOrUpdate(po);
     }
 
     private List<SysPermission> findSysPermissionByPermission(String permission) {
         SysPermission sysPermission = new SysPermission();
         sysPermission.setPermission(permission);
         return this.findSysPermission(sysPermission);
-    }
-
-    @Override
-    public void setPermissionToRole(Long roleId, Set<Long> permissionIds) {
-        if (!CollectionUtils.isEmpty(permissionIds)) {
-            sysRolePermissionDao.deleteBySelective(roleId, null);
-            sysRolePermissionDao.saveBatchRoleIdAndPermissions(roleId, permissionIds);
-            /*for (String permissionId : permissionIds) {
-                SysRolePermission sysRolePermission = new SysRolePermission();
-                sysRolePermission.setRoleId(roleId);
-                sysRolePermission.setPermissionId(permissionId);
-                sysRolePermissionDao.insert(sysRolePermission);
-            }*/
-        }
-    }
-
-    @Override
-    public List<SysPermission> findSysPermissionByRoleId(Long roleId) {
-        return this.sysRolePermissionDao.findSysPermissionByRoleId(roleId);
     }
 }

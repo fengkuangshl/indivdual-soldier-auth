@@ -7,6 +7,7 @@ import com.key.win.common.auth.detail.Authentication;
 import com.key.win.log.annotation.LogAnnotation;
 import com.key.win.common.model.system.*;
 import com.key.win.system.service.SysMenuService;
+import com.key.win.system.util.MenuUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections.CollectionUtils;
@@ -33,37 +34,9 @@ public class SysMenuCtrl {
     @LogAnnotation(module = "system", recordRequestParam = false)
     public Result getCurrentMenus() {
         Authentication authentication = AuthenticationUtil.getAuthentication();
-        return Result.succeed(treeBuilder(authentication.getMenus()));
+        return Result.succeed(MenuUtils.treeBuilder(authentication.getMenus()));
     }
-
-    /**
-     * 两层循环实现建树
-     *
-     * @param sysMenus
-     * @return
-     */
-    public static List<SysMenu> treeBuilder(List<SysMenu> sysMenus) {
-        List<SysMenu> menus = new ArrayList<SysMenu>();
-        if (CollectionUtils.isNotEmpty(sysMenus)) {
-            for (SysMenu sysMenu : sysMenus) {
-                if (sysMenu.getParentId().equals(IndivdualSoldierAuthConstantUtils.TREE_PARENT_ID)) {
-                    menus.add(sysMenu);
-                }
-                for (SysMenu menu : sysMenus) {
-                    if (menu.getParentId().equals(sysMenu.getId())) {
-                        if (sysMenu.getSubMenus() == null) {
-                            sysMenu.setSubMenus(new ArrayList<>());
-                        }
-                        sysMenu.getSubMenus().add(menu);
-                    }
-                }
-            }
-        }
-
-        return menus;
-    }
-
-
+    
     @PostMapping("/findSysMenuByPaged")
     @ApiOperation(value = "Menu分页")
     @LogAnnotation(module = "system", recordRequestParam = false)

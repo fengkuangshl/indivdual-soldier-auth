@@ -4,12 +4,14 @@ import com.key.win.basic.util.IndivdualSoldierAuthConstantUtils;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 public class Result<T> extends BaseResult {
     @ApiModelProperty("返回实体")
     private T data;

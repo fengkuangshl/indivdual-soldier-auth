@@ -1,6 +1,7 @@
 package com.key.win.common.auth.detail;
 
 import com.key.win.common.model.system.SysMenu;
+import com.key.win.common.model.system.SysMenuPermission;
 import com.key.win.common.model.system.SysPermission;
 import com.key.win.common.model.system.SysUser;
 import io.swagger.annotations.ApiModelProperty;
@@ -15,7 +16,7 @@ import java.util.List;
 public class Authentication extends SysUser {
 
     @ApiModelProperty("权限")
-    private List<SysPermission> permissions;
+    private List<SysMenuPermission> permissions;
     @ApiModelProperty("菜单")
     private List<SysMenu> menus;
     @ApiModelProperty("登录时间")

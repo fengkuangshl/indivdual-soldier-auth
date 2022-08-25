@@ -13,17 +13,11 @@ import java.util.Set;
 @ApiModel("权限实体")
 @Data
 @TableName("sys_permission")
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper = true)
 public class SysPermission extends MybatisID {
     @ApiModelProperty("权限")
     private String permission;
     @ApiModelProperty("名称")
-	private String name;
-    @ApiModelProperty("角色Id")
-	@TableField(exist=false)
-	private Long roleId;
-    @ApiModelProperty("权限Id集合")
-	@TableField(exist=false)
-	private Set<Long> authIds;
+    private String name;
 
 }

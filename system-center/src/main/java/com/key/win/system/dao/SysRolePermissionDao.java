@@ -16,10 +16,10 @@ public interface SysRolePermissionDao extends BaseMapper<SysRolePermission> {
 
     int deleteBySelective(@Param("roleId") Long roleId, @Param("permissionId") Long permissionId);
 
-    List<SysPermission> findByRoleIds(@Param("roleIds") Set<Long> roleIds);
+    List<SysMenuPermission> findByRoleIds(@Param("roleIds") Set<Long> roleIds);
 
-    @Select("select m.* from sys_role_permission t inner join sys_permission m on t.permission_id = m.id where t.role_id = #{roleId} and t.enable_flag = 1 and m.enable_flag =1")
-    List<SysPermission> findSysPermissionByRoleId(Long roleId);
+    @Select("select m.* from sys_role_permission t inner join sys_menu_permission m on t.permission_id = m.id where t.role_id = #{roleId} and t.enable_flag = 1 and m.enable_flag =1")
+    List<SysMenuPermission> findSysPermissionByRoleId(Long roleId);
 
     void saveBatchRoleIdAndPermissions(@Param("roleId") Long roleId, @Param("permissions") Set<Long> permissions);
 

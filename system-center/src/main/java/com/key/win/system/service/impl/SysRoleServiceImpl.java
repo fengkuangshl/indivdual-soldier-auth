@@ -85,7 +85,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
                 logger.error("角色code[{}]已锁定，不允许修改！", sysRole.getCode());
                 throw new BizException("角色code已锁定，不允许修改！!");
             }
-            BeanUtils.copyProperties(sysRole, po);
+            BeanUtils.copyPropertiesToPartField(sysRole, po);
         } else {
             po = sysRole;
             List<SysRole> sysRoles = this.findSysRoleByCode(sysRole.getCode());
@@ -124,7 +124,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
     public SysRole getRoleFullById(Long id) {
         SysRole sysRole = this.getById(id);
         List<SysMenu> menuByRoleId = sysRoleMenuDao.findMenuByRoleId(id);
-        List<SysPermission> sysPermissionByRoleId = sysRolePermissionDao.findSysPermissionByRoleId(id);
+        List<SysMenuPermission> sysPermissionByRoleId = sysRolePermissionDao.findSysPermissionByRoleId(id);
         sysRole.setSysMenus(menuByRoleId);
         sysRole.setSysPermissions(sysPermissionByRoleId);
         return sysRole;

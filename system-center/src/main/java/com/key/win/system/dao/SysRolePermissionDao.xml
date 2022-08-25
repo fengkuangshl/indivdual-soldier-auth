@@ -18,7 +18,7 @@
 
     <select id="findByRoleIds" resultType="com.key.win.common.model.system.SysPermission">
         select distinct p.* from
-        sys_permission p
+        sys_menu_permission p
         inner join
         sys_role_permission rp on
         p.id = rp.permission_id

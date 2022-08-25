@@ -55,7 +55,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     private SysRoleMenuDao sysRoleMenuDao;
 
     @Autowired
-    private SysPermissionDao sysPermissionDao;
+    private SysMenuPermissionDao sysMenuPermissionDao;
 
     @Autowired
     private SysMenuDao sysMenuDao;
@@ -221,13 +221,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         loginUser.setSysGroups(groupByUserId);
         loginUser.setSysRoles(rolesByUserId);
         if (dbUser.getType() == UserTypeEnum.ADMIN) {
-            List<SysPermission> permissionDaoByRoleIds = sysPermissionDao.selectList(null);
+            List<SysMenuPermission> permissionDaoByRoleIds = sysMenuPermissionDao.selectList(null);
             List<SysMenu> menusByRoleIds = sysMenuDao.selectList(null);
             loginUser.setPermissions(permissionDaoByRoleIds);
             loginUser.setMenus(menusByRoleIds);
         } else if (!CollectionUtils.isEmpty(rolesByUserId)) {
             Set<Long> roleIds = rolesByUserId.stream().map(SysRole::getId).collect(Collectors.toSet());
-            List<SysPermission> permissionDaoByRoleIds = sysRolePermissionDao.findByRoleIds(roleIds);
+            List<SysMenuPermission> permissionDaoByRoleIds = sysRolePermissionDao.findByRoleIds(roleIds);
             List<SysMenu> menusByRoleIds = sysRoleMenuDao.findMenusByRoleIds(roleIds);
             loginUser.setPermissions(permissionDaoByRoleIds);
             loginUser.setMenus(menusByRoleIds);

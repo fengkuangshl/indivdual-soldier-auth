@@ -14,8 +14,4 @@ public interface SysPermissionService extends IService<SysPermission> {
     List<SysPermission> findSysPermission(SysPermission sysPermission);
 
     boolean saveOrUpdatePermission(SysPermission sysPermission);
-
-    void setPermissionToRole(Long roleId, Set<Long> menuIds);
-
-    List<SysPermission> findSysPermissionByRoleId(Long roleId);
 }

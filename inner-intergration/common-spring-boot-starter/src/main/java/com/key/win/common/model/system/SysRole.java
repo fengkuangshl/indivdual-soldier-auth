@@ -28,7 +28,7 @@ public class SysRole extends MybatisID {
     private List<SysMenu> sysMenus;
     @ApiModelProperty("权限列表")
     @TableField(exist = false)
-    private List<SysPermission> sysPermissions;
+    private List<SysMenuPermission> sysPermissions;
     @ApiModelProperty("用户Id列表")
     @TableField(exist = false)
     private Set<Long> userIds;

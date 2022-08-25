@@ -109,7 +109,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
                 logger.error("菜单不存在!");
                 throw new BizException("菜单不存在!");
             }
-            BeanUtils.copyProperties(sysMenu, po);
+            BeanUtils.copyPropertiesToPartField(sysMenu, po);
         } else {
             po = sysMenu;
         }

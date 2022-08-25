@@ -1,5 +1,8 @@
 package com.key.win.basic.util;
 
+/**
+ * 系统常量
+ */
 public class IndivdualSoldierAuthConstantUtils {
 
 
@@ -39,8 +42,8 @@ public class IndivdualSoldierAuthConstantUtils {
     public static final String SYMBOL_COMMA = ",";
     public static final String SQL_COMMA_SEPARATOR = SQL_SEPARATOR + SYMBOL_COMMA + SQL_SEPARATOR;
 
-    public static final String SUCCEED_INFO ="操作成功";
-    public static final String FAILED_INFO ="操作成功";
+    public static final String SUCCEED_INFO = "操作成功！";
+    public static final String FAILED_INFO = "操作失败！";
 
     public static String getRedisTokenKey(String token) {
         return IndivdualSoldierAuthConstantUtils.REDIS_TOKEN_KEY_PREFIX + token;

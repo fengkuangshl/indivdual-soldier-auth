@@ -2,6 +2,7 @@ package com.key.win.security.service.impl;
 
 import com.key.win.common.auth.AuthenticationUtil;
 import com.key.win.common.auth.detail.Authentication;
+import com.key.win.common.model.system.SysMenuPermission;
 import com.key.win.common.model.system.SysPermission;
 import com.key.win.common.model.system.SysRole;
 import com.key.win.security.service.RbacService;
@@ -147,9 +148,9 @@ public class RbacServiceImpl implements RbacService {
     public Set<String> getPermissionByCurrentUser() {
         Authentication authentication = AuthenticationUtil.getAuthentication();
         if (authentication != null) {
-            List<SysPermission> permissions = authentication.getPermissions();
+            List<SysMenuPermission> permissions = authentication.getPermissions();
             if (!CollectionUtils.isEmpty(permissions)) {
-                return permissions.stream().map(SysPermission::getPermission).collect(Collectors.toSet());
+                return permissions.stream().map(SysMenuPermission::getPermissionCode).collect(Collectors.toSet());
             }
         }
         return null;
