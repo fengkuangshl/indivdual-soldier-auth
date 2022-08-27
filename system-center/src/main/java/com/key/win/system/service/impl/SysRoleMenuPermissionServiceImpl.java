@@ -154,7 +154,7 @@ public class SysRoleMenuPermissionServiceImpl extends ServiceImpl<SysRoleMenuPer
         if (!CollectionUtils.isEmpty(deleteIds)) {
             super.removeByIds(deleteIds);
         }
-        if (CollectionUtils.isEmpty(newSysRoleMenuPermission)) {
+        if (!CollectionUtils.isEmpty(newSysRoleMenuPermission)) {
             return super.saveOrUpdateBatch(newSysRoleMenuPermission);
         }
         return true;

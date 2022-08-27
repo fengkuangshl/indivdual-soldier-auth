@@ -23,8 +23,7 @@
               :disabled="scope.row[item.propertyName].enable"
               v-if="scope.row[item.propertyName].permissionId > 0 || scope.row[item.propertyName].menuId > 0"
               v-model="scope.row[item.propertyName].checked">
-            </el-checkbox>&nbsp;&nbsp;{{ scope.row[item.propertyName].permissionName
-            }}
+            </el-checkbox>&nbsp;&nbsp;{{ scope.row[item.propertyName].permissionName }}
           </template>
         </el-table-column>
       </el-table>
@@ -71,12 +70,12 @@ export default class MenuPermission extends Vue {
     let checked: boolean = false
     this.tableTiles.forEach(title => {
       const entity = rowData[title.propertyName]
-      if (!entity.permissionId) {
+      if (!entity.permissionId && entity.menuId) {
         checked = entity.checked
         return
       }
     })
-    return checked
+    return checked ? checked : false
   }
   setTableDataIndex(datas: Array<any>, parentId: string) {
     for (let index = 0; index < datas.length; index++) {
@@ -145,7 +144,6 @@ export default class MenuPermission extends Vue {
   }
 
   onChane(checked: boolean, item: any, permissionId: number): void {
-    this.checkTableBodyChange()
     this.setRowCheckBox(checked, item, permissionId)
     if (item.children && item.children.length > 0) {
       item.children.forEach((cNode: any) => {
@@ -162,6 +160,7 @@ export default class MenuPermission extends Vue {
         })
       })
     }
+    this.checkTableBodyChange()
   }
   setRowCheckBox(checked: boolean, item: any, permissionId: number): void {
     if (!permissionId) {
