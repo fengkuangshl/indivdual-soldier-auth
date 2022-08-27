@@ -16,9 +16,12 @@
       </el-row>
       <el-table :data="tableDatas" row-key="key" border default-expand-all
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }" style="margin-top:20px;width: 100%">
-        <el-table-column v-for="item in tableTiles" :key="item.propertyName" :prop="item.propertyName" align='center'
-          :label="item.permissionName">
-          <template v-slot="scope">
+        <el-table-column v-for="item in tableTiles" :key="item.propertyName" :prop="item.propertyName" align='center'>
+          <template slot="header" slot-scope="scope">
+            <el-checkbox v-if="item.permissionId > 0" v-on:change="checked => onTitleChane(checked, item)">
+            </el-checkbox>&nbsp;&nbsp;{{ item.permissionName }}
+          </template>
+          <template slot-scope="scope">
             {{ scope.row[item.propertyName].permissionName }}
             <el-checkbox v-on:change="onChane()"
               v-if="!(scope.row.children && scope.row.children.length > 0) && scope.row[item.propertyName].permissionId > 0"
@@ -69,8 +72,8 @@ export default class MenuPermission extends Vue {
 
   setTableDataIndex(datas: Array<any>, parentId: string): void {
     for (let index = 0; index < datas.length; index++) {
-      const element = datas[index];
-      element['key'] = index + parentId;
+      const element = datas[index]
+      element['key'] = index + parentId
       if (element.children && element.children.length > 0) {
         this.setTableDataIndex(element.children, element['key'])
       }
@@ -123,6 +126,21 @@ export default class MenuPermission extends Vue {
     } else {
       this.menuPermissionVisble = false
       return true
+    }
+  }
+
+  onTitleChane(checked: boolean, item: MenuPermissionDetail): void {
+    this.setColmunCheckboxStatus(checked, item, this.tableDatas)
+  }
+  setColmunCheckboxStatus(checked: boolean, item: MenuPermissionDetail, tableDatas: Array<any>) {
+    for (let index = 0; index < tableDatas.length; index++) {
+      const element = tableDatas[index]
+      if (element.children && element.children.length > 0) {
+        this.setColmunCheckboxStatus(checked, item, element.children)
+      } else {
+        const colElement = element[item.propertyName]
+        colElement.checked = checked
+      }
     }
   }
 }
