@@ -18,31 +18,28 @@
         </el-col>
         <el-col :span="4">
           <el-button type="primary" @click="addMenu">添加菜单</el-button>
+          <el-button type="primary" @click="setPagePermission">菜单页面权限设置</el-button>
         </el-col>
       </el-row>
-      <KWTable url="menu/getMenuAll" method="GET" :tableDataFilter="tableDataFilter" :renderPreFn="menuTreeAssemble" :treeProps="treeProps" :isPagination="isPagination" style="width: 100%" ref="kwTableRef">
+      <KWTable url="menu/getMenuAll" method="GET" :tableDataFilter="tableDataFilter" :renderPreFn="menuTreeAssemble"
+        :treeProps="treeProps" :isPagination="isPagination" style="width: 100%" ref="kwTableRef">
         <el-table-column prop="name" sortable label="菜单名称"> </el-table-column>
         <el-table-column prop="path" sortable label="菜单路由"> </el-table-column>
         <el-table-column prop="url" sortable label="菜单URL"> </el-table-column>
         <el-table-column prop="css" sortable label="样式"> </el-table-column>
         <el-table-column prop="sort" sortable label="排序"> </el-table-column>
-        <el-table-column
-          prop="isMenu"
-          sortable
-          label="类型"
-          :formatter="
-            row => {
-              if (row.isMenu == 2) {
-                return '按钮'
-              }
-              if (row.parentId == -1) {
-                return '目录'
-              } else {
-                return '菜单'
-              }
+        <el-table-column prop="isMenu" sortable label="类型" :formatter="
+          row => {
+            if (row.isMenu == 2) {
+              return '按钮'
             }
-          "
-        >
+            if (row.parentId == -1) {
+              return '目录'
+            } else {
+              return '菜单'
+            }
+          }
+        ">
         </el-table-column>
         <el-table-column label="操作">
           <template v-slot="scope">
@@ -310,6 +307,9 @@ export default class Menu extends Vue {
     }
     return menus
   }
+  setPagePermission() {
+    this.$router.push('/sysmenpermission')
+  }
 }
 </script>
 
@@ -319,6 +319,7 @@ export default class Menu extends Vue {
   border-color: #409eff !important;
   color: #fff !important;
 }
+
 .search-primary:focus,
 .search-primary:hover {
   background: #66b1ff !important;

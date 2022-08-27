@@ -28,11 +28,9 @@
           <template v-slot="scope">
             <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row)"></el-button>
             <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteRole(scope.row.id)"></el-button>
-            <el-tooltip effect="dark" content="菜单管理" placement="top" :enterable="false">
-              <el-button type="warning" icon="el-icon-setting" size="mini" @click="setMenu(scope.row.id)"></el-button>
-            </el-tooltip>
-            <el-tooltip effect="dark" content="权限管理" placement="top" :enterable="false">
-              <el-button type="warning" icon="el-icon-s-tools" size="mini" @click="setPermission(scope.row.id)"></el-button>
+            <el-tooltip effect="dark" content="菜单权限管理" placement="top" :enterable="false">
+              <el-button type="warning" icon="el-icon-s-tools" size="mini" @click="grantPermission(scope.row)">
+              </el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -52,28 +50,6 @@
         <el-button type="primary" @click="editRole">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="菜单管理" @close="aditMenuRoleClosed" :visible.sync="menuRoleDialogVisble" width="20%">
-      <el-scrollbar style="height:100%;">
-        <el-tree :data="menuTreeArray" style="height:300px" show-checkbox default-expand-all node-key="id" ref="treeRef" check-strictly :default-checked-keys="checkedKeys" highlight-current :props="defaultProps"> </el-tree>
-      </el-scrollbar>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="menuRoleDialogVisble = false">取 消</el-button>
-        <el-button type="primary" @click="saveMenuRole">确 定</el-button>
-      </span>
-    </el-dialog>
-    <el-dialog title="权限管理" @close="aditRolePermissionClosed" :visible.sync="rolePermissionVisble">
-      <el-form :model="rolePermissionForm" :rules="rolePermissionFormRules" ref="rolePermissionFormRef">
-        <el-form-item label="权限">
-          <el-select v-model="rolePermissionForm.authIds" clearable multiple filterable placeholder="请选择">
-            <el-option v-for="item in permissionOptions" :key="item.id" :label="item.name" :value="item.id"> </el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="rolePermissionVisble = false">取 消</el-button>
-        <el-button type="primary" @click="saveMenuPermission">确 定</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
@@ -82,13 +58,7 @@ import { ElForm } from 'element-ui/types/form'
 import { Component, Vue, Ref } from 'vue-property-decorator'
 import { SysRole, SysRoleSearchRequest, SysRoleForm } from './interface/sys-role'
 import { DeleteSysRoleApi, SysRoleSaveOrUpdateApi } from './sys-role-api'
-import { MenuTree } from '../menu/model/menu-tree'
-import { IMenuTree, MenuRole, RoleIdAndMenuIds } from '../menu/interface/sys-menu'
 import KWTable from '@/components/table/Table.vue'
-import { GetMenuByRoleIdApi, SaveMenuRoleApi } from '../menu/menu-api'
-import { GetByPermissionRoleIdApi, SaveMenuPermissionApi } from '../permission/permission-api'
-import { ElTree } from 'element-ui/types/tree'
-import { AuthIdsAndRoleId, PermissionRole } from '../permission/interface/sys-permission'
 
 @Component({
   components: {
@@ -105,7 +75,6 @@ export default class Role extends Vue {
   codeDisabled = true
   editSysRoleId = -1
   sysRoleForm: SysRoleForm = { name: '', code: '' }
-  rolePermissionForm: AuthIdsAndRoleId = { roleId: -1, authIds: [] }
   @Ref('sysRoleFormRef')
   readonly sysRoleFormRef!: ElForm
 
@@ -118,11 +87,7 @@ export default class Role extends Vue {
   defaultProps: { children: string; label: string } = { children: 'children', label: 'name' }
   checkedKeys: Array<number> = []
   defaultCheckedKeys: Array<number> = []
-  menuTreeArray: Array<IMenuTree> = []
-  permissionOptions: Array<PermissionRole> = []
 
-  @Ref('treeRef')
-  readonly treeRef!: ElTree<number, IMenuTree>
 
   readonly sysRoleFormRules: { name: Array<KWRule.Rule | KWRule.MixinRule>; code: Array<KWRule.Rule | KWRule.MixinRule> } = {
     name: [
@@ -205,121 +170,11 @@ export default class Role extends Vue {
   searchRole(): void {
     this.kwTableRef.loadByCondition(this.t)
   }
-
-  async setMenu(id: number): Promise<void> {
-    console.log(id)
-    this.editSysRoleId = id
-    const { code, data, msg } = await GetMenuByRoleIdApi(id)
-    if (code === 200) {
-      this.menuTreeArray = []
-      this.checkedKeys = []
-      this.menuRoleDialogVisble = true
-      this.menuRoleToTree(data)
-    } else {
-      this.$message.error(msg || '获取菜单失败！')
-    }
-  }
-
-  menuRoleToTree(menus: Array<MenuRole>): void {
-    const treeRoot: Map<number, IMenuTree> = new Map()
-    const treeChildren: Map<number, Array<IMenuTree>> = new Map()
-    if (menus != null && menus.length > 0) {
-      for (const key in menus) {
-        if (Object.prototype.hasOwnProperty.call(menus, key)) {
-          const item = menus[key]
-          // let menuTree: IMenuTree = mapMenuTree.get(item.id) as IMenuTree
-          const menuTree: IMenuTree = new MenuTree()
-          menuTree.id = item.id
-          menuTree.name = item.name
-          menuTree.children = new Array<IMenuTree>()
-          if (item.pId === -1) {
-            treeRoot.set(item.id, menuTree)
-          } else {
-            let menuTreeArray = treeChildren.get(item.pId)
-            if (menuTreeArray === undefined) {
-              menuTreeArray = new Array<IMenuTree>()
-            }
-            menuTreeArray.push(menuTree)
-            treeChildren.set(item.pId, menuTreeArray)
-          }
-          if (item.checked) {
-            this.checkedKeys.push(item.id)
-          }
-        }
-      }
-    }
-    treeRoot.forEach((tree: IMenuTree, key: number) => {
-      const menuTreeArray: Array<IMenuTree> = treeChildren.get(key) as Array<IMenuTree>
-      if (menuTreeArray !== undefined) {
-        tree.children.push(...menuTreeArray)
-      }
-      this.menuTreeArray.push(tree)
-    })
-    this.defaultCheckedKeys.push(...this.checkedKeys)
-  }
-
-  aditMenuRoleClosed(): void {
-    this.menuRoleDialogVisble = false
-    this.checkedKeys.push(...this.defaultCheckedKeys)
-  }
-
-  async saveMenuRole(): Promise<void> {
-    const checkedKeys = this.treeRef.getCheckedKeys()
-    if (checkedKeys.length === 0) {
-      this.$message.error('请选择菜单！')
-      return
-    }
-    const halfCheckedKeys = this.treeRef.getHalfCheckedKeys()
-    checkedKeys.push(...halfCheckedKeys)
-    this.menuRoleDialogVisble = false
-    const roleIdAndMenuIds: RoleIdAndMenuIds = { roleId: this.editSysRoleId, menuIds: checkedKeys }
-    const { code, msg } = await SaveMenuRoleApi(roleIdAndMenuIds)
-    if (code === 200) {
-      this.$message.success('菜单保存成功！')
-    } else {
-      this.$message.error(msg || '菜单保存失败！')
-    }
-  }
-
-  aditRolePermissionClosed(): void {
-    this.rolePermissionVisble = false
-    this.checkedKeys.push(...this.defaultCheckedKeys)
-  }
-
-  async setPermission(id: number): Promise<void> {
-    console.log(id)
-    this.rolePermissionForm.roleId = id
-    const { code, data, msg } = await GetByPermissionRoleIdApi(id)
-    if (code === 200) {
-      this.permissionOptions = data
-      this.rolePermissionVisble = true
-      this.rolePermissionForm.authIds = []
-      for (const key in data) {
-        if (Object.prototype.hasOwnProperty.call(data, key)) {
-          const element = data[key]
-          if (element.checked) {
-            this.rolePermissionForm.authIds.push(element.id)
-          }
-        }
-      }
-      console.log(this)
-    } else {
-      this.$message.error(msg || '获取权限失败！')
-    }
-  }
-
-  saveMenuPermission(): void {
-    this.rolePermissionFormRef.validate(async valid => {
-      if (!valid) {
-        return false
-      }
-      const { code, msg } = await SaveMenuPermissionApi(this.rolePermissionForm)
-      if (code !== 200) {
-        this.$message.error(msg || '权限保存失败!')
-      } else {
-        this.rolePermissionVisble = false
-        this.$message.success('权限保存!')
-      }
+  
+  grantPermission(data: SysRole) {
+    this.$router.push({
+      path: '/sysrmpc',
+      query: { id: data.id + '', name: data.name }
     })
   }
 }
@@ -329,11 +184,13 @@ export default class Role extends Vue {
 .el-select {
   width: 860px;
 }
+
 .search-primary {
   background: #409eff !important;
   border-color: #409eff !important;
   color: #fff !important;
 }
+
 .search-primary:focus,
 .search-primary:hover {
   background: #66b1ff !important;

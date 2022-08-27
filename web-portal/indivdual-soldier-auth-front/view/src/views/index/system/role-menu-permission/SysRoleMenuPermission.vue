@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="navigation-breadcrumb">
-      <div>权限管理</div>
+      <div>{{ title }}</div>
       <el-breadcrumb>
         <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item>权限列表</el-breadcrumb-item>
@@ -43,8 +43,15 @@ export default class MenuPermission extends Vue {
   const tableTiles: Array<RoleMenuPermissionDetail> = new Array()
   roleMenuPermissionVisble = true
   roleId: number = -1
+  title: string = '权限管理'
 
   created(): void {
+    if (this.$route.query.id != null) {
+      this.roleId = Number.parseInt(this.$route.query.id as string)
+    }
+    if (this.$route.query.name != null) {
+      this.title = (this.$route.query.name as string) + '权限管理'
+    }
     this.getMenuPermission()
   }
 
