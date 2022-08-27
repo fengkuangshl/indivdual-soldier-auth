@@ -88,7 +88,6 @@ export default class Role extends Vue {
   checkedKeys: Array<number> = []
   defaultCheckedKeys: Array<number> = []
 
-
   readonly sysRoleFormRules: { name: Array<KWRule.Rule | KWRule.MixinRule>; code: Array<KWRule.Rule | KWRule.MixinRule> } = {
     name: [
       { required: true, message: '请输入帐号', trigger: 'blur' },
@@ -170,8 +169,8 @@ export default class Role extends Vue {
   searchRole(): void {
     this.kwTableRef.loadByCondition(this.t)
   }
-  
-  grantPermission(data: SysRole) {
+
+  grantPermission(data: SysRole): void {
     this.$router.push({
       path: '/sysrmpc',
       query: { id: data.id + '', name: data.name }

@@ -34,16 +34,16 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { GetPagePermissionApi, SysRoleMenuPermissionSaveOrUpdateApi } from './role-menu-permission-api'
-import { RoleMenuPermissionDetail, RoleMenuPermissionForm, SysRoleMenuPermissionResponse } from './interface/sys-role-menu-permission'
+import { RoleMenuPermissionDetail, RoleMenuPermissionForm, SysRoleMenuPermissionResponse, SysRoleMenuPermissionTableDataType } from './interface/sys-role-menu-permission'
 
 @Component
 export default class MenuPermission extends Vue {
-  const tableDatas: Array<any> = new Array()
-  const tableOriginalDatas: Array<any> = new Array()
-  const tableTiles: Array<RoleMenuPermissionDetail> = new Array()
+  const tableDatas: Array<SysRoleMenuPermissionTableDataType> = new Array<SysRoleMenuPermissionTableDataType>()
+  const tableOriginalDatas: Array<SysRoleMenuPermissionTableDataType> = new Array<SysRoleMenuPermissionTableDataType>()
+  const tableTiles: Array<RoleMenuPermissionDetail> = new Array<RoleMenuPermissionDetail>()
   roleMenuPermissionVisble = true
-  roleId: number = -1
-  title: string = '权限管理'
+  roleId = -1
+  title = '权限管理'
 
   created(): void {
     if (this.$route.query.id != null) {
@@ -56,53 +56,60 @@ export default class MenuPermission extends Vue {
   }
 
   async getMenuPermission(): Promise<void> {
-    const { code, data, msg }: KWResponse.Result<SysRoleMenuPermissionResponse> = await GetPagePermissionApi(this.roleId)
+    const { data }: KWResponse.Result<SysRoleMenuPermissionResponse> = await GetPagePermissionApi(this.roleId)
     this.tableTiles = data.title
     this.initTableData(data.data)
     this.tableOriginalDatas = JSON.parse(JSON.stringify(this.tableDatas))
 
     // console.log(this.tableData)
   }
-  resetTableData() {
+
+  resetTableData(): void {
     this.roleMenuPermissionVisble = true
     this.initTableData(JSON.parse(JSON.stringify(this.tableOriginalDatas)))
   }
-  initTableData(datas: Array<any>) {
-    this.tableDatas = datas;
+
+  initTableData(datas: Array<SysRoleMenuPermissionTableDataType>): void {
+    this.tableDatas = datas
     if (this.tableDatas && this.tableDatas.length > 0) {
       this.setTableDataIndex(this.tableDatas, '')
     }
   }
-  getCheckboxStatusByCurrentRowFirstCol(rowData: any): boolean {
-    let checked: boolean = false
+
+  getCheckboxStatusByCurrentRowFirstCol(rowData: SysRoleMenuPermissionTableDataType): boolean {
+    let checked = false
     this.tableTiles.forEach(title => {
       const entity = rowData[title.propertyName]
       if (!entity.permissionId && entity.menuId) {
         checked = entity.checked
-        return
+        return checked
       }
     })
-    return checked ? checked : false
+    if (checked) {
+      return checked
+    }
+    return false
   }
-  setTableDataIndex(datas: Array<any>, parentId: string) {
+
+  setTableDataIndex(datas: Array<SysRoleMenuPermissionTableDataType>, parentId: string): void {
     for (let index = 0; index < datas.length; index++) {
-      const element = datas[index];
+      const element = datas[index]
       const col01CheckBoxStatus = this.getCheckboxStatusByCurrentRowFirstCol(element)
       this.tableTiles.forEach(title => {
         const entity = element[title.propertyName]
         if (entity.menuId && entity.roleId && entity.menuPermissionId && entity.permissionId) {
-          entity['enable'] = !col01CheckBoxStatus
+          entity.enable = !col01CheckBoxStatus
         } else {
-          entity['enable'] = false
+          entity.enable = false
         }
-
       })
-      element['key'] = index + parentId;
+      element.key = index + parentId
       if (element.children && element.children.length > 0) {
-        this.setTableDataIndex(element.children, element['key'])
+        this.setTableDataIndex(element.children, element.key)
       }
     }
   }
+
   async saveData(): Promise<void> {
     console.log(this.tableDatas)
     if (!this.checkTableBodyChange()) {
@@ -113,7 +120,7 @@ export default class MenuPermission extends Vue {
     this.getTableCheckedData(saveDatas, this.tableDatas)
     console.log(saveDatas)
     if (saveDatas.length > 0) {
-      const { code, data, msg }: KWResponse.Result = await SysRoleMenuPermissionSaveOrUpdateApi(saveDatas)
+      const { code, msg }: KWResponse.Result = await SysRoleMenuPermissionSaveOrUpdateApi(saveDatas)
       if (code !== 200) {
         this.$message.error(msg || '操作页面权限信息失败!')
       } else {
@@ -121,9 +128,9 @@ export default class MenuPermission extends Vue {
         this.$message.success('操作页面权限信息成功!')
       }
     }
-
   }
-  getTableCheckedData(saveDatas: Array<RoleMenuPermissionForm>, datas: Array<any>) {
+
+  getTableCheckedData(saveDatas: Array<RoleMenuPermissionForm>, datas: Array<SysRoleMenuPermissionTableDataType>): void {
     datas.forEach(item => {
       this.tableTiles.forEach(title => {
         const entity = item[title.propertyName]
@@ -150,10 +157,10 @@ export default class MenuPermission extends Vue {
     }
   }
 
-  onChane(checked: boolean, item: any, permissionId: number): void {
+  onChane(checked: boolean, item: SysRoleMenuPermissionTableDataType, permissionId: number): void {
     this.setRowCheckBox(checked, item, permissionId)
     if (item.children && item.children.length > 0) {
-      item.children.forEach((cNode: any) => {
+      item.children.forEach((cNode: SysRoleMenuPermissionTableDataType) => {
         const col01CheckBoxStatus = this.getCheckboxStatusByCurrentRowFirstCol(cNode)
         this.tableTiles.forEach(title => {
           const entity = cNode[title.propertyName]
@@ -163,13 +170,13 @@ export default class MenuPermission extends Vue {
             entity.checked = checked
             this.setRowCheckBox(checked, cNode, entity.permissionId)
           }
-
         })
       })
     }
     this.checkTableBodyChange()
   }
-  setRowCheckBox(checked: boolean, item: any, permissionId: number): void {
+
+  setRowCheckBox(checked: boolean, item: SysRoleMenuPermissionTableDataType, permissionId: number): void {
     if (!permissionId) {
       this.tableTiles.forEach(title => {
         const entity = item[title.propertyName]

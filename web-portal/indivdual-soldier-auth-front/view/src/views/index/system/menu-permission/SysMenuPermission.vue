@@ -17,7 +17,7 @@
       <el-table :data="tableDatas" row-key="key" border default-expand-all
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }" style="margin-top:20px;width: 100%">
         <el-table-column v-for="item in tableTiles" :key="item.propertyName" :prop="item.propertyName" align='center'>
-          <template slot="header" slot-scope="scope">
+          <template slot="header">
             <el-checkbox v-if="item.permissionId > 0" v-on:change="checked => onTitleChane(checked, item)">
             </el-checkbox>&nbsp;&nbsp;{{ item.permissionName }}
           </template>
@@ -37,13 +37,13 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { GetPagePermissionApi, SysMenuPermissionSaveOrUpdateApi } from './menu-permission-api'
-import { MenuPermissionDetail, MenuPermissionForm, SysMenuPermissionResponse } from './interface/sys-menu-permission'
+import { MenuPermissionDetail, MenuPermissionForm, SysMenuPermissionResponse, SysMenuPermissionTableDataType } from './interface/sys-menu-permission'
 
 @Component
 export default class MenuPermission extends Vue {
-  const tableDatas: Array<any> = new Array()
-  const tableOriginalDatas: Array<any> = new Array()
-  const tableTiles: Array<MenuPermissionDetail> = new Array()
+  const tableDatas: Array<SysMenuPermissionTableDataType> = new Array<SysMenuPermissionTableDataType>()
+  const tableOriginalDatas: Array<SysMenuPermissionTableDataType> = new Array<SysMenuPermissionTableDataType>()
+  const tableTiles: Array<MenuPermissionDetail> = new Array<MenuPermissionDetail>()
   menuPermissionVisble = true
 
   created(): void {
@@ -51,7 +51,7 @@ export default class MenuPermission extends Vue {
   }
 
   async getMenuPermission(): Promise<void> {
-    const { code, data, msg }: KWResponse.Result<SysMenuPermissionResponse> = await GetPagePermissionApi()
+    const { data }: KWResponse.Result<SysMenuPermissionResponse> = await GetPagePermissionApi()
     this.initTableData(data.data)
     this.tableOriginalDatas = JSON.parse(JSON.stringify(this.tableDatas))
     this.tableTiles = data.title
@@ -63,19 +63,19 @@ export default class MenuPermission extends Vue {
     this.initTableData(JSON.parse(JSON.stringify(this.tableOriginalDatas)))
   }
 
-  initTableData(datas: Array<any>): void {
-    this.tableDatas = datas;
+  initTableData(datas: Array<SysMenuPermissionTableDataType>): void {
+    this.tableDatas = datas
     if (this.tableDatas && this.tableDatas.length > 0) {
       this.setTableDataIndex(this.tableDatas, '')
     }
   }
 
-  setTableDataIndex(datas: Array<any>, parentId: string): void {
+  setTableDataIndex(datas: Array<SysMenuPermissionTableDataType>, parentId: string): void {
     for (let index = 0; index < datas.length; index++) {
       const element = datas[index]
-      element['key'] = index + parentId
+      element.key = index + parentId
       if (element.children && element.children.length > 0) {
-        this.setTableDataIndex(element.children, element['key'])
+        this.setTableDataIndex(element.children, element.key)
       }
     }
   }
@@ -90,7 +90,7 @@ export default class MenuPermission extends Vue {
     this.getTableCheckedData(saveDatas, this.tableDatas)
     console.log(saveDatas)
     if (saveDatas.length > 0) {
-      const { code, data, msg }: KWResponse.Result = await SysMenuPermissionSaveOrUpdateApi(saveDatas)
+      const { code, msg }: KWResponse.Result = await SysMenuPermissionSaveOrUpdateApi(saveDatas)
       if (code !== 200) {
         this.$message.error(msg || '操作页面权限信息失败!')
       } else {
@@ -98,10 +98,9 @@ export default class MenuPermission extends Vue {
         this.$message.success('操作页面权限信息成功!')
       }
     }
-
   }
 
-  getTableCheckedData(saveDatas: Array<MenuPermissionForm>, datas: Array<any>): void {
+  getTableCheckedData(saveDatas: Array<MenuPermissionForm>, datas: Array<SysMenuPermissionTableDataType>): void {
     datas.forEach(item => {
       if (item.children && item.children.length > 0) {
         this.getTableCheckedData(saveDatas, item.children)
@@ -132,7 +131,8 @@ export default class MenuPermission extends Vue {
   onTitleChane(checked: boolean, item: MenuPermissionDetail): void {
     this.setColmunCheckboxStatus(checked, item, this.tableDatas)
   }
-  setColmunCheckboxStatus(checked: boolean, item: MenuPermissionDetail, tableDatas: Array<any>) {
+
+  setColmunCheckboxStatus(checked: boolean, item: MenuPermissionDetail, tableDatas: Array<SysMenuPermissionTableDataType>): void {
     for (let index = 0; index < tableDatas.length; index++) {
       const element = tableDatas[index]
       if (element.children && element.children.length > 0) {
