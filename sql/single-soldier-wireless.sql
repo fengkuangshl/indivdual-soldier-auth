@@ -135,6 +135,26 @@ CREATE TABLE `sys_menu_permission` (
    `permission_code` varchar(60) NOT NULL,
    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4;
+-- ----------------------------------------------------
+-- ---------sys_role_menu_permission-------------------------
+DROP TABLE IF EXISTS `sys_role_menu_permission`;
+CREATE TABLE `sys_role_menu_permission` (
+   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id自增',
+   `create_date` datetime  DEFAULT NULL COMMENT '创建时间',
+   `create_user_id` int(11) NOT NULL COMMENT '创建者Id',
+   `create_user_name` varchar(255) DEFAULT NULL COMMENT '创建者名称',
+   `enable_flag` bit(1) NOT NULL COMMENT '是否删除1:正常，0：删除',
+   `update_date` datetime  DEFAULT NULL COMMENT '更新时间',
+   `update_user_id` int(11)  DEFAULT NULL COMMENT '更新者Id',
+   `update_user_name` varchar(255)  DEFAULT NULL COMMENT '更新者名称',
+   `version` int(3) NOT NULL COMMENT '版本号',
+   `role_id` int(11) NOT NULL,
+   `menu_id` int(11) NOT NULL,
+   `permission_id` int(11) DEFAULT NULL,
+   `menu_permission_id` int(11) DEFAULT NULL,
+   `checked` bit DEFAULT null,
+   PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4;
  -- ----------------------------------------------------
  -- --------sys_menu-----------------------------------
 DROP TABLE IF EXISTS `sys_menu`;

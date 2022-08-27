@@ -1,11 +1,9 @@
 <template>
   <div>
     <div class="navigation-breadcrumb">
-      <div>菜单管理</div>
+      <div>菜单权限管理</div>
       <el-breadcrumb>
         <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-        <!-- <el-breadcrumb-item>后台管理</el-breadcrumb-item>
-      <el-breadcrumb-item>用户管理</el-breadcrumb-item> -->
         <el-breadcrumb-item>菜单权限列表</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -16,7 +14,7 @@
           <el-button @click="resetTableData()">重置</el-button>
         </el-col>
       </el-row>
-      <el-table :data="tableDatas" row-key="index" border default-expand-all
+      <el-table :data="tableDatas" row-key="key" border default-expand-all
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }" style="margin-top:20px;width: 100%">
         <el-table-column v-for="item in tableTiles" :key="item.propertyName" :prop="item.propertyName" align='center'
           :label="item.permissionName">
@@ -36,7 +34,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { GetPagePermissionApi, SysMenuPermissionSaveOrUpdateApi } from './menu-permission-api'
-import { MenuPermissionDetail, MenuPermissionForm, SysMenuPermissionResponse } from '@/views/index/system/menu-permission/interface/sys-menu-permission'
+import { MenuPermissionDetail, MenuPermissionForm, SysMenuPermissionResponse } from './interface/sys-menu-permission'
 
 @Component
 export default class MenuPermission extends Vue {
@@ -56,25 +54,29 @@ export default class MenuPermission extends Vue {
     this.tableTiles = data.title
     // console.log(this.tableData)
   }
-  resetTableData() {
+
+  resetTableData(): void {
     this.menuPermissionVisble = true
     this.initTableData(JSON.parse(JSON.stringify(this.tableOriginalDatas)))
   }
-  initTableData(datas: Array<any>) {
+
+  initTableData(datas: Array<any>): void {
     this.tableDatas = datas;
     if (this.tableDatas && this.tableDatas.length > 0) {
       this.setTableDataIndex(this.tableDatas, '')
     }
   }
-  setTableDataIndex(datas: Array<any>, parentId: string) {
+
+  setTableDataIndex(datas: Array<any>, parentId: string): void {
     for (let index = 0; index < datas.length; index++) {
       const element = datas[index];
-      element['index'] = index + parentId;
+      element['key'] = index + parentId;
       if (element.children && element.children.length > 0) {
-        this.setTableDataIndex(element.children, element['index'])
+        this.setTableDataIndex(element.children, element['key'])
       }
     }
   }
+
   async saveData(): Promise<void> {
     console.log(this.tableDatas)
     if (!this.onChane()) {
@@ -95,7 +97,8 @@ export default class MenuPermission extends Vue {
     }
 
   }
-  getTableCheckedData(saveDatas: Array<MenuPermissionForm>, datas: Array<any>) {
+
+  getTableCheckedData(saveDatas: Array<MenuPermissionForm>, datas: Array<any>): void {
     datas.forEach(item => {
       if (item.children && item.children.length > 0) {
         this.getTableCheckedData(saveDatas, item.children)
@@ -110,6 +113,7 @@ export default class MenuPermission extends Vue {
       }
     })
   }
+
   onChane(): boolean {
     const tableDatasStr = JSON.stringify(this.tableDatas)
     const tableOriginalDatasStr = JSON.stringify(this.tableOriginalDatas)

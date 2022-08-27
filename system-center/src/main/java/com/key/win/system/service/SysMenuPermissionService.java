@@ -20,8 +20,4 @@ public interface SysMenuPermissionService extends IService<SysMenuPermission> {
     boolean saveOrUpdateSysMenuPermission(SysMenuPermission sysMenuPermission);
 
     boolean saveOrUpdateSysMenuPermissionForBatch(List<SysMenuPermission> sysMenuPermissions);
-
-    void setSysMenuPermissionToRole(Long roleId, Set<Long> menuIds);
-
-    List<SysMenuPermission> findSysMenuPermissionByRoleId(Long roleId);
 }

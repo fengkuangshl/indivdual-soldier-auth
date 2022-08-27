@@ -77,6 +77,9 @@ public class SysMenuPermissionServiceImpl extends ServiceImpl<SysMenuPermissionD
             if (StringUtils.isNotBlank(sysMenuPermission.getPermissionCode())) {
                 lambdaQueryWrapper.eq(SysMenuPermission::getPermissionCode, sysMenuPermission.getPermissionCode());
             }
+            if(sysMenuPermission.getChecked()!=null){
+                lambdaQueryWrapper.eq(SysMenuPermission::getChecked, sysMenuPermission.getChecked());
+            }
         }
         return lambdaQueryWrapper;
     }
@@ -160,19 +163,6 @@ public class SysMenuPermissionServiceImpl extends ServiceImpl<SysMenuPermissionD
         SysMenuPermission sysMenuPermission = new SysMenuPermission();
         sysMenuPermission.setPermissionCode(permissionCode);
         return this.findSysMenuPermission(sysMenuPermission);
-    }
-
-    @Override
-    public void setSysMenuPermissionToRole(Long roleId, Set<Long> permissionIds) {
-        if (!CollectionUtils.isEmpty(permissionIds)) {
-            sysRolePermissionDao.deleteBySelective(roleId, null);
-            sysRolePermissionDao.saveBatchRoleIdAndPermissions(roleId, permissionIds);
-        }
-    }
-
-    @Override
-    public List<SysMenuPermission> findSysMenuPermissionByRoleId(Long roleId) {
-        return this.sysRolePermissionDao.findSysPermissionByRoleId(roleId);
     }
 
 

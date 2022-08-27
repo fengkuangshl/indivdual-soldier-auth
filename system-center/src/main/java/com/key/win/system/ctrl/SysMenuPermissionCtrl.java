@@ -175,24 +175,4 @@ public class SysMenuPermissionCtrl {
         }
         return titleMap;
     }
-
-
-    @GetMapping("/findPermissionByRoleId/{roleId}")
-    @ApiOperation(value = "角色获取权限")
-    @LogAnnotation(module = "system", recordRequestParam = false)
-    public Result findPermissionByRoleId(@PathVariable Long roleId) {
-        return Result.succeed(this.sysMenuPermissionService.findSysMenuPermissionByRoleId(roleId));
-    }
-
-    @GetMapping("/findPermissionIdsByRoleId/{roleId}")
-    @ApiOperation(value = "角色获取权限Ids")
-    @LogAnnotation(module = "system", recordRequestParam = false)
-    public Result findPermissionIdsByRoleId(@PathVariable Long roleId) {
-        Set<Long> sysMenuPermissionIds = new HashSet<>();
-        List<SysMenuPermission> sysMenuPermissionByRoleId = this.sysMenuPermissionService.findSysMenuPermissionByRoleId(roleId);
-        if (!CollectionUtils.isEmpty(sysMenuPermissionByRoleId)) {
-            sysMenuPermissionIds = sysMenuPermissionByRoleId.stream().map(SysMenuPermission::getId).collect(Collectors.toSet());
-        }
-        return Result.succeed(sysMenuPermissionIds);
-    }
 }
