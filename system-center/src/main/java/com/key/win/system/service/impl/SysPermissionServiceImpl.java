@@ -9,18 +9,15 @@ import com.key.win.basic.util.BeanUtils;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
 import com.key.win.system.dao.SysPermissionDao;
-import com.key.win.system.dao.SysRolePermissionDao;
 import com.key.win.common.model.system.*;
 import com.key.win.system.service.SysPermissionService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionDao, SysPermission> implements SysPermissionService {

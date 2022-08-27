@@ -89,70 +89,11 @@ public class SysMenuCtrl {
         return Result.succeed(sysMenuService.getMenuTree());
     }
 
-    @PostMapping("/granted")
-    @ApiOperation(value = "角色分配菜单")
-    @LogAnnotation(module = "system", recordRequestParam = true)
-    public Result setMenuToRole(@RequestBody SysMenu sysMenu) {
-        if (CollectionUtils.isEmpty(sysMenu.getMenuIds())) {
-            logger.error("授权菜单为空！");
-            throw new IllegalArgumentException("授权菜单为空！");
-        }
-        if (sysMenu.getRoleId() == null) {
-            logger.error("角色信息为空！");
-            throw new IllegalArgumentException("角色信息为空！");
-        }
-        sysMenuService.setMenuToRole(sysMenu.getRoleId(), sysMenu.getMenuIds());
-        return Result.succeed("角色分配菜单成功");
-    }
-
-    @GetMapping("/findSysMenuByRoleId/{roleId}")
-    @ApiOperation(value = "角色获取菜单")
-    @LogAnnotation(module = "system", recordRequestParam = false)
-    public Result findSysMenuByRoleId(@PathVariable Long roleId) {
-        return Result.succeed(this.sysMenuService.findSysMenuByRoleId(roleId));
-    }
-
-    @GetMapping("/findSysMenuIdsByRoleId/{roleId}")
-    @ApiOperation(value = "角色获取菜单Ids")
-    @LogAnnotation(module = "system", recordRequestParam = false)
-    public Result findSysMenuIdsByRoleId(@PathVariable Long roleId) {
-        List<SysMenu> sysMenuByRoleId = this.sysMenuService.findSysMenuByRoleId(roleId);
-        Set<Long> collect = new HashSet<>();
-        if (!CollectionUtils.isEmpty(sysMenuByRoleId)) {
-            collect = sysMenuByRoleId.stream().map(SysMenu::getId).collect(Collectors.toSet());
-        }
-        return Result.succeed(collect);
-    }
-
     @GetMapping("/getOnes")
     @ApiOperation(value = "获取菜单以及顶级菜单")
     public Result getOnes() {
         List<SysMenu> list = sysMenuService.findOnes();
         return Result.succeed(list, "");
 
-    }
-
-    @GetMapping("/{roleId}")
-    @ApiOperation(value = "根据roleId获取对应的菜单")
-    @LogAnnotation(module = "system", recordRequestParam = false)
-    public Result getMenusByRoleId(@PathVariable Long roleId) {
-        List<SysMenu> roleMenus = sysMenuService.findSysMenuByRoleId(roleId); // 获取该角色对应的菜单
-        List<SysMenu> allMenus = sysMenuService.list(); // 全部的菜单列表
-        List<Map<String, Object>> authTrees = new ArrayList<>();
-        Map<Long, SysMenu> roleMenusMap = roleMenus.stream()
-                .collect(Collectors.toMap(SysMenu::getId, SysMenu -> SysMenu));
-        for (SysMenu sysMenu : allMenus) {
-            Map<String, Object> authTree = new HashMap<>();
-            authTree.put("id", sysMenu.getId());
-            authTree.put("name", sysMenu.getName());
-            authTree.put("pId", sysMenu.getParentId());
-            authTree.put("open", true);
-            authTree.put("checked", false);
-            if (roleMenusMap.get(sysMenu.getId()) != null) {
-                authTree.put("checked", true);
-            }
-            authTrees.add(authTree);
-        }
-        return Result.succeed(authTrees);
     }
 }

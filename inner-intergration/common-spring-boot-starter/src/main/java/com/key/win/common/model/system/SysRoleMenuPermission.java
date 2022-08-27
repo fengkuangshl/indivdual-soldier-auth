@@ -8,6 +8,10 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 @ApiModel("角色菜单权限实体")
 @Data
 @TableName("sys_role_menu_permission")
@@ -36,5 +40,8 @@ public class SysRoleMenuPermission extends MybatisID {
     @ApiModelProperty("是否需要删除")
     @TableField(exist = false)
     private boolean isDelete = Boolean.TRUE;
+    @ApiModelProperty("是否需要删除")
+    @TableField(exist = false)
+    private Set<Long> roleIds;
 
 }

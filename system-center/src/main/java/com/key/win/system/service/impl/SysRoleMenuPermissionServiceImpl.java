@@ -7,27 +7,15 @@ import com.key.win.basic.exception.BizException;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
 import com.key.win.common.model.system.SysRoleMenuPermission;
-import com.key.win.common.model.system.SysPermission;
-import com.key.win.common.model.system.SysRoleMenuPermission;
 import com.key.win.mybatis.page.MybatisPageServiceTemplate;
-import com.key.win.system.dao.SysMenuPermissionDao;
 import com.key.win.system.dao.SysRoleMenuPermissionDao;
-import com.key.win.system.dao.SysRolePermissionDao;
-import com.key.win.system.service.SysMenuPermissionService;
-import com.key.win.system.service.SysMenuService;
-import com.key.win.system.service.SysPermissionService;
 import com.key.win.system.service.SysRoleMenuPermissionService;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -66,10 +54,16 @@ public class SysRoleMenuPermissionServiceImpl extends ServiceImpl<SysRoleMenuPer
     }
 
     public List<SysRoleMenuPermission> findGrantSysRoleMenuPermissionByRoleId(boolean checked, Long roleId, boolean menuPermissionIdIsNull) {
-        checkRoleId(roleId);
+        Set<Long> roleIds = new HashSet<>();
+        roleIds.add(roleId);
+        return this.findGrantSysRoleMenuPermissionByRoleId(checked, roleIds, menuPermissionIdIsNull);
+    }
+
+    public List<SysRoleMenuPermission> findGrantSysRoleMenuPermissionByRoleId(boolean checked, Set<Long> roleIds, boolean menuPermissionIdIsNull) {
+        checkRoleIds(roleIds);
         LambdaQueryWrapper<SysRoleMenuPermission> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(SysRoleMenuPermission::getChecked, checked);
-        lambdaQueryWrapper.eq(SysRoleMenuPermission::getRoleId, roleId);
+        lambdaQueryWrapper.in(SysRoleMenuPermission::getRoleId, roleIds);
         if (menuPermissionIdIsNull) {
             lambdaQueryWrapper.isNull(SysRoleMenuPermission::getMenuPermissionId);
         } else {
@@ -80,11 +74,32 @@ public class SysRoleMenuPermissionServiceImpl extends ServiceImpl<SysRoleMenuPer
         return list;
     }
 
+    private void checkRoleIds(Set<Long> roleIds) {
+        if (CollectionUtils.isEmpty(roleIds)) {
+            logger.error("角色Id为空！！");
+            throw new BizException("角色Id为空！！");
+        }
+    }
+
     public List<SysRoleMenuPermission> findGrantSysRoleMenuPermissionByRoleId(Long roleId) {
         checkRoleId(roleId);
         SysRoleMenuPermission sysRoleMenuPermission = new SysRoleMenuPermission();
         sysRoleMenuPermission.setRoleId(roleId);
         return this.findSysRoleMenuPermission(sysRoleMenuPermission);
+    }
+    public List<SysRoleMenuPermission> findGrantSysRoleMenuPermissionByRoleId(Set<Long> roleIds) {
+        checkRoleIds(roleIds);
+        SysRoleMenuPermission sysRoleMenuPermission = new SysRoleMenuPermission();
+        sysRoleMenuPermission.setRoleIds(roleIds);
+        return this.findSysRoleMenuPermission(sysRoleMenuPermission);
+    }
+
+    public List<SysRoleMenuPermission> findGrantMenus(Set<Long> roleIds) {
+        return this.findGrantSysRoleMenuPermissionByRoleId(true, roleIds, true);
+    }
+
+    public List<SysRoleMenuPermission> findGrantMenuPermissions(Set<Long> roleIds) {
+        return this.findGrantSysRoleMenuPermissionByRoleId(true, roleIds, false);
     }
 
     private void checkRoleId(Long roleId) {
@@ -99,6 +114,9 @@ public class SysRoleMenuPermissionServiceImpl extends ServiceImpl<SysRoleMenuPer
         if (sysRoleMenuPermission != null) {
             if (sysRoleMenuPermission.getRoleId() != null) {
                 lambdaQueryWrapper.eq(SysRoleMenuPermission::getRoleId, sysRoleMenuPermission.getRoleId());
+            }
+            if (!CollectionUtils.isEmpty(sysRoleMenuPermission.getRoleIds())) {
+                lambdaQueryWrapper.in(SysRoleMenuPermission::getRoleId, sysRoleMenuPermission.getRoleIds());
             }
             if (sysRoleMenuPermission.getMenuId() != null) {
                 lambdaQueryWrapper.eq(SysRoleMenuPermission::getMenuId, sysRoleMenuPermission.getMenuId());

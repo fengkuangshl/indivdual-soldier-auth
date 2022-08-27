@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @ApiModel("菜单权限实体")
 @Data
@@ -37,5 +38,8 @@ public class SysMenuPermission extends MybatisID {
     @ApiModelProperty("是否需要删除")
     @TableField(exist = false)
     private boolean isDelete = Boolean.TRUE;
+    @ApiModelProperty("菜单权限实体Id集合")
+    @TableField(exist = false)
+    private Set<Long> menuPermissionIds;
 
 }

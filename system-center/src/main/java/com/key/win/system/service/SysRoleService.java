@@ -15,6 +15,4 @@ public interface SysRoleService extends IService<SysRole> {
     boolean saveOrUpdateRole(SysRole sysRole);
 
     boolean deleteById(Long id);
-
-    SysRole getRoleFullById(Long id);
 }

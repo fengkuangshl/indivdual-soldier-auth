@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.key.win.basic.exception.BizException;
-import com.key.win.basic.util.BeanUtils;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
 import com.key.win.common.model.system.SysMenu;
@@ -12,8 +11,6 @@ import com.key.win.common.model.system.SysMenuPermission;
 import com.key.win.common.model.system.SysPermission;
 import com.key.win.mybatis.page.MybatisPageServiceTemplate;
 import com.key.win.system.dao.SysMenuPermissionDao;
-import com.key.win.system.dao.SysPermissionDao;
-import com.key.win.system.dao.SysRolePermissionDao;
 import com.key.win.system.service.SysMenuPermissionService;
 import com.key.win.system.service.SysMenuService;
 import com.key.win.system.service.SysPermissionService;
@@ -39,8 +36,6 @@ public class SysMenuPermissionServiceImpl extends ServiceImpl<SysMenuPermissionD
     private SysMenuService menuService;
     @Autowired
     private SysPermissionService sysPermissionService;
-    @Autowired
-    private SysRolePermissionDao sysRolePermissionDao;
 
 
     @Override
@@ -70,12 +65,21 @@ public class SysMenuPermissionServiceImpl extends ServiceImpl<SysMenuPermissionD
         List<SysMenuPermission> list = this.list(buildLambdaQueryWrapper(sysMenuPermission));
         return list;
     }
+    public List<SysMenuPermission> findSysMenuPermissionByIds(Set<Long> ids) {
+        SysMenuPermission sysMenuPermission = new SysMenuPermission();
+        sysMenuPermission.setMenuPermissionIds(ids);
+        List<SysMenuPermission> list = this.list(buildLambdaQueryWrapper(sysMenuPermission));
+        return list;
+    }
 
     private LambdaQueryWrapper<SysMenuPermission> buildLambdaQueryWrapper(SysMenuPermission sysMenuPermission) {
         LambdaQueryWrapper<SysMenuPermission> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         if (sysMenuPermission != null) {
             if (StringUtils.isNotBlank(sysMenuPermission.getPermissionCode())) {
                 lambdaQueryWrapper.eq(SysMenuPermission::getPermissionCode, sysMenuPermission.getPermissionCode());
+            }
+            if (!CollectionUtils.isEmpty(sysMenuPermission.getMenuPermissionIds())) {
+                lambdaQueryWrapper.eq(SysMenuPermission::getPermissionCode, sysMenuPermission.getMenuPermissionIds());
             }
             if (sysMenuPermission.getChecked() != null) {
                 lambdaQueryWrapper.eq(SysMenuPermission::getChecked, sysMenuPermission.getChecked());
@@ -106,7 +110,9 @@ public class SysMenuPermissionServiceImpl extends ServiceImpl<SysMenuPermissionD
     public boolean saveOrUpdateSysMenuPermissionForBatch(List<SysMenuPermission> sysMenuPermissions) {
         List<SysMenuPermission> newSysMenuPermission = new ArrayList<>();
         List<SysPermission> sysPermissions = sysPermissionService.list();
+        List<SysMenu> sysMenus = menuService.list();
         List<SysMenuPermission> sysMenuPermissionAll = this.findSysMenuPermission(null);
+        Map<Long, SysMenu> sysMenuMap = sysMenus.stream().collect(Collectors.toMap(SysMenu::getId, sysMenu -> sysMenu));
         Map<Long, SysPermission> sysPermissionMap = sysPermissions.stream().collect(Collectors.toMap(SysPermission::getId, sysPermission -> sysPermission));
         Map<Long, SysMenuPermission> sysMenuPermissionMap = sysMenuPermissionAll.stream().collect(Collectors.toMap(SysMenuPermission::getId, sysMenuPermission -> sysMenuPermission));
         for (int i = sysMenuPermissions.size() - 1; i >= 0; i--) {
@@ -121,10 +127,11 @@ public class SysMenuPermissionServiceImpl extends ServiceImpl<SysMenuPermissionD
             } else {
                 SysPermission sysPermission = sysPermissionMap.get(sysMenuPermission.getPermissionId());
                 if (sysPermission != null) {
-                    sysMenuPermission.setPermissionCode(sysMenuPermission.getMenuId() + "::" + sysPermission.getPermission());
+                    SysMenu sysMenu = sysMenuMap.get(sysMenuPermission.getMenuId());
+                    String path = sysMenu.getPath().replaceAll("/", "::");
+                    sysMenuPermission.setPermissionCode(path + "::" + sysPermission.getPermission());
                     newSysMenuPermission.add(sysMenuPermission);
                 }
-
             }
         }
         //checkPermission(sysMenuPermissions);

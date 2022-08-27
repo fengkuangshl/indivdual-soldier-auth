@@ -22,7 +22,7 @@ import com.key.win.system.exception.AccountDisabledException;
 import com.key.win.system.exception.AccountException;
 import com.key.win.system.exception.AccountNotFoundException;
 import com.key.win.system.exception.BadCredentialsException;
-import com.key.win.system.service.SysUserService;
+import com.key.win.system.service.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,16 +49,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     private SysUserGroupDao sysUserGroupDao;
 
     @Autowired
-    private SysRolePermissionDao sysRolePermissionDao;
+    private SysRoleMenuPermissionService sysRoleMenuPermissionService;
 
     @Autowired
-    private SysRoleMenuDao sysRoleMenuDao;
+    private SysMenuPermissionService sysMenuPermissionService;
 
     @Autowired
-    private SysMenuPermissionDao sysMenuPermissionDao;
-
+    private SysMenuService sysMenuService;
     @Autowired
-    private SysMenuDao sysMenuDao;
+    private SysPermissionService sysPermissionService;
 
     @Override
     public boolean updateSysUser(SysUser sysUser) {
@@ -221,24 +220,46 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         loginUser.setSysGroups(groupByUserId);
         loginUser.setSysRoles(rolesByUserId);
         if (dbUser.getType() == UserTypeEnum.ADMIN) {
-            List<SysMenuPermission> permissionDaoByRoleIds = sysMenuPermissionDao.selectList(null);
-            List<SysMenu> menusByRoleIds = sysMenuDao.selectList(null);
-            loginUser.setPermissions(permissionDaoByRoleIds);
-            loginUser.setMenus(menusByRoleIds);
+            //List<SysMenuPermission> permissionDaoByRoleIds = sysMenuPermissionService.list();
+            List<SysMenu> menus = sysMenuService.list();
+            List<SysPermission> sysPermissions = sysPermissionService.list();
+            loginUser.setPermissions(getMenuPermissions(menus, sysPermissions));
+            loginUser.setMenus(menus);
         } else if (!CollectionUtils.isEmpty(rolesByUserId)) {
             Set<Long> roleIds = rolesByUserId.stream().map(SysRole::getId).collect(Collectors.toSet());
-            List<SysMenuPermission> permissionDaoByRoleIds = sysRolePermissionDao.findByRoleIds(roleIds);
-            List<SysMenu> menusByRoleIds = sysRoleMenuDao.findMenusByRoleIds(roleIds);
-            loginUser.setPermissions(permissionDaoByRoleIds);
-            loginUser.setMenus(menusByRoleIds);
-            Collections.sort(loginUser.getMenus(), new Comparator<SysMenu>() {
-                @Override
-                public int compare(SysMenu o1, SysMenu o2) {
-                    return o1.getSort() - o2.getSort();
-                }
-            });
+            List<SysRoleMenuPermission> grantMenus = sysRoleMenuPermissionService.findGrantMenus(roleIds);
+            Set<Long> menuIds = grantMenus.stream().map(SysRoleMenuPermission::getMenuId).collect(Collectors.toSet());
+            List<SysMenu> menus = sysMenuService.findSysMenuByMenuIds(menuIds);
+            List<SysRoleMenuPermission> grantMenuPermissions = sysRoleMenuPermissionService.findGrantMenuPermissions(roleIds);
+            Set<Long> menuPermissionIds = grantMenuPermissions.stream().map(SysRoleMenuPermission::getMenuPermissionId).collect(Collectors.toSet());
+            List<SysMenuPermission> sysMenuPermissionByIds = sysMenuPermissionService.findSysMenuPermissionByIds(menuPermissionIds);
+            loginUser.setPermissions(sysMenuPermissionByIds);
+            loginUser.setMenus(menus);
         }
+        Collections.sort(loginUser.getMenus(), new Comparator<SysMenu>() {
+            @Override
+            public int compare(SysMenu o1, SysMenu o2) {
+                return o1.getSort() - o2.getSort();
+            }
+        });
         setLoginType(loginUser, userAgent);
+    }
+
+    private List<SysMenuPermission> getMenuPermissions(List<SysMenu> menus, List<SysPermission> sysPermissions) {
+        List<SysMenuPermission> sysMenuPermissions = new ArrayList<>();
+        for (SysMenu menu : menus) {
+            if (menu.getParentId() != -1) {
+                for (SysPermission sysPermission : sysPermissions) {
+                    SysMenuPermission sysMenuPermission = new SysMenuPermission();
+                    sysMenuPermission.setChecked(Boolean.TRUE);
+                    sysMenuPermission.setPermissionCode(menu.getPath().replaceAll("/", "::") + sysPermission.getPermission());
+                    sysMenuPermission.setMenuId(menu.getId());
+                    sysMenuPermission.setPermissionId(sysPermission.getId());
+                    sysMenuPermissions.add(sysMenuPermission);
+                }
+            }
+        }
+        return sysMenuPermissions;
     }
 
     private void setLoginType(Authentication loginUser, String info) {

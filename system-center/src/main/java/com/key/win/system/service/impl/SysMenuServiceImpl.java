@@ -10,13 +10,11 @@ import com.key.win.basic.util.IndivdualSoldierAuthConstantUtils;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
 import com.key.win.system.dao.SysMenuDao;
-import com.key.win.system.dao.SysRoleMenuDao;
 import com.key.win.common.model.system.*;
 import com.key.win.system.service.SysMenuService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -26,10 +24,6 @@ import java.util.*;
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> implements SysMenuService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-
-    @Autowired
-    private SysRoleMenuDao sysRoleMenuDao;
 
 
     @Override
@@ -67,6 +61,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
 //            if (sysMenu.getSort() != null) {
 //                lambdaQueryWrapper.eq(SysMenu::getSort, sysMenu.getSort());
 //            }
+            if (!CollectionUtils.isEmpty(sysMenu.getMenuIds())) {
+                lambdaQueryWrapper.eq(SysMenu::getId, sysMenu.getMenuIds());
+            }
         }
         List<SysMenu> list = this.list(lambdaQueryWrapper);
         return list;
@@ -140,25 +137,6 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
         return topTreeList;
     }
 
-    @Override
-    public void setMenuToRole(Long roleId, Set<Long> menuIds) {
-        sysRoleMenuDao.deleteBySelective(roleId, null);
-        if (!CollectionUtils.isEmpty(menuIds)) {
-            sysRoleMenuDao.saveBatchRoleIdAndMenuIds(roleId, menuIds);
-            /*for (String menuId : menuIds) {
-                SysRoleMenu sysRoleMenu = new SysRoleMenu();
-                sysRoleMenu.setRoleId(roleId);
-                sysRoleMenu.setMenuId(menuId);
-                sysRoleMenuDao.insert(sysRoleMenu);
-            }*/
-        }
-    }
-
-    @Override
-    public List<SysMenu> findSysMenuByRoleId(Long roleId) {
-        return sysRoleMenuDao.findMenuByRoleId(roleId);
-    }
-
     public List<SysMenu> findSysMenuByParentId(Long parentId) {
         if (parentId == null) {
             logger.error("父节点Id[{}]为空", parentId);
@@ -181,7 +159,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
     }
 
     @Override
-    public List<SysMenu> findSysMenuByRoleIds(Set<Long> roleIds) {
-        return sysRoleMenuDao.findMenusByRoleIds(roleIds);
+    public List<SysMenu> findSysMenuByMenuIds(Set<Long> menuIds) {
+        SysMenu sysMenu = new SysMenu();
+        sysMenu.setMenuIds(menuIds);
+        return this.findSysMenu(sysMenu);
     }
 }

@@ -9,10 +9,9 @@ import com.key.win.basic.util.BeanUtils;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
 import com.key.win.system.dao.SysRoleDao;
-import com.key.win.system.dao.SysRoleMenuDao;
-import com.key.win.system.dao.SysRolePermissionDao;
 import com.key.win.system.dao.SysUserRoleDao;
 import com.key.win.common.model.system.*;
+import com.key.win.system.service.SysRoleMenuPermissionService;
 import com.key.win.system.service.SysRoleService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -31,9 +30,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
     @Autowired
     private SysUserRoleDao sysUserRoleDao;
     @Autowired
-    private SysRoleMenuDao sysRoleMenuDao;
-    @Autowired
-    private SysRolePermissionDao sysRolePermissionDao;
+    private SysRoleMenuPermissionService sysRoleMenuPermissionService;
 
     @Override
     public List<SysRole> findSysRole(SysRole sysRole) {
@@ -121,23 +118,15 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
         return this.findSysRole(sysRole);
     }
 
-    public SysRole getRoleFullById(Long id) {
-        SysRole sysRole = this.getById(id);
-        List<SysMenu> menuByRoleId = sysRoleMenuDao.findMenuByRoleId(id);
-        List<SysMenuPermission> sysPermissionByRoleId = sysRolePermissionDao.findSysPermissionByRoleId(id);
-        sysRole.setSysMenus(menuByRoleId);
-        sysRole.setSysPermissions(sysPermissionByRoleId);
-        return sysRole;
-    }
-
     @Override
     public boolean deleteById(Long id) {
-        SysRole roleFullById = this.getRoleFullById(id);
-        if (!CollectionUtils.isEmpty(roleFullById.getSysMenus())) {
+        List<SysRoleMenuPermission> grantMenus = sysRoleMenuPermissionService.findGrantMenus(id);
+        if (!CollectionUtils.isEmpty(grantMenus)) {
             logger.error("删除角色[{}]时，发现已关联SysMenu信息！", id);
             throw new BizException("请先解除关联的菜单信息！");
         }
-        if (!CollectionUtils.isEmpty(roleFullById.getSysPermissions())) {
+        List<SysRoleMenuPermission> grantMenuPermissions = sysRoleMenuPermissionService.findGrantMenuPermissions(id);
+        if (!CollectionUtils.isEmpty(grantMenuPermissions)) {
             logger.error("删除角色[{}]时，发现已关联SysPermission信息！", id);
             throw new BizException("请先解除关联的权限信息！");
         }

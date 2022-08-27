@@ -7,6 +7,7 @@ import com.key.win.common.model.system.SysRoleMenuPermission;
 import com.key.win.common.model.system.SysRoleMenuPermission;
 
 import java.util.List;
+import java.util.Set;
 
 public interface SysRoleMenuPermissionService extends IService<SysRoleMenuPermission> {
 
@@ -23,4 +24,11 @@ public interface SysRoleMenuPermissionService extends IService<SysRoleMenuPermis
     List<SysRoleMenuPermission> findGrantMenuPermissions(Long roleId);
 
     List<SysRoleMenuPermission> findGrantSysRoleMenuPermissionByRoleId(Long roleId);
+
+
+    List<SysRoleMenuPermission> findGrantMenus(Set<Long> roleIds);
+
+    List<SysRoleMenuPermission> findGrantMenuPermissions(Set<Long> roleIds);
+
+    List<SysRoleMenuPermission> findGrantSysRoleMenuPermissionByRoleId(Set<Long> roleIds);
 }

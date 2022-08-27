@@ -17,14 +17,10 @@ public interface SysMenuService extends IService<SysMenu> {
 
     List<SysMenu> getMenuTree();
 
-    void setMenuToRole(Long roleId, Set<Long> menuIds);
-
-    List<SysMenu> findSysMenuByRoleId(Long roleId);
-
     boolean deleteById(Long id);
 
     List<SysMenu> findOnes();
 
-    List<SysMenu> findSysMenuByRoleIds(Set<Long> roleIds);
+    List<SysMenu> findSysMenuByMenuIds(Set<Long> menuIds);
 
 }
