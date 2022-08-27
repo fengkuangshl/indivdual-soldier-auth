@@ -77,7 +77,7 @@ public class SysMenuPermissionServiceImpl extends ServiceImpl<SysMenuPermissionD
             if (StringUtils.isNotBlank(sysMenuPermission.getPermissionCode())) {
                 lambdaQueryWrapper.eq(SysMenuPermission::getPermissionCode, sysMenuPermission.getPermissionCode());
             }
-            if(sysMenuPermission.getChecked()!=null){
+            if (sysMenuPermission.getChecked() != null) {
                 lambdaQueryWrapper.eq(SysMenuPermission::getChecked, sysMenuPermission.getChecked());
             }
         }
@@ -113,6 +113,7 @@ public class SysMenuPermissionServiceImpl extends ServiceImpl<SysMenuPermissionD
             SysMenuPermission sysMenuPermission = sysMenuPermissions.get(i);
             if (sysMenuPermission.getId() != null) {
                 SysMenuPermission sysMenuPermissionDb = sysMenuPermissionMap.get(sysMenuPermission.getId());
+                sysMenuPermissionDb.setDelete(Boolean.FALSE);
                 if (sysMenuPermissionDb.getChecked() != sysMenuPermission.getChecked()) {
                     sysMenuPermissionDb.setChecked(sysMenuPermission.getChecked());
                     newSysMenuPermission.add(sysMenuPermissionDb);
@@ -127,10 +128,14 @@ public class SysMenuPermissionServiceImpl extends ServiceImpl<SysMenuPermissionD
             }
         }
         //checkPermission(sysMenuPermissions);
-        if (CollectionUtils.isEmpty(newSysMenuPermission)) {
-            return true;
+        Set<Long> deleteIds = sysMenuPermissionAll.stream().filter(sysMenuPermission -> sysMenuPermission.isDelete()).map(sysMenuPermission -> sysMenuPermission.getId()).collect(Collectors.toSet());
+        if (!CollectionUtils.isEmpty(deleteIds)) {
+            super.removeByIds(deleteIds);
         }
-        return super.saveOrUpdateBatch(newSysMenuPermission);
+        if (!CollectionUtils.isEmpty(newSysMenuPermission)) {
+            return super.saveOrUpdateBatch(newSysMenuPermission);
+        }
+        return true;
     }
 
     private void checkPermission(List<SysMenuPermission> sysMenuPermissions) {

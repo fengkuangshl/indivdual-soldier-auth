@@ -142,6 +142,7 @@ export default class MenuPermission extends Vue {
         colElement.checked = checked
       }
     }
+    this.onChane()
   }
 }
 </script>

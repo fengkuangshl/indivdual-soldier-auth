@@ -33,5 +33,8 @@ public class SysRoleMenuPermission extends MybatisID {
     @ApiModelProperty("表格的属性")
     @TableField(exist = false)
     private String propertyName;
+    @ApiModelProperty("是否需要删除")
+    @TableField(exist = false)
+    private boolean isDelete = Boolean.TRUE;
 
 }

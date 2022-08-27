@@ -27,6 +27,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -135,6 +136,7 @@ public class SysRoleMenuPermissionServiceImpl extends ServiceImpl<SysRoleMenuPer
             SysRoleMenuPermission sysRoleMenuPermission = sysRoleMenuPermissions.get(i);
             if (sysRoleMenuPermission.getId() != null) {
                 SysRoleMenuPermission sysMenuPermissionDb = sysRoleMenuPermissionMap.get(sysRoleMenuPermission.getId());
+                sysMenuPermissionDb.setDelete(Boolean.FALSE);
                 if (sysMenuPermissionDb.getChecked() != sysRoleMenuPermission.getChecked()) {
                     sysMenuPermissionDb.setChecked(sysRoleMenuPermission.getChecked());
                     newSysRoleMenuPermission.add(sysMenuPermissionDb);
@@ -148,10 +150,14 @@ public class SysRoleMenuPermissionServiceImpl extends ServiceImpl<SysRoleMenuPer
             }
         }
         //checkPermission(sysMenuPermissions);
-        if (CollectionUtils.isEmpty(newSysRoleMenuPermission)) {
-            return true;
+        Set<Long> deleteIds = sysRoleMenuPermissionByRoleId.stream().filter(sysRoleMenuPermission -> sysRoleMenuPermission.isDelete()).map(sysRoleMenuPermission -> sysRoleMenuPermission.getId()).collect(Collectors.toSet());
+        if (!CollectionUtils.isEmpty(deleteIds)) {
+            super.removeByIds(deleteIds);
         }
-        return super.saveOrUpdateBatch(newSysRoleMenuPermission);
+        if (CollectionUtils.isEmpty(newSysRoleMenuPermission)) {
+            return super.saveOrUpdateBatch(newSysRoleMenuPermission);
+        }
+        return true;
     }
 
     private List<SysRoleMenuPermission> findSysRoleMenuPermissionByRoleId(Long roleId) {
