@@ -1,0 +1,60 @@
+{
+  // 控制工作台中活动栏的可见性。
+  "workbench.activityBar.visible": true,
+  //主题设置
+  // "workbench.colorTheme": "Monokai",
+  // 默认编辑器字号
+  "editor.fontSize": 14,
+  //是否自动换行
+  "editor.wordWrap": "on",
+  "workbench.editor.enablePreview": false, //打开文件不覆盖
+  "search.followSymlinks": false, //关闭rg.exe进程
+  "editor.minimap.enabled": false, //关闭迷你图快速预览
+  "files.autoSave": "onWindowChange", // 切换窗口时自动保存。
+  "editor.lineNumbers": "on", //开启行数提示
+  "editor.quickSuggestions": {
+    //开启自动显示建议
+    "other": true,
+    "comments": true,
+    "strings": true
+  },
+  "editor.tabSize": 2, //制表符符号eslint
+  "editor.detectIndentation": false
+  //.vue文件template格式化支持，并使用js-beautify-html插件
+  "vetur.format.defaultFormatter.html": "js-beautify-html",
+  // 在方法括号之间插入空格
+  "javascript.format.insertSpaceBeforeFunctionParenthesis": true,
+  //js-beautify-html格式化配置，属性强制换行
+  "vetur.format.defaultFormatterOptions": {
+    "js-beautify-html": {
+      "wrap_line_length": 120,
+      "wrap_attributes": "auto",
+      "end_with_newline": false
+    },
+    "prettier": {
+      "semi": false, //不使用分号结尾
+      "singleQuote": true, //使用单引号
+      "eslintIntegration": false //开启 eslint 支持
+    },
+    //根据文件后缀名定义vue文件类型
+    "files.associations": {
+      "*.vue": "vue"
+    },
+    //配置 ESLint 检查的文件类型
+    "eslint.validate": [
+      "javascript",
+      "javascriptreact",
+      {
+        "language": "vue",
+        "autoFix": true
+      }
+    ],
+    //保存时eslint自动修复错误
+    "eslint.autoFixOnSave": true,
+    //保存自动格式化
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    }
+  }
+}

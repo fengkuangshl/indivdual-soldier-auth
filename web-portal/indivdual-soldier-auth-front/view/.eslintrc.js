@@ -13,10 +13,8 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     // '@typescript-eslint/no-explicit-any': 'off',
     // 左括号前没有空格报错
-    'space-before-function-paren': 0
-    // 'semi': 0,
-    // 'camelcase': 'off',
-    // 'prefer-const': false
+    'space-before-function-paren': 0,
+    'semi': 0
   },
   globals: {
     KWResponse: true,

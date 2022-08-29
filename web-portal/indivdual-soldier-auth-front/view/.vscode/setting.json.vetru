@@ -1,0 +1,90 @@
+{
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  "window.zoomLevel": 1,
+  "[javascript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "michelemelluso.code-beautifier"
+  },
+  "files.autoSave": "afterDelay",
+  "editor.suggestSelection": "first",
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "[html]": {
+    "editor.defaultFormatter": "HookyQR.beautify"
+  },
+  // 本地配备eslint
+  //自动保存的时候，eslint自动修复一些格式上的错误
+  "eslint.alwaysShowStatus": true,
+  "eslint.autoFixOnSave": true,
+  // 每次保存的时候将代码按eslint格式进行修复
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "eslint.options": {
+    "extensions": [".js", ".vue"]
+  },
+  "eslint.validate": [
+    "javascript",
+    {
+      "language": "vue",
+      "autoFix": true
+    },
+    "html",
+    "vue"
+  ],
+  "emmet.includeLanguages": {
+    "javascript": "html",
+    "wxml": "html"
+  },
+  "git.autofetch": true,
+
+  "[vue]": {
+    "editor.defaultFormatter": "octref.vetur"
+  },
+  "workbench.colorTheme": "Default Dark+",
+  "workbench.colorCustomizations": {},
+  // 关闭eslint
+  // "eslint.enable": false,
+
+  // tab一键成元素html标签
+  "emmet.triggerExpansionOnTab": true,
+  "files.associations": {
+    "*.cjson": "jsonc",
+    "*.wxss": "css",
+    "*.wxs": "javascript"
+  },
+  "minapp-vscode.disableAutoConfig": true,
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  // 当保存代码的饿时候，会自动格式化
+  "editor.formatOnSave": true,
+  // 不添加分号
+  "prettier.semi": false,
+  // 使用单引号
+  "prettier.singleQuote": true,
+  // 解决Vue换行问题
+  "vetur.format.defaultFormatter.html": "js-beautify-html",
+  "vetur.format.defaultFormatter.js": "vscode-typescript", //解决配置默认格式化 js换行问题
+  "vetur.format.defaultFormatterOptions": {
+    "js-beautify-html": {
+      "wrap_attributes": "auto"
+    },
+    "prettyhtml": {
+      "printWidth": 100,
+      "singleQuote": false,
+      "wrapAttributes": false,
+      "sortAttributes": false
+    }
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "diffEditor.renderSideBySide": false,
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}
