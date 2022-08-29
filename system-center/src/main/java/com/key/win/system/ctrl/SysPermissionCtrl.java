@@ -2,6 +2,7 @@ package com.key.win.system.ctrl;
 
 import com.key.win.basic.exception.BizException;
 import com.key.win.basic.web.*;
+import com.key.win.common.enums.PermissionEnum;
 import com.key.win.log.annotation.LogAnnotation;
 import com.key.win.common.model.system.*;
 import com.key.win.security.annotation.PreAuthorize;
@@ -75,5 +76,12 @@ public class SysPermissionCtrl {
     @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::LIST')")
     public Result getPermissionAll() {
         return Result.succeed(sysPermissionService.list());
+    }
+
+    @GetMapping("/getPermissionEnum")
+    @ApiOperation(value = "获取所有PermissionEnum")
+    @LogAnnotation(module = "system", recordRequestParam = false)
+    public Result getPermissionEnum(){
+        return Result.succeed(PermissionEnum.values());
     }
 }
