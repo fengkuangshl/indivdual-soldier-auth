@@ -173,7 +173,7 @@ public class SysUserCtrl {
     @GetMapping("/resetPassword/{id}")
     @ApiOperation(value = "重置登录用户密码")
     @LogAnnotation(module = "system", recordRequestParam = true)
-    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "USER::RESET:PASSWORD')")
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "USER::RESET::PASSWORD')")
     public Result resetPassword(@PathVariable Long id) {
         if (id == null) {
             logger.error("id为空！");
@@ -252,7 +252,7 @@ public class SysUserCtrl {
      */
     @PostMapping("/saveOrUpdate")
     @LogAnnotation(module = "system", recordRequestParam = false)
-    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "MODIFY','" + AUTHORITY_PREFIX + "ADD')")
+    @PreAuthorize("hasAnyAuthority('" + AUTHORITY_PREFIX + "MODIFY','" + AUTHORITY_PREFIX + "ADD')")
     public Result saveOrUpdate(@RequestBody SysUser sysUser) {
         if (sysUser != null) {
             if (sysUser.getId() != null) {
@@ -277,7 +277,7 @@ public class SysUserCtrl {
     @ApiOperation(value = "修改用户状态")
     @PostMapping("/updateEnabled")
     @LogAnnotation(module = "user-center", recordRequestParam = false)
-    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "USER::UPDATE::ENABLED'")
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "USER::UPDATE::ENABLED')")
     public Result updateEnabled(@RequestBody SysUser sysUser) {
         boolean b = sysUserService.updateEnabled(sysUser);
         return Result.result(b);

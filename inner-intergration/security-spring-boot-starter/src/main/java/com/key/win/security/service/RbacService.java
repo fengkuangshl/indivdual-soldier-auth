@@ -17,8 +17,8 @@ public interface RbacService {
 
     boolean hasAnyRole(String... roles);
 
-    boolean hasAuthority(String... authoritys);
+    boolean hasAuthority(String... authorize);
 
-    boolean hasAnyAuthority(String... authoritys);
+    boolean hasAnyAuthority(String... authorize);
 
 }

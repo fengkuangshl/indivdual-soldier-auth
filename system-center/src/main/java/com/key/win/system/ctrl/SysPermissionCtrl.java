@@ -4,6 +4,7 @@ import com.key.win.basic.exception.BizException;
 import com.key.win.basic.web.*;
 import com.key.win.log.annotation.LogAnnotation;
 import com.key.win.common.model.system.*;
+import com.key.win.security.annotation.PreAuthorize;
 import com.key.win.system.service.SysPermissionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -22,12 +23,14 @@ import java.util.stream.Collectors;
 @Api("Permission相关的api")
 public class SysPermissionCtrl {
     private  final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final static String AUTHORITY_PREFIX = "system::permission::SysPermission::";
     @Autowired
     private SysPermissionService sysPermissionService;
 
     @PostMapping("/findSysPermissionByPaged")
     @ApiOperation(value = "Permission分页")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::PAGED')")
     public PageResult<SysPermission> findSysPermissionByPaged(@RequestBody PageRequest<SysPermission> t) {
         return sysPermissionService.findSysPermissionByPaged(t);
     }
@@ -35,6 +38,7 @@ public class SysPermissionCtrl {
     @GetMapping("/get/{id}")
     @ApiOperation(value = "获取Permission")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::ID')")
     public Result get(@PathVariable Long id) {
         return Result.succeed(sysPermissionService.getById(id));
     }
@@ -42,6 +46,7 @@ public class SysPermissionCtrl {
     @DeleteMapping("/delete/{id}")
     @ApiOperation(value = "删除")
     @LogAnnotation(module = "system", recordRequestParam = true)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "DELETE')")
     public Result delete(@PathVariable Long id) {
         boolean b = sysPermissionService.removeById(id);
         return Result.result(b);
@@ -50,6 +55,7 @@ public class SysPermissionCtrl {
     @PostMapping("/saveOrUpdate")
     @ApiOperation(value = "新增/更新")
     @LogAnnotation(module = "system", recordRequestParam = true)
+    @PreAuthorize("hasAnyAuthority('" + AUTHORITY_PREFIX + "MODIFY','" + AUTHORITY_PREFIX + "ADD')")
     public Result saveOrUpdate(@RequestBody SysPermission sysPermission) {
         if (StringUtils.isBlank(sysPermission.getPermission())) {
             logger.error("权限标识为空！");
@@ -66,6 +72,7 @@ public class SysPermissionCtrl {
     @GetMapping("/getPermissionAll")
     @ApiOperation(value = "获取所有Permission")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::LIST')")
     public Result getPermissionAll() {
         return Result.succeed(sysPermissionService.list());
     }

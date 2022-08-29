@@ -10,6 +10,7 @@ import com.key.win.common.model.system.SysMenu;
 import com.key.win.common.model.system.SysMenuPermission;
 import com.key.win.common.model.system.SysPermission;
 import com.key.win.log.annotation.LogAnnotation;
+import com.key.win.security.annotation.PreAuthorize;
 import com.key.win.system.service.SysMenuPermissionService;
 import com.key.win.system.service.SysMenuService;
 import com.key.win.system.service.SysPermissionService;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 @Api("页面权限相关的api")
 public class SysMenuPermissionCtrl {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final static String AUTHORITY_PREFIX = "system::menu-permission::SysMenuPermission::";
     @Autowired
     private SysMenuPermissionService sysMenuPermissionService;
     @Autowired
@@ -41,6 +43,7 @@ public class SysMenuPermissionCtrl {
     @PostMapping("/findSysMenuPermissionByPaged")
     @ApiOperation(value = "SysMenuPermission分页")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::PAGED')")
     public PageResult<SysMenuPermission> findSysMenuPermissionByPaged(@RequestBody PageRequest<SysMenuPermission> t) {
         return sysMenuPermissionService.findSysMenuPermissionByPaged(t);
     }
@@ -48,6 +51,7 @@ public class SysMenuPermissionCtrl {
     @GetMapping("/get/{id}")
     @ApiOperation(value = "获取SysMenuPermission")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::ID')")
     public Result get(@PathVariable Long id) {
         return Result.succeed(sysMenuPermissionService.getById(id));
     }
@@ -55,6 +59,7 @@ public class SysMenuPermissionCtrl {
     @DeleteMapping("/delete/{id}")
     @ApiOperation(value = "删除")
     @LogAnnotation(module = "system", recordRequestParam = true)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "DELETE')")
     public Result delete(@PathVariable Long id) {
         boolean b = sysMenuPermissionService.removeById(id);
         return Result.result(b);
@@ -63,6 +68,7 @@ public class SysMenuPermissionCtrl {
     @PostMapping("/saveOrUpdate")
     @ApiOperation(value = "新增/更新")
     @LogAnnotation(module = "system", recordRequestParam = true)
+    @PreAuthorize("hasAnyAuthority('" + AUTHORITY_PREFIX + "MODIFY','" + AUTHORITY_PREFIX + "ADD')")
     public Result saveOrUpdateSysMenuPermission(@RequestBody SysMenuPermission sysMenuPermission) {
         if (StringUtils.isBlank(sysMenuPermission.getPermissionCode())) {
             logger.error("权限标识为空！");
@@ -75,6 +81,7 @@ public class SysMenuPermissionCtrl {
     @PostMapping("/saveOrUpdateBatch")
     @ApiOperation(value = "批量新增/更新")
     @LogAnnotation(module = "system", recordRequestParam = true)
+    @PreAuthorize("hasAnyAuthority('" + AUTHORITY_PREFIX + "MODIFY','" + AUTHORITY_PREFIX + "ADD')")
     public Result saveOrUpdateSysMenuPermissionForBatch(@RequestBody List<SysMenuPermission> sysMenuPermissions) {
         if (org.springframework.util.CollectionUtils.isEmpty(sysMenuPermissions)) {
             return Result.failed("页面权限集合为空！！");
@@ -86,6 +93,7 @@ public class SysMenuPermissionCtrl {
     @GetMapping("/getAll")
     @ApiOperation(value = "获取所有Permission")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::LIST')")
     public Result getAll() {
         return Result.succeed(sysMenuPermissionService.list());
     }
@@ -93,6 +101,7 @@ public class SysMenuPermissionCtrl {
     @GetMapping("/getGrantMenuPermission")
     @ApiOperation(value = "获取所有Permission")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::LIST')")
     public Result getGrantMenuPermission() {
         List<SysMenuPermission> sysMenuPermissionByChecked = sysMenuPermissionService.findSysMenuPermissionByChecked(true);
         return Result.succeed(sysMenuPermissionByChecked);
@@ -102,6 +111,7 @@ public class SysMenuPermissionCtrl {
     @GetMapping("/get/page")
     @ApiOperation(value = "获取所有页面权限，并进行组装返回")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "GRANT::PAGE::PERMISSION')")
     public Result getPagePermission() {
         Map<String, Object> content = new HashMap<>();
         List<SysMenu> treeMenu = MenuUtils.treeBuilder(menuService.list());

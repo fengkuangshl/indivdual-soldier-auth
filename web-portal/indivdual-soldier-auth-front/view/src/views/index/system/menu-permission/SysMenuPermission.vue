@@ -10,12 +10,13 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="12" class="col-rigth">
-          <el-button type="primary" :disabled="menuPermissionVisble" v-hasPermission="'system::menu-permission::SysMenuPermission::ADD'" @click="saveData()">保存</el-button>
+          <el-button type="primary" :disabled="menuPermissionVisble" v-hasPermission="menuPermissionPrefix+'ADD'"
+            @click="saveData()">保存</el-button>
           <el-button @click="resetTableData()">重置</el-button>
         </el-col>
       </el-row>
       <el-table :data="tableDatas" row-key="key" border default-expand-all
-        v-hasPermission="'system::menu-permission::SysMenuPermission::QUERY::LIST'"
+        v-hasPermission="menuPermissionPrefix+'QUERY::LIST'"
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }" style="margin-top:20px;width: 100%">
         <el-table-column v-for="item in tableTiles" :key="item.propertyName" :prop="item.propertyName" align='center'>
           <template slot="header">
@@ -42,10 +43,12 @@ import { MenuPermissionDetail, MenuPermissionForm, SysMenuPermissionResponse, Sy
 
 @Component
 export default class MenuPermission extends Vue {
-  const tableDatas: Array<SysMenuPermissionTableDataType> = new Array<SysMenuPermissionTableDataType>()
-  const tableOriginalDatas: Array<SysMenuPermissionTableDataType> = new Array<SysMenuPermissionTableDataType>()
-  const tableTiles: Array<MenuPermissionDetail> = new Array<MenuPermissionDetail>()
+  tableDatas: Array<SysMenuPermissionTableDataType> = new Array<SysMenuPermissionTableDataType>()
+  tableOriginalDatas: Array<SysMenuPermissionTableDataType> = new Array<SysMenuPermissionTableDataType>()
+  tableTiles: Array<MenuPermissionDetail> = new Array<MenuPermissionDetail>()
   menuPermissionVisble = true
+
+  menuPermissionPrefix = 'system::menu-permission::SysMenuPermission::'
 
   created(): void {
     this.getMenuPermission()
@@ -76,7 +79,7 @@ export default class MenuPermission extends Vue {
       const element = datas[index]
       element.key = index + parentId
       if (element.children && (element.children as Array<SysMenuPermissionTableDataType>).length > 0) {
-        this.setTableDataIndex((element.children as Array<SysMenuPermissionTableDataType>), element.key)
+        this.setTableDataIndex(element.children as Array<SysMenuPermissionTableDataType>, element.key)
       }
     }
   }
@@ -137,7 +140,7 @@ export default class MenuPermission extends Vue {
     for (let index = 0; index < tableDatas.length; index++) {
       const element = tableDatas[index]
       if (element.children && (element.children as Array<SysMenuPermissionTableDataType>).length > 0) {
-        this.setColmunCheckboxStatus(checked, item, (element.children as Array<SysMenuPermissionTableDataType>))
+        this.setColmunCheckboxStatus(checked, item, element.children as Array<SysMenuPermissionTableDataType>)
       } else {
         const colElement = element[item.propertyName] as MenuPermissionDetail
         colElement.checked = checked

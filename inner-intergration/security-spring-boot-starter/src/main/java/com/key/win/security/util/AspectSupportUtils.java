@@ -24,7 +24,7 @@ public class AspectSupportUtils {
     }
 
 
-    private static Object getKeyValue(Object object, Object[] args, Class clazz, Method method,
+    public static Object getKeyValue(Object object, Object[] args, Class clazz, Method method,
                                       String keyExpression) {
         if (StringUtils.hasText(keyExpression)) {
             EvaluationContext evaluationContext = evaluator.createEvaluationContext(object, clazz, method, args);

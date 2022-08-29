@@ -12,23 +12,27 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入内容" v-model="t.name" v-hasPermission="'system::sys-role::SysRole::QUERY::PAGED'">
+          <el-input placeholder="请输入内容" v-model="t.name" v-hasPermissionQueryPage="rolePermission">
             <el-button slot="append" class="search-primary" icon="el-icon-search" @click="searchRole"></el-button>
           </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" @click="addRole" v-hasPermission="'system::sys-role::SysRole::ADD'">添加角色</el-button>
+          <el-button type="primary" @click="addRole" v-hasPermissionAdd="rolePermission">添加角色</el-button>
         </el-col>
       </el-row>
-      <KWTable url="role/findSysRoleByPaged" style="width: 100%" ref="kwTableRef">
+      <KWTable url="role/findSysRoleByPaged" style="width: 100%" ref="kwTableRef"
+        v-hasPermissionQueryPage="rolePermission">
         <el-table-column type="index" width="80" label="序号"></el-table-column>
         <el-table-column prop="name" sortable="custom" label="角色名称"> </el-table-column>
         <el-table-column prop="code" sortable="custom" label="code"> </el-table-column>
         <el-table-column label="操作">
           <template v-slot="scope">
-            <el-button type="primary" icon="el-icon-edit" v-hasPermission="'system::sys-role::SysRole::MODIFY'" size="mini" @click="showEditDialog(scope.row)"></el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini" v-hasPermission="'system::sys-role::SysRole::DELETE'" @click="deleteRole(scope.row.id)"></el-button>
-            <el-tooltip effect="dark" content="菜单权限管理" placement="top" v-hasPermission="'system::sys-role::SysRole::ROLE::GRANT'" :enterable="false">
+            <el-button type="primary" icon="el-icon-edit" v-hasPermissionUpdate="rolePermission" size="mini"
+              @click="showEditDialog(scope.row)"></el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini" v-hasPermissionDelete="rolePermission"
+              @click="deleteRole(scope.row.id)"></el-button>
+            <el-tooltip effect="dark" content="菜单权限管理" placement="top" v-hasPermission="rolePermission+'::ROLE::GRANT'"
+              :enterable="false">
               <el-button type="warning" icon="el-icon-s-tools" size="mini" @click="grantPermission(scope.row)">
               </el-button>
             </el-tooltip>
@@ -78,11 +82,10 @@ export default class Role extends Vue {
   @Ref('sysRoleFormRef')
   readonly sysRoleFormRef!: ElForm
 
+  rolePermission = 'system::sys-role::SysRole'
+
   @Ref('kwTableRef')
   readonly kwTableRef!: KWTable<SysRoleSearchRequest, SysRole>
-
-  @Ref('rolePermissionFormRef')
-  readonly rolePermissionFormRef!: ElForm
 
   defaultProps: { children: string; label: string } = { children: 'children', label: 'name' }
   checkedKeys: Array<number> = []

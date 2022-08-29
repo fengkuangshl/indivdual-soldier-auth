@@ -12,17 +12,17 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入内容" v-hasPermission="'system::menu::SysMenu::QUERY::PAGED'" v-model="t.name">
+          <el-input placeholder="请输入内容" v-hasPermissionQueryPage="menuPermission" v-model="t.name">
             <el-button slot="append" class="search-primary" icon="el-icon-search" @click="searchMenu"></el-button>
           </el-input>
         </el-col>
         <el-col :span="7">
-          <el-button type="primary" @click="addMenu" v-hasPermission="'system::menu::SysMenu::ADD'">添加菜单</el-button>
+          <el-button type="primary" @click="addMenu" v-hasPermissionAdd="menuPermission">添加菜单</el-button>
           <el-button type="primary" @click="setPagePermission"
-            v-hasPermission="'system::menu::SysMenu::GRANT::PAGE::PERMISSION'">菜单页面权限设置</el-button>
+            v-hasPermission="menuPermission+'::GRANT::PAGE::PERMISSION'">菜单页面权限设置</el-button>
         </el-col>
       </el-row>
-      <KWTable url="menu/getMenuAll" method="GET" v-hasPermission="'system::menu::SysMenu::QUERY::PAGED'"
+      <KWTable url="menu/getMenuAll" method="GET" v-hasPermissionQueryPage="menuPermission"
         :tableDataFilter="tableDataFilter" :renderPreFn="menuTreeAssemble" :treeProps="treeProps"
         :isPagination="isPagination" style="width: 100%" ref="kwTableRef">
         <el-table-column prop="name" sortable label="菜单名称"> </el-table-column>
@@ -45,9 +45,9 @@
         </el-table-column>
         <el-table-column label="操作">
           <template v-slot="scope">
-            <el-button type="primary" icon="el-icon-edit" v-hasPermission="'system::menu::SysMenu::MODIFY'" size="mini"
+            <el-button type="primary" icon="el-icon-edit" v-hasPermissionUpdate="menuPermission" size="mini"
               @click="showEditDialog(scope.row.id)"></el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini" v-hasPermission="'system::menu::SysMenu::DELETE'"
+            <el-button type="danger" icon="el-icon-delete" size="mini" v-hasPermissionDelete="menuPermission"
               @click="deleteMenu(scope.row.id)"></el-button>
           </template>
         </el-table-column>
@@ -120,6 +120,8 @@ export default class Menu extends Vue {
   sysMenuOptions: Array<MenuResponse> = []
   @Ref('sysMenuFormRef')
   readonly sysMenuFormRef!: ElForm
+
+  menuPermission = 'system::menu::SysMenu'
 
   @Ref('kwTableRef')
   readonly kwTableRef!: KWTable<Name, MenuResponse>
@@ -247,14 +249,7 @@ export default class Menu extends Vue {
       if (this.t.name === '') {
         return true
       }
-      if (
-        data.name.toLowerCase().includes(this.t.name.toLowerCase()) ||
-        data.path.toLowerCase().includes(this.t.name.toLowerCase()) ||
-        data.url.toLowerCase().includes(this.t.name.toLowerCase()) ||
-        data.css.toLowerCase().includes(this.t.name.toLowerCase()) ||
-        (data.sort + '').toLowerCase().includes(this.t.name.toLowerCase()) ||
-        settings.menuTypeDirectory.toLowerCase().includes(this.t.name.toLowerCase())
-      ) {
+      if (data.name.toLowerCase().includes(this.t.name.toLowerCase()) || data.path.toLowerCase().includes(this.t.name.toLowerCase()) || data.url.toLowerCase().includes(this.t.name.toLowerCase()) || data.css.toLowerCase().includes(this.t.name.toLowerCase()) || (data.sort + '').toLowerCase().includes(this.t.name.toLowerCase()) || settings.menuTypeDirectory.toLowerCase().includes(this.t.name.toLowerCase())) {
         return true
       }
       const subMenus = data.subMenus
@@ -262,14 +257,7 @@ export default class Menu extends Vue {
         for (const key in subMenus) {
           if (Object.prototype.hasOwnProperty.call(subMenus, key)) {
             const subMenu = subMenus[key]
-            if (
-              subMenu.name.toLowerCase().includes(this.t.name.toLowerCase()) ||
-              subMenu.path.toLowerCase().includes(this.t.name.toLowerCase()) ||
-              subMenu.url.toLowerCase().includes(this.t.name.toLowerCase()) ||
-              subMenu.css.toLowerCase().includes(this.t.name.toLowerCase()) ||
-              (subMenu.sort + '').toLowerCase().includes(this.t.name.toLowerCase()) ||
-              settings.menuTypeItem.toLowerCase().includes(this.t.name.toLowerCase())
-            ) {
+            if (subMenu.name.toLowerCase().includes(this.t.name.toLowerCase()) || subMenu.path.toLowerCase().includes(this.t.name.toLowerCase()) || subMenu.url.toLowerCase().includes(this.t.name.toLowerCase()) || subMenu.css.toLowerCase().includes(this.t.name.toLowerCase()) || (subMenu.sort + '').toLowerCase().includes(this.t.name.toLowerCase()) || settings.menuTypeItem.toLowerCase().includes(this.t.name.toLowerCase())) {
               return true
             }
           }

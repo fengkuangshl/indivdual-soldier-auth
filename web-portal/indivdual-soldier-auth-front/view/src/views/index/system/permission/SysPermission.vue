@@ -12,23 +12,27 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入内容" v-model="t.name"
-            v-hasPermission="'system::permission::SysPermission::QUERY::PAGED'">
+          <el-input placeholder="请输入内容" v-model="t.name" v-hasPermissionQueryPaged="permissionPrefix">
             <el-button slot="append" class="search-primary" icon="el-icon-search" @click="searchPermission"></el-button>
           </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" @click="addPermission" v-hasPermission="'system::permission::SysPermission::ADD'">添加权限</el-button>
+          <el-button type="primary" @click="addPermission" v-hasPermissionAdd="permissionPrefix">
+            添加权限</el-button>
         </el-col>
       </el-row>
-      <KWTable url="permission/findSysPermissionByPaged" v-hasPermission="'system::permission::SysPermission::QUERY::PAGED'" style="width: 100%" ref="kwTableRef">
+      <KWTable url="permission/findSysPermissionByPaged" v-hasPermissionQueryPaged="permissionPrefix"
+        style="width: 100%" ref="kwTableRef">
         <el-table-column type="index" width="80" label="序号"></el-table-column>
         <el-table-column prop="name" sortable="custom" label="角色名称"> </el-table-column>
         <el-table-column prop="permission" sortable="custom" label="权限标识"> </el-table-column>
         <el-table-column label="操作">
           <template v-slot="scope">
-            <el-button type="primary" icon="el-icon-edit" size="mini" v-hasPermission="'system::permission::SysPermission::MODIFY'" @click="showEditDialog(scope.row)"></el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini" v-hasPermission="'system::permission::SysPermission::DELETE'" @click="deletePermission(scope.row.id)">
+            <el-button type="primary" icon="el-icon-edit" size="mini" v-hasPermissionUpdate="permissionPrefix"
+              @click="showEditDialog(scope.row)">
+            </el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini" v-hasPermissionDelete="permissionPrefix"
+              @click="deletePermission(scope.row.id)">
             </el-button>
           </template>
         </el-table-column>
@@ -71,6 +75,8 @@ export default class Permission extends Vue {
   sysPermissionForm: PermissionForm = { name: '', permission: '' }
   @Ref('sysPermissionFormRef')
   readonly sysPermissionFormRef!: ElForm
+
+  permissionPrefix = 'system::permission::SysPermission'
 
   @Ref('kwTableRef')
   readonly kwTableRef!: KWTable<Name, PermissionResponse>

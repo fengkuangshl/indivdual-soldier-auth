@@ -10,13 +10,14 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="12" class="col-rigth">
-          <el-button type="primary" v-hasPermission="'system::role-menu-permission::SysRoleMenuPermission::ADD'"
-            :disabled="roleMenuPermissionVisble" @click="saveData()">保存</el-button>
+          <el-button type="primary" v-hasPermission="roleMenuPermissionPrefix+'ADD'"
+            :disabled="roleMenuPermissionVisble" @click="saveData()">保存
+          </el-button>
           <el-button @click="resetTableData()">重置</el-button>
         </el-col>
       </el-row>
       <el-table :data="tableDatas" row-key="key" border default-expand-all
-        v-hasPermission="'system::role-menu-permission::SysRoleMenuPermission::QUERY::LIST'"
+        v-hasPermission="roleMenuPermissionPrefix+'QUERY::LIST'"
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }" style="margin-top:20px;width: 100%">
         <el-table-column v-for="item in tableTiles" :key="item.propertyName" :prop="item.propertyName" align='center'
           :label="item.permissionName">
@@ -46,6 +47,7 @@ export default class RoleMenuPermission extends Vue {
   roleMenuPermissionVisble = true
   roleId = -1
   title = '权限管理'
+  roleMenuPermissionPrefix = 'system::role-menu-permission::SysRoleMenuPermission::'
 
   created(): void {
     if (this.$route.query.id != null) {

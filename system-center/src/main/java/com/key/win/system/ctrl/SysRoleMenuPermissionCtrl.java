@@ -9,6 +9,7 @@ import com.key.win.common.model.system.SysMenuPermission;
 import com.key.win.common.model.system.SysRoleMenuPermission;
 import com.key.win.common.model.system.SysPermission;
 import com.key.win.log.annotation.LogAnnotation;
+import com.key.win.security.annotation.PreAuthorize;
 import com.key.win.system.service.*;
 import com.key.win.system.service.SysRoleMenuPermissionService;
 import com.key.win.system.util.MenuUtils;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 @Api("授权中心api")
 public class SysRoleMenuPermissionCtrl {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final static String AUTHORITY_PREFIX = "system::role-menu-permission::SysRoleMenuPermission::";
     @Autowired
     private SysMenuService menuService;
     @Autowired
@@ -42,6 +44,7 @@ public class SysRoleMenuPermissionCtrl {
     @PostMapping("/findSysRoleMenuPermissionByPaged")
     @ApiOperation(value = "SysRoleMenuPermission分页")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::PAGED')")
     public PageResult<SysRoleMenuPermission> findSysRoleMenuPermissionByPaged(@RequestBody PageRequest<SysRoleMenuPermission> t) {
         return sysRoleMenuPermissionService.findSysRoleMenuPermissionByPaged(t);
     }
@@ -49,6 +52,7 @@ public class SysRoleMenuPermissionCtrl {
     @GetMapping("/get/{id}")
     @ApiOperation(value = "获取SysRoleMenuPermission")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::ID')")
     public Result get(@PathVariable Long id) {
         return Result.succeed(sysRoleMenuPermissionService.getById(id));
     }
@@ -56,6 +60,7 @@ public class SysRoleMenuPermissionCtrl {
     @DeleteMapping("/delete/{id}")
     @ApiOperation(value = "删除")
     @LogAnnotation(module = "system", recordRequestParam = true)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "DELETE')")
     public Result delete(@PathVariable Long id) {
         boolean b = sysRoleMenuPermissionService.removeById(id);
         return Result.result(b);
@@ -64,6 +69,7 @@ public class SysRoleMenuPermissionCtrl {
     @PostMapping("/saveOrUpdate")
     @ApiOperation(value = "新增/更新")
     @LogAnnotation(module = "system", recordRequestParam = true)
+    @PreAuthorize("hasAnyAuthority('" + AUTHORITY_PREFIX + "MODIFY','" + AUTHORITY_PREFIX + "ADD')")
     public Result saveOrUpdateSysRoleMenuPermission(@RequestBody SysRoleMenuPermission sysRoleMenuPermission) {
         if (sysRoleMenuPermission.getRoleId() == null) {
             logger.error("角色信息为空！");
@@ -80,6 +86,7 @@ public class SysRoleMenuPermissionCtrl {
     @PostMapping("/saveOrUpdateBatch")
     @ApiOperation(value = "批量新增/更新")
     @LogAnnotation(module = "system", recordRequestParam = true)
+    @PreAuthorize("hasAnyAuthority('" + AUTHORITY_PREFIX + "MODIFY','" + AUTHORITY_PREFIX + "ADD')")
     public Result saveOrUpdateSysRoleMenuPermissionForBatch(@RequestBody List<SysRoleMenuPermission> sysMenuPermissions) {
         if (org.springframework.util.CollectionUtils.isEmpty(sysMenuPermissions)) {
             return Result.failed("页面权限集合为空！！");
@@ -98,6 +105,7 @@ public class SysRoleMenuPermissionCtrl {
     @GetMapping("/get/grant/menu/{roleId}")
     @ApiOperation(value = "根据角色Id获取菜单")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::LIST')")
     public Result getGrantMenus(@PathVariable Long roleId) {
         List<SysRoleMenuPermission> sysRoleMenuPermissions = sysRoleMenuPermissionService.findGrantMenus(roleId);
         return Result.succeed(sysRoleMenuPermissions);
@@ -106,6 +114,7 @@ public class SysRoleMenuPermissionCtrl {
     @GetMapping("/get/grant/permission/{roleId}")
     @ApiOperation(value = "根据角色Id获取权限")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::LIST')")
     public Result getGrantPermissions(@PathVariable Long roleId) {
         List<SysRoleMenuPermission> sysRoleMenuPermissions = sysRoleMenuPermissionService.findGrantMenuPermissions(roleId);
         return Result.succeed(sysRoleMenuPermissions);
@@ -115,6 +124,7 @@ public class SysRoleMenuPermissionCtrl {
     @GetMapping("/get/grant/{roleId}")
     @ApiOperation(value = "根据角色Id获取菜单和权限并进行组装")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "ROLE::GRANT')")
     public Result getPagePermission(@PathVariable Long roleId) {
         Map<String, Object> content = new HashMap<>();
         List<SysMenuPermission> sysMenuPermissionByChecked = sysMenuPermissionService.findSysMenuPermissionByChecked(true);

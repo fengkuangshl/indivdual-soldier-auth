@@ -12,15 +12,15 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入内容" v-model="t.nickName" v-hasPermission="'system::user::SysUser::QUERY::PAGED'">
+          <el-input placeholder="请输入内容" v-model="t.nickName" v-hasPermissionQueryPage="userPermission">
             <el-button slot="append" class="search-primary" icon="el-icon-search" @click="searchUser"></el-button>
           </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" @click="addUser" v-hasPermission="'system::user::SysUser::ADD'">添加用户</el-button>
+          <el-button type="primary" @click="addUser" v-hasPermissionAdd="userPermission">添加用户</el-button>
         </el-col>
       </el-row>
-      <KWTable url="user/findSysUserByPaged" style="width: 100%" v-hasPermission="'system::user::SysUser::QUERY::PAGED'"
+      <KWTable url="user/findSysUserByPaged" style="width: 100%" v-hasPermissionQueryPage="userPermission"
         ref="kwTableRef">
         <el-table-column type="index" width="80" label="序号"></el-table-column>
         <el-table-column prop="userName" sortable="custom" label="帐号"> </el-table-column>
@@ -37,16 +37,16 @@
         </el-table-column>
         <el-table-column prop="isEnabled" label="状态" sortable="custom">
           <template v-slot="scope">
-            <el-switch v-model="scope.row.enabled" v-hasPermission="'system::user::SysUser::USER::UPDATE::ENABLED'"
+            <el-switch v-model="scope.row.enabled" v-hasPermission="userPermission+'::USER::UPDATE::ENABLED'"
               active-color="#13ce66" inactive-color="#ff4949" @change="userStatuChanged(scope.row, scope.row.enabled)">
             </el-switch>
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template v-slot="scope">
-            <el-button type="primary" icon="el-icon-edit" v-hasPermission="'system::user::SysUser::MODIFY'" size="mini"
+            <el-button type="primary" icon="el-icon-edit" v-hasPermissionUpdate="userPermission" size="mini"
               @click="showEditDialog(scope.row.id)"></el-button>
-            <el-tooltip effect="dark" content="重置密码" v-hasPermission="'system::user::SysUser::USER::RESET:PASSWORD'"
+            <el-tooltip effect="dark" content="重置密码" v-hasPermission="userPermission+'::USER::RESET::PASSWORD'"
               placement="top" :enterable="false">
               <el-button type="warning" icon="el-icon-setting" size="mini" @click="passwordReset(scope.row.id)">
               </el-button>
@@ -110,6 +110,8 @@ export default class User extends Vue {
   userForm: UserForm = { nickName: '', phone: '', sex: '', userName: '', roleIds: new Array<number>(), type: Type.普通 }
   @Ref('userFormRef')
   readonly userFormRef!: ElForm
+
+  userPermission = 'system::user::SysUser'
 
   @Ref('kwTableRef')
   readonly kwTableRef!: KWTable<UserSearchRequest, UserInfo>

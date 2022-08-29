@@ -6,6 +6,7 @@ import com.key.win.common.auth.AuthenticationUtil;
 import com.key.win.common.auth.detail.Authentication;
 import com.key.win.log.annotation.LogAnnotation;
 import com.key.win.common.model.system.*;
+import com.key.win.security.annotation.PreAuthorize;
 import com.key.win.system.service.SysMenuService;
 import com.key.win.system.util.MenuUtils;
 import io.swagger.annotations.Api;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 @Api("Menu相关的api")
 public class SysMenuCtrl {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final static String AUTHORITY_PREFIX = "system::menu::SysMenu::";
     @Autowired
     private SysMenuService sysMenuService;
 
@@ -40,6 +42,7 @@ public class SysMenuCtrl {
     @PostMapping("/findSysMenuByPaged")
     @ApiOperation(value = "Menu分页")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::PAGED')")
     public PageResult<SysMenu> findSysMenuByPaged(@RequestBody PageRequest<SysMenu> t) {
         return sysMenuService.findSysMenuByPaged(t);
     }
@@ -47,6 +50,7 @@ public class SysMenuCtrl {
     @GetMapping("/get/{id}")
     @ApiOperation(value = "获取Menu")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::ID')")
     public Result get(@PathVariable Long id) {
         return Result.succeed(sysMenuService.getById(id));
     }
@@ -54,6 +58,7 @@ public class SysMenuCtrl {
     @DeleteMapping("/delete/{id}")
     @ApiOperation(value = "删除")
     @LogAnnotation(module = "system", recordRequestParam = true)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "DELETE')")
     public Result delete(@PathVariable Long id) {
         boolean b = sysMenuService.deleteById(id);
         return Result.result(b);
@@ -62,6 +67,7 @@ public class SysMenuCtrl {
     @PostMapping("/saveOrUpdate")
     @ApiOperation(value = "新增/更新")
     @LogAnnotation(module = "system", recordRequestParam = true)
+    @PreAuthorize("hasAnyAuthority('" + AUTHORITY_PREFIX + "MODIFY','" + AUTHORITY_PREFIX + "ADD')")
     public Result saveOrUpdate(@RequestBody SysMenu sysMenu) {
         if (sysMenu.getSort() == null) {
             logger.error("排序号为空！");
@@ -78,6 +84,7 @@ public class SysMenuCtrl {
     @GetMapping("/getMenuAll")
     @ApiOperation(value = "获取所有Menu")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::LIST')")
     public Result getMenuAll() {
         return Result.succeed(sysMenuService.list());
     }

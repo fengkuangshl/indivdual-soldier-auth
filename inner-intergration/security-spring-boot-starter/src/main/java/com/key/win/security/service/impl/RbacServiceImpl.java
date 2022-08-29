@@ -114,11 +114,11 @@ public class RbacServiceImpl implements RbacService {
     }
 
     @Override
-    public boolean hasAnyAuthority(String... authoritys) {
-        if (authoritys != null && authoritys.length > 0) {
+    public boolean hasAnyAuthority(String... authorize) {
+        if (authorize != null && authorize.length > 0) {
             Set<String> permissionSet = AuthorizeUtils.getPermission();
             if (!CollectionUtils.isEmpty(permissionSet)) {
-                for (String authority : authoritys) {
+                for (String authority : authorize) {
                     for (String permission : permissionSet) {
                         if (antPathMatcher.match(permission, authority)) {
                             logger.info("{}权限校验通过！", authority);
