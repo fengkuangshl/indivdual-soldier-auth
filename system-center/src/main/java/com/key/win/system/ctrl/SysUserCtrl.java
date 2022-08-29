@@ -9,6 +9,7 @@ import com.key.win.common.auth.AuthenticationUtil;
 import com.key.win.common.auth.detail.Authentication;
 import com.key.win.common.model.system.SysUser;
 import com.key.win.log.annotation.LogAnnotation;
+import com.key.win.security.annotation.PreAuthorize;
 import com.key.win.system.service.SysUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,6 +30,7 @@ import java.util.Map;
 @Api("User相关的api")
 public class SysUserCtrl {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final static String AUTHORITY_PREFIX = "system::user::SysUser::";
     @Autowired
     private SysUserService sysUserService;
     @Autowired
@@ -38,6 +40,7 @@ public class SysUserCtrl {
     @PostMapping("/findSysUserByPaged")
     @ApiOperation(value = "User分页")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::PAGED')")
     public PageResult<SysUser> findSysUserByPaged(@RequestBody PageRequest<SysUser> pageRequest) {
         return sysUserService.findSysUserByPaged(pageRequest);
     }
@@ -46,6 +49,7 @@ public class SysUserCtrl {
     @GetMapping("/getUserAll")
     @ApiOperation(value = "获取所有用户")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::LIST')")
     public Result getUserAll() {
         return Result.succeed(sysUserService.list());
     }
@@ -54,6 +58,7 @@ public class SysUserCtrl {
     @GetMapping("/getAllUserAndState")
     @ApiOperation(value = "获取所有用户及状态")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::LIST')")
     public Result getAllUserAndState() throws Exception {
         List<SysUser> allSysUser = AuthenticationUtil.getSysUsersAndState(sysUserService.list());
         return Result.succeed(allSysUser);
@@ -62,6 +67,7 @@ public class SysUserCtrl {
     @PostMapping("/register")
     @ApiOperation(value = "用户注册")
     @LogAnnotation(module = "system", recordRequestParam = true)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "ADD')")
     public Result saveSysUser(@RequestBody SysUser sysUser) {
         if (StringUtils.isBlank(sysUser.getUserName())) {
             logger.error("用户名为空!");
@@ -78,6 +84,7 @@ public class SysUserCtrl {
     @PostMapping("/updateSysUser")
     @ApiOperation(value = "用户更新")
     @LogAnnotation(module = "system", recordRequestParam = true)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "MODIFY')")
     public Result updateSysUser(@RequestBody SysUser sysUser) {
         boolean b = sysUserService.updateSysUser(sysUser);
         return Result.result(b);
@@ -85,6 +92,8 @@ public class SysUserCtrl {
 
     @GetMapping("/get/{id}")
     @ApiOperation(value = "获取用户")
+    @LogAnnotation(module = "system", recordRequestParam = true)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::ID')")
     public Result get(@PathVariable Long id) {
         SysUser byId = sysUserService.getById(id);
         return Result.succeed(byId);
@@ -93,6 +102,7 @@ public class SysUserCtrl {
     @GetMapping("/getUserFullById/{id}")
     @ApiOperation(value = "获取用户及自己的机构、设备、角色信息")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::ID')")
     public Result getUserFullById(@PathVariable Long id) {
         SysUser byId = sysUserService.getUserFullById(id);
         return Result.succeed(byId);
@@ -101,6 +111,7 @@ public class SysUserCtrl {
     @DeleteMapping("/delete/{id}")
     @ApiOperation(value = "删除")
     @LogAnnotation(module = "system", recordRequestParam = true)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "DELETE')")
     public Result delete(@PathVariable Long id) {
         boolean b = sysUserService.deleteById(id);
         return Result.result(b);
@@ -162,6 +173,7 @@ public class SysUserCtrl {
     @GetMapping("/resetPassword/{id}")
     @ApiOperation(value = "重置登录用户密码")
     @LogAnnotation(module = "system", recordRequestParam = true)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "USER::RESET:PASSWORD')")
     public Result resetPassword(@PathVariable Long id) {
         if (id == null) {
             logger.error("id为空！");
@@ -200,6 +212,7 @@ public class SysUserCtrl {
     @PostMapping("/granted")
     @ApiOperation(value = "组分配用户")
     @LogAnnotation(module = "system", recordRequestParam = true)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "USER::GRANTED:ROLE')")
     public Result setUserToGroup(@RequestBody SysUser sysUser) {
         if (CollectionUtils.isEmpty(sysUser.getUserIds())) {
             logger.error("授权用户为空！");
@@ -239,6 +252,7 @@ public class SysUserCtrl {
      */
     @PostMapping("/saveOrUpdate")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "MODIFY','" + AUTHORITY_PREFIX + "ADD')")
     public Result saveOrUpdate(@RequestBody SysUser sysUser) {
         if (sysUser != null) {
             if (sysUser.getId() != null) {
@@ -263,6 +277,7 @@ public class SysUserCtrl {
     @ApiOperation(value = "修改用户状态")
     @PostMapping("/updateEnabled")
     @LogAnnotation(module = "user-center", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "USER::UPDATE::ENABLED'")
     public Result updateEnabled(@RequestBody SysUser sysUser) {
         boolean b = sysUserService.updateEnabled(sysUser);
         return Result.result(b);

@@ -9,7 +9,7 @@ interface ISettings {
   menuTypeItem: string
   menuTypeDirectory: string
   defaultAvatar: string
-  currentActiveChat: string
+  permissionEnable: boolean
 }
 
 // You can customize below settings :)
@@ -24,7 +24,7 @@ const settings: ISettings = {
   menuTypeItem: '菜单',
   menuTypeDirectory: '目录',
   defaultAvatar: require('./assets/head.png'),
-  currentActiveChat: 'currentActiveChatId'
+  permissionEnable: true
 }
 
 export default settings

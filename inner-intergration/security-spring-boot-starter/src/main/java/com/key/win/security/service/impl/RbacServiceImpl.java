@@ -1,27 +1,24 @@
 package com.key.win.security.service.impl;
 
 import com.key.win.common.auth.AuthenticationUtil;
-import com.key.win.common.auth.detail.Authentication;
-import com.key.win.common.model.system.SysMenuPermission;
-import com.key.win.common.model.system.SysPermission;
 import com.key.win.common.model.system.SysRole;
 import com.key.win.security.service.RbacService;
+import com.key.win.security.util.AuthorizeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.CollectionUtils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Service("rbacService")
 public class RbacServiceImpl implements RbacService {
 
-    private  final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private AntPathMatcher antPathMatcher = new AntPathMatcher();
 
@@ -48,7 +45,7 @@ public class RbacServiceImpl implements RbacService {
     @Override
     public boolean hasRole(String... roles) {
         if (roles != null && roles.length > 0) {
-            Map<String, SysRole> sysRoleMap = this.getRoleByCurrentUser();
+            Map<String, SysRole> sysRoleMap = AuthorizeUtils.getRole();
             if (!CollectionUtils.isEmpty(sysRoleMap)) {
                 for (String code : roles) {
                     if (sysRoleMap.get(code) == null) {
@@ -69,7 +66,7 @@ public class RbacServiceImpl implements RbacService {
     @Override
     public boolean hasAnyRole(String... roles) {
         if (roles != null && roles.length > 0) {
-            Map<String, SysRole> sysRoleMap = this.getRoleByCurrentUser();
+            Map<String, SysRole> sysRoleMap = AuthorizeUtils.getRole();
             if (!CollectionUtils.isEmpty(sysRoleMap)) {
                 for (String code : roles) {
                     if (sysRoleMap.get(code) != null) {
@@ -86,20 +83,28 @@ public class RbacServiceImpl implements RbacService {
     }
 
     @Override
-    public boolean hasAuthority(String... authoritys) {
-        if (authoritys != null && authoritys.length > 0) {
-            Set<String> permissionSet = this.getPermissionByCurrentUser();
+    public boolean hasAuthority(String... authorize) {
+        if (authorize != null && authorize.length > 0) {
+            Set<String> permissionSet = AuthorizeUtils.getPermission();
             if (!CollectionUtils.isEmpty(permissionSet)) {
-                for (String authority : authoritys) {
+                List<String> verifiedPermissions = Stream.of(authorize).collect(Collectors.toList());
+                for (String authority : authorize) {
                     for (String permission : permissionSet) {
-                        if (!antPathMatcher.match(permission, authority)) {
-                            logger.error("{}权限校验不通过！", authority);
-                            return false;
+                        if (antPathMatcher.match(permission, authority)) {
+                            logger.info("{}权限校验通过！", authority);
+                            verifiedPermissions.remove(authority);
                         }
                     }
                 }
-                logger.info("权限校验通过！");
-                return true;
+                if (verifiedPermissions.size() > 0) {
+                    verifiedPermissions.forEach(vp -> {
+                        logger.error("{}权限校验不通过！", vp);
+                    });
+                    return false;
+                } else {
+                    return true;
+                }
+
             }
         } else {
             logger.error("权限为空！");
@@ -111,12 +116,12 @@ public class RbacServiceImpl implements RbacService {
     @Override
     public boolean hasAnyAuthority(String... authoritys) {
         if (authoritys != null && authoritys.length > 0) {
-            Set<String> permissionSet = this.getPermissionByCurrentUser();
+            Set<String> permissionSet = AuthorizeUtils.getPermission();
             if (!CollectionUtils.isEmpty(permissionSet)) {
                 for (String authority : authoritys) {
                     for (String permission : permissionSet) {
                         if (antPathMatcher.match(permission, authority)) {
-                            logger.error("{}权限校验通过！", authority);
+                            logger.info("{}权限校验通过！", authority);
                             return true;
                         }
                     }
@@ -132,27 +137,5 @@ public class RbacServiceImpl implements RbacService {
     public static void main(String[] args) {
         RbacServiceImpl l = new RbacServiceImpl();
         l.hasRole("");
-    }
-
-    public Map<String, SysRole> getRoleByCurrentUser() {
-        Authentication authentication = AuthenticationUtil.getAuthentication();
-        if (authentication != null) {
-            List<SysRole> sysRoles = authentication.getSysRoles();
-            if (!CollectionUtils.isEmpty(sysRoles)) {
-                return sysRoles.stream().collect(Collectors.toMap(SysRole::getCode, a -> a, (k1, k2) -> k1));
-            }
-        }
-        return null;
-    }
-
-    public Set<String> getPermissionByCurrentUser() {
-        Authentication authentication = AuthenticationUtil.getAuthentication();
-        if (authentication != null) {
-            List<SysMenuPermission> permissions = authentication.getPermissions();
-            if (!CollectionUtils.isEmpty(permissions)) {
-                return permissions.stream().map(SysMenuPermission::getPermissionCode).collect(Collectors.toSet());
-            }
-        }
-        return null;
     }
 }

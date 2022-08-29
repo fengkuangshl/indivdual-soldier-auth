@@ -12,7 +12,7 @@ spring:
     name: indivdual-soldier-auth
   web:
     request:
-      white: /user/login,/user/refresh/**,/user/register,/swagger-ui.html/**,/swagger-resources/**,/v2/**,/webjars/**,/csrf,/favicon.ico,/error,/,/single-soldier-wireless/**
+      white: /user/login,/user/refresh/**,/user/register,/swagger-ui.html/**,/swagger-resources/**,/v2/**,/webjars/**,/csrf,/favicon.ico,/error,/,/indivdual-soldier-auth/**
   tx:
     manager:
       enabled: true
@@ -30,7 +30,7 @@ spring:
         isRefreshSelf: true
     method:
       security:
-        enable: false
+        enable: true
 #mybatis是独立节点，需要单独配置
 mybatis-plus:
   global-config:
