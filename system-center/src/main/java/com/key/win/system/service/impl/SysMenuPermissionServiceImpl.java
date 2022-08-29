@@ -66,6 +66,9 @@ public class SysMenuPermissionServiceImpl extends ServiceImpl<SysMenuPermissionD
         return list;
     }
     public List<SysMenuPermission> findSysMenuPermissionByIds(Set<Long> ids) {
+        if(CollectionUtils.isEmpty(ids)){
+            return new ArrayList<>();
+        }
         SysMenuPermission sysMenuPermission = new SysMenuPermission();
         sysMenuPermission.setMenuPermissionIds(ids);
         List<SysMenuPermission> list = this.list(buildLambdaQueryWrapper(sysMenuPermission));
@@ -79,7 +82,7 @@ public class SysMenuPermissionServiceImpl extends ServiceImpl<SysMenuPermissionD
                 lambdaQueryWrapper.eq(SysMenuPermission::getPermissionCode, sysMenuPermission.getPermissionCode());
             }
             if (!CollectionUtils.isEmpty(sysMenuPermission.getMenuPermissionIds())) {
-                lambdaQueryWrapper.eq(SysMenuPermission::getPermissionCode, sysMenuPermission.getMenuPermissionIds());
+                lambdaQueryWrapper.in(SysMenuPermission::getId, sysMenuPermission.getMenuPermissionIds());
             }
             if (sysMenuPermission.getChecked() != null) {
                 lambdaQueryWrapper.eq(SysMenuPermission::getChecked, sysMenuPermission.getChecked());

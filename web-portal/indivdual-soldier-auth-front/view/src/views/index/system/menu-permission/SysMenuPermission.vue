@@ -10,11 +10,12 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="12" class="col-rigth">
-          <el-button type="primary" :disabled="menuPermissionVisble" @click="saveData()">保存</el-button>
+          <el-button type="primary" :disabled="menuPermissionVisble" v-hasPermission="'system::menu-permission::SysMenuPermission::ADD'" @click="saveData()">保存</el-button>
           <el-button @click="resetTableData()">重置</el-button>
         </el-col>
       </el-row>
       <el-table :data="tableDatas" row-key="key" border default-expand-all
+        v-hasPermission="'system::menu-permission::SysMenuPermission::QUERY::LIST'"
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }" style="margin-top:20px;width: 100%">
         <el-table-column v-for="item in tableTiles" :key="item.propertyName" :prop="item.propertyName" align='center'>
           <template slot="header">
@@ -74,8 +75,8 @@ export default class MenuPermission extends Vue {
     for (let index = 0; index < datas.length; index++) {
       const element = datas[index]
       element.key = index + parentId
-      if (element.children && element.children.length > 0) {
-        this.setTableDataIndex(element.children, element.key)
+      if (element.children && (element.children as Array<SysMenuPermissionTableDataType>).length > 0) {
+        this.setTableDataIndex((element.children as Array<SysMenuPermissionTableDataType>), element.key)
       }
     }
   }
@@ -102,11 +103,11 @@ export default class MenuPermission extends Vue {
 
   getTableCheckedData(saveDatas: Array<MenuPermissionForm>, datas: Array<SysMenuPermissionTableDataType>): void {
     datas.forEach(item => {
-      if (item.children && item.children.length > 0) {
-        this.getTableCheckedData(saveDatas, item.children)
+      if (item.children && (item.children as Array<SysMenuPermissionTableDataType>).length > 0) {
+        this.getTableCheckedData(saveDatas, item.children as Array<SysMenuPermissionTableDataType>)
       } else {
         this.tableTiles.forEach(title => {
-          const entity = item[title.propertyName]
+          const entity = item[title.propertyName] as MenuPermissionDetail
           if (entity.menuId && entity.permissionId) {
             const mpf: MenuPermissionForm = { id: entity.id, menuId: entity.menuId, permissionId: entity.permissionId, checked: entity.checked }
             saveDatas.push(mpf)
@@ -135,10 +136,10 @@ export default class MenuPermission extends Vue {
   setColmunCheckboxStatus(checked: boolean, item: MenuPermissionDetail, tableDatas: Array<SysMenuPermissionTableDataType>): void {
     for (let index = 0; index < tableDatas.length; index++) {
       const element = tableDatas[index]
-      if (element.children && element.children.length > 0) {
-        this.setColmunCheckboxStatus(checked, item, element.children)
+      if (element.children && (element.children as Array<SysMenuPermissionTableDataType>).length > 0) {
+        this.setColmunCheckboxStatus(checked, item, (element.children as Array<SysMenuPermissionTableDataType>))
       } else {
-        const colElement = element[item.propertyName]
+        const colElement = element[item.propertyName] as MenuPermissionDetail
         colElement.checked = checked
       }
     }

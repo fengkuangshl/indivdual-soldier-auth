@@ -252,12 +252,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
                 for (SysPermission sysPermission : sysPermissions) {
                     SysMenuPermission sysMenuPermission = new SysMenuPermission();
                     sysMenuPermission.setChecked(Boolean.TRUE);
-                    sysMenuPermission.setPermissionCode(menu.getPath().replaceAll("/", "::") + sysPermission.getPermission());
+                    sysMenuPermission.setPermissionCode(menu.getPath().replaceAll("/", "::") +"::"+ sysPermission.getPermission());
                     sysMenuPermission.setMenuId(menu.getId());
                     sysMenuPermission.setPermissionId(sysPermission.getId());
                     sysMenuPermissions.add(sysMenuPermission);
                 }
             }
+        }
+        if(CollectionUtils.isEmpty(sysMenuPermissions)){
+            SysMenuPermission sysMenuPermission = new SysMenuPermission();
+            sysMenuPermission.setChecked(Boolean.TRUE);
+            sysMenuPermission.setPermissionCode("*::*::*");
+            sysMenuPermissions.add(sysMenuPermission);
         }
         return sysMenuPermissions;
     }

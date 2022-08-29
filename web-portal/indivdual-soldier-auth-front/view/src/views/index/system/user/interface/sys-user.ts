@@ -1,4 +1,4 @@
-import { PermissionResponse } from '../../permission/interface/sys-permission'
+import { MenuPermissionDetail } from '../../menu-permission/interface/sys-menu-permission'
 import { SysRole } from '../../sys-role/interface/sys-role'
 
 export enum Sex {
@@ -49,11 +49,11 @@ export interface UserExt extends UserInfo {
   accountNonExpired: boolean
   accountNonLocked: boolean
   credentialsNonExpired: boolean
-  permissions: Array<PermissionResponse>
+  permissions: Array<MenuPermissionDetail>
 }
 
 export interface LoginSuccessUserInfo {
-  permissions: Array<PermissionResponse>
+  permissions: Array<MenuPermissionDetail>
   user: UserExt
 }
 

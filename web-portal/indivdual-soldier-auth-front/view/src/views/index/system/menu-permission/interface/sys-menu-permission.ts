@@ -2,7 +2,6 @@ export interface MenuPermissionForm extends Model.Id {
   menuId: number
   permissionId: number
   checked: boolean
-
 }
 
 export interface MenuPermissionDetail extends Model.BaseField, MenuPermissionForm {
@@ -13,10 +12,10 @@ export interface MenuPermissionDetail extends Model.BaseField, MenuPermissionFor
 }
 
 export interface SysMenuPermissionTableDataType {
-  [x: string]: MenuPermissionDetail; //动态添加属性
+  [x: string]: MenuPermissionDetail | Array<SysMenuPermissionTableDataType> | string //动态添加属性
 }
 
 export interface SysMenuPermissionResponse {
-  data: Array<SysMenuPermissionTableDataType>,
+  data: Array<SysMenuPermissionTableDataType>
   title: Array<MenuPermissionDetail>
 }

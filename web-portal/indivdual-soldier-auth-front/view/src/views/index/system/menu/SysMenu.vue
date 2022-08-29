@@ -12,17 +12,19 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入内容" v-model="t.name">
+          <el-input placeholder="请输入内容" v-hasPermission="'system::menu::SysMenu::QUERY::PAGED'" v-model="t.name">
             <el-button slot="append" class="search-primary" icon="el-icon-search" @click="searchMenu"></el-button>
           </el-input>
         </el-col>
-        <el-col :span="4">
-          <el-button type="primary" @click="addMenu">添加菜单</el-button>
-          <el-button type="primary" @click="setPagePermission">菜单页面权限设置</el-button>
+        <el-col :span="7">
+          <el-button type="primary" @click="addMenu" v-hasPermission="'system::menu::SysMenu::ADD'">添加菜单</el-button>
+          <el-button type="primary" @click="setPagePermission"
+            v-hasPermission="'system::menu::SysMenu::GRANT::PAGE::PERMISSION'">菜单页面权限设置</el-button>
         </el-col>
       </el-row>
-      <KWTable url="menu/getMenuAll" method="GET" :tableDataFilter="tableDataFilter" :renderPreFn="menuTreeAssemble"
-        :treeProps="treeProps" :isPagination="isPagination" style="width: 100%" ref="kwTableRef">
+      <KWTable url="menu/getMenuAll" method="GET" v-hasPermission="'system::menu::SysMenu::QUERY::PAGED'"
+        :tableDataFilter="tableDataFilter" :renderPreFn="menuTreeAssemble" :treeProps="treeProps"
+        :isPagination="isPagination" style="width: 100%" ref="kwTableRef">
         <el-table-column prop="name" sortable label="菜单名称"> </el-table-column>
         <el-table-column prop="path" sortable label="菜单路由"> </el-table-column>
         <el-table-column prop="url" sortable label="菜单URL"> </el-table-column>
@@ -43,8 +45,10 @@
         </el-table-column>
         <el-table-column label="操作">
           <template v-slot="scope">
-            <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteMenu(scope.row.id)"></el-button>
+            <el-button type="primary" icon="el-icon-edit" v-hasPermission="'system::menu::SysMenu::MODIFY'" size="mini"
+              @click="showEditDialog(scope.row.id)"></el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini" v-hasPermission="'system::menu::SysMenu::DELETE'"
+              @click="deleteMenu(scope.row.id)"></el-button>
           </template>
         </el-table-column>
       </KWTable>
@@ -307,7 +311,8 @@ export default class Menu extends Vue {
     }
     return menus
   }
-  setPagePermission() {
+
+  setPagePermission(): void {
     this.$router.push('/sysmenpermission')
   }
 }

@@ -156,12 +156,14 @@ export default class HeaderNav extends Vue {
   async logout(): Promise<void> {
     const { code, msg } = await LogoutApi()
     if (code !== 200) {
-      this.$message.error(msg || '用户密码修改失败!')
+      this.$message.error(msg || '用户登出失败!')
     } else {
       local.clear(settings.accessToken)
+      local.clear(settings.refreshToken)
       MenuModule.changeMenu([])
       UserModule.clearUser()
       PermissionModule.clearRoutes()
+      location.reload()
     }
   }
 

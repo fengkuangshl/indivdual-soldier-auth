@@ -12,12 +12,12 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入内容" v-model="t.name">
+          <el-input placeholder="请输入内容" v-model="t.name" v-hasPermission="'system::sys-role::SysRole::QUERY::PAGED'">
             <el-button slot="append" class="search-primary" icon="el-icon-search" @click="searchRole"></el-button>
           </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" @click="addRole">添加角色</el-button>
+          <el-button type="primary" @click="addRole" v-hasPermission="'system::sys-role::SysRole::ADD'">添加角色</el-button>
         </el-col>
       </el-row>
       <KWTable url="role/findSysRoleByPaged" style="width: 100%" ref="kwTableRef">
@@ -26,9 +26,9 @@
         <el-table-column prop="code" sortable="custom" label="code"> </el-table-column>
         <el-table-column label="操作">
           <template v-slot="scope">
-            <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row)"></el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteRole(scope.row.id)"></el-button>
-            <el-tooltip effect="dark" content="菜单权限管理" placement="top" :enterable="false">
+            <el-button type="primary" icon="el-icon-edit" v-hasPermission="'system::sys-role::SysRole::MODIFY'" size="mini" @click="showEditDialog(scope.row)"></el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini" v-hasPermission="'system::sys-role::SysRole::DELETE'" @click="deleteRole(scope.row.id)"></el-button>
+            <el-tooltip effect="dark" content="菜单权限管理" placement="top" v-hasPermission="'system::sys-role::SysRole::ROLE::GRANT'" :enterable="false">
               <el-button type="warning" icon="el-icon-s-tools" size="mini" @click="grantPermission(scope.row)">
               </el-button>
             </el-tooltip>

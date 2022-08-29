@@ -62,7 +62,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
 //                lambdaQueryWrapper.eq(SysMenu::getSort, sysMenu.getSort());
 //            }
             if (!CollectionUtils.isEmpty(sysMenu.getMenuIds())) {
-                lambdaQueryWrapper.eq(SysMenu::getId, sysMenu.getMenuIds());
+                lambdaQueryWrapper.in(SysMenu::getId, sysMenu.getMenuIds());
             }
         }
         List<SysMenu> list = this.list(lambdaQueryWrapper);
@@ -160,6 +160,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
 
     @Override
     public List<SysMenu> findSysMenuByMenuIds(Set<Long> menuIds) {
+        if(CollectionUtils.isEmpty(menuIds)){
+            return new ArrayList<>();
+        }
         SysMenu sysMenu = new SysMenu();
         sysMenu.setMenuIds(menuIds);
         return this.findSysMenu(sysMenu);

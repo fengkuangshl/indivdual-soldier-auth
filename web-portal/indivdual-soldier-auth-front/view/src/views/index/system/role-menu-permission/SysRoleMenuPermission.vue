@@ -10,11 +10,13 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="12" class="col-rigth">
-          <el-button type="primary" :disabled="roleMenuPermissionVisble" @click="saveData()">保存</el-button>
+          <el-button type="primary" v-hasPermission="'system::role-menu-permission::SysRoleMenuPermission::ADD'"
+            :disabled="roleMenuPermissionVisble" @click="saveData()">保存</el-button>
           <el-button @click="resetTableData()">重置</el-button>
         </el-col>
       </el-row>
       <el-table :data="tableDatas" row-key="key" border default-expand-all
+        v-hasPermission="'system::role-menu-permission::SysRoleMenuPermission::QUERY::LIST'"
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }" style="margin-top:20px;width: 100%">
         <el-table-column v-for="item in tableTiles" :key="item.propertyName" :prop="item.propertyName" align='center'
           :label="item.permissionName">
@@ -37,7 +39,7 @@ import { GetPagePermissionApi, SysRoleMenuPermissionSaveOrUpdateApi } from './ro
 import { RoleMenuPermissionDetail, RoleMenuPermissionForm, SysRoleMenuPermissionResponse, SysRoleMenuPermissionTableDataType } from './interface/sys-role-menu-permission'
 
 @Component
-export default class MenuPermission extends Vue {
+export default class RoleMenuPermission extends Vue {
   const tableDatas: Array<SysRoleMenuPermissionTableDataType> = new Array<SysRoleMenuPermissionTableDataType>()
   const tableOriginalDatas: Array<SysRoleMenuPermissionTableDataType> = new Array<SysRoleMenuPermissionTableDataType>()
   const tableTiles: Array<RoleMenuPermissionDetail> = new Array<RoleMenuPermissionDetail>()
@@ -79,7 +81,7 @@ export default class MenuPermission extends Vue {
   getCheckboxStatusByCurrentRowFirstCol(rowData: SysRoleMenuPermissionTableDataType): boolean {
     let checked = false
     this.tableTiles.forEach(title => {
-      const entity = rowData[title.propertyName]
+      const entity = rowData[title.propertyName] as RoleMenuPermissionDetail
       if (!entity.permissionId && entity.menuId) {
         checked = entity.checked
         return checked
@@ -96,7 +98,7 @@ export default class MenuPermission extends Vue {
       const element = datas[index]
       const col01CheckBoxStatus = this.getCheckboxStatusByCurrentRowFirstCol(element)
       this.tableTiles.forEach(title => {
-        const entity = element[title.propertyName]
+        const entity = element[title.propertyName] as RoleMenuPermissionDetail
         if (entity.menuId && entity.roleId && entity.menuPermissionId && entity.permissionId) {
           entity.enable = !col01CheckBoxStatus
         } else {
@@ -104,8 +106,8 @@ export default class MenuPermission extends Vue {
         }
       })
       element.key = index + parentId
-      if (element.children && element.children.length > 0) {
-        this.setTableDataIndex(element.children, element.key)
+      if (element.children && (element.children as Array<SysRoleMenuPermissionTableDataType>).length > 0) {
+        this.setTableDataIndex(element.children as Array<SysRoleMenuPermissionTableDataType>, element.key)
       }
     }
   }
@@ -133,14 +135,14 @@ export default class MenuPermission extends Vue {
   getTableCheckedData(saveDatas: Array<RoleMenuPermissionForm>, datas: Array<SysRoleMenuPermissionTableDataType>): void {
     datas.forEach(item => {
       this.tableTiles.forEach(title => {
-        const entity = item[title.propertyName]
+        const entity = item[title.propertyName] as RoleMenuPermissionDetail
         if (entity.menuId && entity.roleId) {
           const mpf: RoleMenuPermissionForm = { id: entity.id, menuId: entity.menuId, permissionId: entity.permissionId, checked: entity.checked, menuPermissionId: entity.menuPermissionId, roleId: entity.roleId }
           saveDatas.push(mpf)
         }
       })
-      if (item.children && item.children.length > 0) {
-        this.getTableCheckedData(saveDatas, item.children)
+      if (item.children && (item.children as Array<SysRoleMenuPermissionTableDataType>).length > 0) {
+        this.getTableCheckedData(saveDatas, (item.children as Array<SysRoleMenuPermissionTableDataType>))
       }
     })
   }
@@ -159,11 +161,11 @@ export default class MenuPermission extends Vue {
 
   onChane(checked: boolean, item: SysRoleMenuPermissionTableDataType, permissionId: number): void {
     this.setRowCheckBox(checked, item, permissionId)
-    if (item.children && item.children.length > 0) {
-      item.children.forEach((cNode: SysRoleMenuPermissionTableDataType) => {
+    if (item.children && (item.children as Array<SysRoleMenuPermissionTableDataType>).length > 0) {
+      (item.children as Array<SysRoleMenuPermissionTableDataType>).forEach((cNode: SysRoleMenuPermissionTableDataType) => {
         const col01CheckBoxStatus = this.getCheckboxStatusByCurrentRowFirstCol(cNode)
         this.tableTiles.forEach(title => {
-          const entity = cNode[title.propertyName]
+          const entity = cNode[title.propertyName] as RoleMenuPermissionDetail
           if (col01CheckBoxStatus && checked) {
             console.log('do nothing')
           } else {
@@ -179,7 +181,7 @@ export default class MenuPermission extends Vue {
   setRowCheckBox(checked: boolean, item: SysRoleMenuPermissionTableDataType, permissionId: number): void {
     if (!permissionId) {
       this.tableTiles.forEach(title => {
-        const entity = item[title.propertyName]
+        const entity = item[title.propertyName] as RoleMenuPermissionDetail
         if (entity.menuId && entity.roleId && entity.menuPermissionId && entity.permissionId) {
           if (!checked) {
             entity.checked = false

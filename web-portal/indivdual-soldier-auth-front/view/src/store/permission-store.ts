@@ -77,7 +77,6 @@ class PermissionStore extends VuexModule implements IPermissionState {
     this.routes = []
     this.dynamicRoutes = []
     router.replace({ path: '/login' })
-    location.reload()
   }
 
   @Action({ commit: 'CLEAR_ROUTES' })

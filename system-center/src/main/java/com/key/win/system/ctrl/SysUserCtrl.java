@@ -160,7 +160,7 @@ public class SysUserCtrl {
     }
 
     @GetMapping("/resetPassword/{id}")
-    @ApiOperation(value = "登录用户密码")
+    @ApiOperation(value = "重置登录用户密码")
     @LogAnnotation(module = "system", recordRequestParam = true)
     public Result resetPassword(@PathVariable Long id) {
         if (id == null) {
