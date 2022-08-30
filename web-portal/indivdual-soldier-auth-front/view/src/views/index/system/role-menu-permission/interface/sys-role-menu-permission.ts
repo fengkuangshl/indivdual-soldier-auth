@@ -4,7 +4,6 @@ export interface RoleMenuPermissionForm extends Model.Id {
   permissionId: number
   menuPermissionId: number
   checked: boolean
-
 }
 
 export interface RoleMenuPermissionDetail extends Model.BaseField, RoleMenuPermissionForm {
@@ -15,10 +14,10 @@ export interface RoleMenuPermissionDetail extends Model.BaseField, RoleMenuPermi
 }
 
 export interface SysRoleMenuPermissionTableDataType {
-  [x: string]: RoleMenuPermissionDetail | Array<SysRoleMenuPermissionTableDataType> | string //动态添加属性
+  [x: string]: RoleMenuPermissionDetail | Array<SysRoleMenuPermissionTableDataType> | string // 动态添加属性
 }
 
 export interface SysRoleMenuPermissionResponse {
-  data: Array<SysRoleMenuPermissionTableDataType>,
+  data: Array<SysRoleMenuPermissionTableDataType>
   title: Array<RoleMenuPermissionDetail>
 }

@@ -12,7 +12,7 @@ export interface MenuPermissionDetail extends Model.BaseField, MenuPermissionFor
 }
 
 export interface SysMenuPermissionTableDataType {
-  [x: string]: MenuPermissionDetail | Array<SysMenuPermissionTableDataType> | string //动态添加属性
+  [x: string]: MenuPermissionDetail | Array<SysMenuPermissionTableDataType> | string // 动态添加属性
 }
 
 export interface SysMenuPermissionResponse {

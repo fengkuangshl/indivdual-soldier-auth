@@ -1,5 +1,5 @@
 import router from './router'
-import { NavigationGuardNext, Route, RouteConfig, RouteMeta } from 'vue-router'
+import { NavigationGuardNext, RawLocation, Route, RouteConfig, RouteMeta } from 'vue-router'
 import { PermissionModule } from '@/store/permission-store'
 import getPageTitle from './common/utils/page-title'
 import { MenuModule } from './store/menu-store'
@@ -17,31 +17,28 @@ import { Message } from 'element-ui'
 
 // const whiteList = ['/login', '/auth-redirect', '/registe', '/404']
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-router.beforeEach(
-  async (to: Route, from: Route, next: NavigationGuardNext): Promise<void> => {
-    NProgress.start()
-    // to 将访问哪一个路径
-    // from 代表从哪个路径跳转而来
-    // next 是一个函数,表示放行
-    //   next() 放行 next('/login') 强制跳转
-    if (to.path === '/login') {
-      return next()
-    }
-    // 获取token
-    const refreshToken = local.getAny(settings.refreshToken)
-    if (!refreshToken) {
-      return next('/login')
+router.beforeEach(async (to: Route, from: Route, next: NavigationGuardNext): Promise<void> => {
+  NProgress.start()
+  // to 将访问哪一个路径
+  // from 代表从哪个路径跳转而来
+  // next 是一个函数,表示放行
+  //   next() 放行 next('/login') 强制跳转
+  if (to.path === '/login') {
+    return next()
+  }
+  // 获取token
+  const refreshToken = local.getAny(settings.refreshToken)
+  if (!refreshToken) {
+    return next('/login')
+  } else {
+    const dynamicRoutes: Array<RouteConfig> = PermissionModule.getDynamicRoutes
+    if (dynamicRoutes.length === 0) {
+      getUserInfo(to, from, next)
     } else {
-      const dynamicRoutes: Array<RouteConfig> = PermissionModule.getDynamicRoutes
-      if (dynamicRoutes.length === 0) {
-        getUserInfo(to, from, next)
-      } else {
-        next()
-      }
+      next()
     }
   }
-)
+})
 
 router.afterEach((to: Route) => {
   NProgress.done()
@@ -60,7 +57,6 @@ export const getUserInfo = async (to: Route, from: Route, next: NavigationGuardN
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const getMenus = async (to: Route, from: Route, next: NavigationGuardNext): Promise<void> => {
   const { code, data, msg }: KWResponse.Result<Array<MenuResponse>> = await CurrentMenuApi()
   if (code === 200) {
@@ -70,7 +66,7 @@ export const getMenus = async (to: Route, from: Route, next: NavigationGuardNext
     MenuModule.changeMenu(menus)
     PermissionModule.generateRoutes()
     // router.addRoutes(PermissionModule.getDynamicRoutes)
-    next({ ...to, replace: true } as any)
+    next({ ...to, replace: true } as RawLocation)
   } else {
     Message.error(msg || '获取当前用户菜单失败！')
   }
