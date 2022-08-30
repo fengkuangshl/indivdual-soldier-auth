@@ -212,7 +212,7 @@ public class SysUserCtrl {
     @PostMapping("/granted")
     @ApiOperation(value = "组分配用户")
     @LogAnnotation(module = "system", recordRequestParam = true)
-    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "USER::GRANTED:ROLE')")
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "USER::GRANTED::ROLE')")
     public Result setUserToGroup(@RequestBody SysUser sysUser) {
         if (CollectionUtils.isEmpty(sysUser.getUserIds())) {
             logger.error("授权用户为空！");
