@@ -2,18 +2,12 @@
   <div class="__common-layout-pageTabs">
     <el-scrollbar>
       <div class="__tabs">
-        <div
-          class="__tab-item"
-          v-for="item in openedPageRouters"
-          :class="{
+        <div class="__tab-item" v-for="item in openedPageRouters" :class="{
             '__is-active': item.fullPath == $route.fullPath
-          }"
-          :key="item.fullPath"
-          @click="onClick(item)"
-          @contextmenu.prevent="showContextMenu($event, item)"
-        >
+          }" :key="item.fullPath" @click="onClick(item)" @contextmenu.prevent="showContextMenu($event, item)">
           {{ item.meta.title }}
-          <span class="el-icon-close" @click.stop="onClose(item)" @contextmenu.prevent.stop="" :style="openedPageRouters.length <= 1 ? 'width:0;' : ''"></span>
+          <span class="el-icon-close" @click.stop="onClose(item)" @contextmenu.prevent.stop=""
+            :style="openedPageRouters.length <= 1 ? 'width:0;' : ''"></span>
         </div>
       </div>
     </el-scrollbar>
@@ -86,7 +80,7 @@ export default class PageTabs extends Vue {
     if (!isExist) {
       const openedPageRoute = this.openedPageRouters.find(item => item.path === route.path)
       // 判断页面是否支持不同参数多开页面功能，如果不支持且已存在path值一样的页面路由，那就替换它
-      if (!route.meta && !((route.meta as unknown) as RouteMeta).canMultipleOpen && openedPageRoute != null) {
+      if (!(route.meta as RouteMeta).canMultipleOpen && openedPageRoute != null) {
         this.delRouteCache(openedPageRoute.fullPath)
         this.openedPageRouters.splice(this.openedPageRouters.indexOf(openedPageRoute), 1, route)
       } else {
@@ -115,7 +109,7 @@ export default class PageTabs extends Vue {
   }
 
   // 右键显示菜单
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
   showContextMenu(e: any, route: Route): void {
     this.contextMenuTargetPageRoute = route
     this.contextMenuLeft = e.layerX

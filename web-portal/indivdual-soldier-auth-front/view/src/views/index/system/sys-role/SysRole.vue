@@ -176,7 +176,7 @@ export default class Role extends Vue {
   grantPermission(data: SysRole): void {
     this.$router.push({
       path: '/sysrmpc',
-      query: { id: data.id + '', name: data.name }
+      query: { id: data.id + '', roleName: data.name }
     })
   }
 }

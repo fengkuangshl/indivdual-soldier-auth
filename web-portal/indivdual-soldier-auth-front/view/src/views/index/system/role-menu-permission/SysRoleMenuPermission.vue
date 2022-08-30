@@ -53,8 +53,8 @@ export default class RoleMenuPermission extends Vue {
     if (this.$route.query.id != null) {
       this.roleId = Number.parseInt(this.$route.query.id as string)
     }
-    if (this.$route.query.name != null) {
-      this.title = (this.$route.query.name as string) + '权限管理'
+    if (this.$route.query.roleName != null) {
+      this.title = (this.$route.query.roleName as string) + '角色授权管理'
     }
     this.getMenuPermission()
   }
