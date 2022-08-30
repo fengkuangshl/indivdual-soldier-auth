@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="home">
     <h3>
       {{ message }}
     </h3>
@@ -17,4 +17,11 @@ export default class Home extends Vue {
 }
 </script>
 
-<style></style>
+<style lang="less" scoped>
+.home {
+  background-color: rgb(255, 255, 255);
+  h3 {
+    padding: 10px;
+  }
+}
+</style>
