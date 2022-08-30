@@ -1,3 +1,4 @@
+import settings from '@/settings'
 import { UserModule } from '@/store/user-store'
 import { LoginSuccessUserInfo } from '@/views/index/system/user/interface/sys-user'
 
@@ -122,6 +123,9 @@ const PermissionUtil = {
   },
 
   hasPermission: (code: string): boolean => {
+    if (settings.permissionEnable === false) {
+      return true
+    }
     const permissions = (UserModule.loginUser as LoginSuccessUserInfo).permissions
     const hasPermissions = permissions.filter(permission => {
       return code.includes(permission.permissionCode)
@@ -133,6 +137,9 @@ const PermissionUtil = {
   },
 
   hasRole: (code: string): boolean => {
+    if (settings.permissionEnable === false) {
+      return true
+    }
     const sysRoles = (UserModule.loginUser as LoginSuccessUserInfo).user.sysRoles
     const hasPermissions = sysRoles.filter(sysRole => {
       return code.includes(sysRole.code)
