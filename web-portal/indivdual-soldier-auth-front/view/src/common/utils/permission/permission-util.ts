@@ -1,6 +1,7 @@
 import settings from '@/settings'
 import { UserModule } from '@/store/user-store'
 import { LoginSuccessUserInfo } from '@/views/index/system/user/interface/sys-user'
+import { PermissionBaseEnum } from './permission-base-enum'
 
 const PermissionUtil = {
   hasPermissionForQueryPaged: (permissionPrefix: string): boolean => {
@@ -12,7 +13,7 @@ const PermissionUtil = {
   },
 
   getQueryPagedPermissionExpression: (permissionPrefix: string): string => {
-    return permissionPrefix + '::QUERY::PAGED'
+    return permissionPrefix + PermissionBaseEnum.QUERY_PAGED
   },
 
   hasPermissionForQueryList: (permissionPrefix: string): boolean => {
@@ -23,7 +24,7 @@ const PermissionUtil = {
     return false
   },
   getQueryListPermissionExpression: (permissionPrefix: string): string => {
-    return permissionPrefix + '::QUERY::LIST'
+    return permissionPrefix + PermissionBaseEnum.QUERY_LIST
   },
 
   hasPermissionForGetId: (permissionPrefix: string): boolean => {
@@ -35,7 +36,7 @@ const PermissionUtil = {
   },
 
   getGetIdPermissionExpression: (permissionPrefix: string): string => {
-    return permissionPrefix + '::QUERY::ID'
+    return permissionPrefix + PermissionBaseEnum.QUERY_ID
   },
 
   hasPermissionForAdd: (permissionPrefix: string): boolean => {
@@ -47,7 +48,7 @@ const PermissionUtil = {
   },
 
   getAddPermissionExpression: (permissionPrefix: string): string => {
-    return permissionPrefix + '::ADD'
+    return permissionPrefix + PermissionBaseEnum.ADD
   },
 
   hasPermissionForUpdate: (permissionPrefix: string): boolean => {
@@ -59,7 +60,7 @@ const PermissionUtil = {
   },
 
   getUpdatePermissionExpression: (permissionPrefix: string): string => {
-    return permissionPrefix + '::MODIFY'
+    return permissionPrefix + PermissionBaseEnum.MODIFY
   },
 
   hasPermissionForDelete: (permissionPrefix: string): boolean => {
@@ -119,7 +120,7 @@ const PermissionUtil = {
   },
 
   getDeletePermissionExpression: (permissionPrefix: string): string => {
-    return permissionPrefix + '::DELETE'
+    return permissionPrefix + PermissionBaseEnum.DELETE
   },
 
   hasPermission: (code: string): boolean => {

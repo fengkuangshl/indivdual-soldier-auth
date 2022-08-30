@@ -1,7 +1,7 @@
 // has-permission-query-page.ts
 import { DirectiveOptions } from 'vue'
 import { DirectiveBinding } from 'vue/types/options'
-import PermissionUtil from '@/common/utils/permission-util'
+import PermissionUtil from '@/common/utils/permission/permission-util'
 
 const hasPermissionQueryPage: DirectiveOptions = {
   bind(el: HTMLElement, binding: DirectiveBinding) {

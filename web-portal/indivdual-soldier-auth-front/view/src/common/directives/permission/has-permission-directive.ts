@@ -1,7 +1,7 @@
 // has-permission.ts
 import { DirectiveOptions } from 'vue'
 import { DirectiveBinding } from 'vue/types/options'
-import PermissionUtil from '@/common/utils/permission-util'
+import PermissionUtil from '@/common/utils/permission/permission-util'
 
 const hasPermission: DirectiveOptions = {
   bind(el: HTMLElement, binding: DirectiveBinding) {

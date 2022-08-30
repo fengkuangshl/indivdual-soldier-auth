@@ -16,7 +16,7 @@ public enum PermissionEnum {
     GET_ID("QUERY::ID", "根据ID获取数据权限"),
     USER_UPDATE_ENABLED("USER::UPDATE::ENABLED", "修改用户状态权限"),
     // USER_GET_ON_LINE("USER::GET::ON::LINE", "获所有在线用户权限"),
-    USER_GRANTED_ROLE("USER::GRANTED:ROLE", "用户设置角色权限"),
+    USER_GRANTED_ROLE("USER::GRANTED::ROLE", "用户设置角色权限"),
     USER_RESET_PASSWORD("USER::RESET::PASSWORD", "重置密码权限"),
     ROLE_GRANT("ROLE::GRANT", "授权权限"),
     GRANT_PAGE_PERMISSION("GRANT::PAGE::PERMISSION", "菜单页面权限");
