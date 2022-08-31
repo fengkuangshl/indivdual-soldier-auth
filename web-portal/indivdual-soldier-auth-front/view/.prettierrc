@@ -9,6 +9,6 @@
   "endOfLine": "auto",
   "eslintIntegration": false,
   "htmlWhitespaceSensitivity": "ignore",
-  "ignorePath": ".gnore",
+  "ignorePath": ".ignore",
   "trailingComma": "none"
 }

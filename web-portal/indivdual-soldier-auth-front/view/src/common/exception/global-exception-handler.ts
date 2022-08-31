@@ -10,7 +10,7 @@ const errorHandler = (error: Error, vm?: Vue, info?: string): void => {
 Vue.config.errorHandler = errorHandler
 Vue.prototype.$throw = (error: Error, vm?: Vue, info?: string) => errorHandler(error, vm, info)
 // warn
-const warnHandler = function(msg: string, vm: Vue, trace: string): void {
+const warnHandler = function (msg: string, vm: Vue, trace: string): void {
   // `trace` 是组件的继承关系追踪
   console.warn('warnHandler msg: %o, vm: %o, trace: %o', msg, vm, trace)
 }
