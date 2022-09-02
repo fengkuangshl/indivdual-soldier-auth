@@ -1,6 +1,6 @@
 package com.key.win.mongo.query;
 
-import com.key.win.basic.util.IndivdualSoldierAuthConstantUtils;
+import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -38,11 +38,11 @@ public abstract class MongoServiceTemplate<T, RT> {
         if (sos != null && sos.size() > 0) {
             orderList.addAll(sos);
         } else {
-            orderList.add(new Sort.Order(Sort.Direction.DESC, IndivdualSoldierAuthConstantUtils.QUERY_DEFAULT_ORDER_NAME));
+            orderList.add(new Sort.Order(Sort.Direction.DESC, IndividualSoldierAuthConstantUtils.QUERY_DEFAULT_ORDER_NAME));
         }
 
         Sort sort = Sort.by(orderList);
-        Criteria criteriaEnableFlag = Criteria.where(IndivdualSoldierAuthConstantUtils.MODEL_ENABLE_FLAG).is(Boolean.TRUE);
+        Criteria criteriaEnableFlag = Criteria.where(IndividualSoldierAuthConstantUtils.MODEL_ENABLE_FLAG).is(Boolean.TRUE);
         Criteria criteria = this.constructQuery(t);
         criteriaEnableFlag.andOperator(criteria);
         Query query = Query.query(criteriaEnableFlag);

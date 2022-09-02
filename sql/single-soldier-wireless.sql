@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS `indivdual-soldier-auth`;
-CREATE DATABASE `indivdual-soldier-auth`;
-USE `indivdual-soldier-auth`;
+DROP DATABASE IF EXISTS `individual-soldier-auth`;
+CREATE DATABASE `individual-soldier-auth`;
+USE `individual-soldier-auth`;
 DROP TABLE IF EXISTS `sys_user`;
 CREATE TABLE `sys_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id自增',

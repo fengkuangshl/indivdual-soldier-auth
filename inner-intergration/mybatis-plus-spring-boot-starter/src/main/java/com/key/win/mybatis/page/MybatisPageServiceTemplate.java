@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.key.win.basic.util.IndivdualSoldierAuthConstantUtils;
+import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
 import com.key.win.basic.web.CodeEnum;
 import com.key.win.basic.web.OrderDir;
 import com.key.win.basic.web.PageRequest;
@@ -151,12 +151,12 @@ public abstract class MybatisPageServiceTemplate<T, RT> {
             TableFieldInfo tableFieldInfo = propertyToTableFieldInfoMap.get(ob.getSortName());
             String column = tableFieldInfo == null ? null : tableFieldInfo.getColumn();
             if (StringUtils.isNotBlank(column)) {
-                subSqlOrderBy.append(IndivdualSoldierAuthConstantUtils.SQL_SEPARATOR).append(column).append(IndivdualSoldierAuthConstantUtils.SQL_SEPARATOR).append(ob.getSortDir().name());
+                subSqlOrderBy.append(IndividualSoldierAuthConstantUtils.SQL_SEPARATOR).append(column).append(IndividualSoldierAuthConstantUtils.SQL_SEPARATOR).append(ob.getSortDir().name());
             } else {
                 logger.warn("{}在propertyToTableFieldInfoMap中找不到映射字段！", ob.getSortName());
             }
             if (i < orderList.size() - 1 && subSqlOrderBy.length() > 0) {
-                subSqlOrderBy.append(IndivdualSoldierAuthConstantUtils.SQL_COMMA_SEPARATOR);
+                subSqlOrderBy.append(IndividualSoldierAuthConstantUtils.SQL_COMMA_SEPARATOR);
             }
         }
         if (subSqlOrderBy.length() > 0) {
@@ -181,10 +181,10 @@ public abstract class MybatisPageServiceTemplate<T, RT> {
         OrderBySegmentList orderBySegmentList = wrapper.getExpression().getOrderBy();
         StringBuilder sqlOrderBy = new StringBuilder();
         if (CollectionUtils.isEmpty(orderBySegmentList)) {
-            sqlOrderBy.append(IndivdualSoldierAuthConstantUtils.ORDER_BY);
+            sqlOrderBy.append(IndividualSoldierAuthConstantUtils.ORDER_BY);
             logger.info("执行sql中没有order by条件，将为此sql添加order by条件");
         } else {
-            sqlOrderBy.append(IndivdualSoldierAuthConstantUtils.SQL_COMMA_SEPARATOR);
+            sqlOrderBy.append(IndividualSoldierAuthConstantUtils.SQL_COMMA_SEPARATOR);
             logger.info("执行sql中已有order by条件，将直接为此sql添加具体排序语句。");
         }
         return sqlOrderBy;
@@ -209,7 +209,7 @@ public abstract class MybatisPageServiceTemplate<T, RT> {
                 logger.info("执行用户传入的分页条件{}->{}", pageParam.getSortName(), pageParam.getSortDir());
             } else {
                 if (!this.isNativeSql()) {
-                    orderList.add(new MybatisOderByVo(IndivdualSoldierAuthConstantUtils.QUERY_DEFAULT_ORDER_NAME, OrderDir.DESC));
+                    orderList.add(new MybatisOderByVo(IndividualSoldierAuthConstantUtils.QUERY_DEFAULT_ORDER_NAME, OrderDir.DESC));
                     logger.info("执行默认分页排序条件");
                 } else {
                     logger.info("原生sql,不添加默认分页排序条件");

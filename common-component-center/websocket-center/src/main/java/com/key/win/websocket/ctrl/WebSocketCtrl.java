@@ -1,7 +1,7 @@
 package com.key.win.websocket.ctrl;
 
 import com.key.win.basic.exception.BizException;
-import com.key.win.basic.util.IndivdualSoldierAuthConstantUtils;
+import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
 import com.key.win.basic.web.Result;
 import com.key.win.common.auth.AuthenticationUtil;
 import com.key.win.log.annotation.LogAnnotation;
@@ -38,7 +38,7 @@ public class WebSocketCtrl {
         websocketUserMessage.setToUserName(userName);
         websocketUserMessage.setMessage(message);
         webSocketManager.sendMessageByUserName(userName, websocketUserMessage);
-        return Result.succeed(IndivdualSoldierAuthConstantUtils.RESULT_SUCCESS_DEFAULT_MESSAGE);
+        return Result.succeed(IndividualSoldierAuthConstantUtils.RESULT_SUCCESS_DEFAULT_MESSAGE);
     }
 
     @ApiOperation(value = "给单用户发送信息")
@@ -49,7 +49,7 @@ public class WebSocketCtrl {
         websocketTokenMessage.setToToken(toToken);
         websocketTokenMessage.setMessage(message);
         webSocketManager.sendMessageByToken(toToken, websocketTokenMessage);
-        return Result.succeed(IndivdualSoldierAuthConstantUtils.RESULT_SUCCESS_DEFAULT_MESSAGE);
+        return Result.succeed(IndividualSoldierAuthConstantUtils.RESULT_SUCCESS_DEFAULT_MESSAGE);
     }
 
     @ApiOperation(value = "给单用户发送信息")
@@ -59,7 +59,7 @@ public class WebSocketCtrl {
         checkProperty(websocketUserMessage.getToUserName(), "接收人为空！");
         checkProperty(websocketUserMessage.getMessage(), "发送消息为空！");
         webSocketManager.sendMessageByUserName(websocketUserMessage.getToUserName(), websocketUserMessage);
-        return Result.succeed(IndivdualSoldierAuthConstantUtils.RESULT_SUCCESS_DEFAULT_MESSAGE);
+        return Result.succeed(IndividualSoldierAuthConstantUtils.RESULT_SUCCESS_DEFAULT_MESSAGE);
     }
 
     @ApiOperation(value = "给单用户发送信息")
@@ -69,7 +69,7 @@ public class WebSocketCtrl {
         checkProperty(websocketTokenMessage.getToToken(), "toToken为空！");
         checkProperty(websocketTokenMessage.getMessage(), "发送消息为空！");
         webSocketManager.sendMessageByToken(websocketTokenMessage.getToToken(), websocketTokenMessage);
-        return Result.succeed(IndivdualSoldierAuthConstantUtils.RESULT_SUCCESS_DEFAULT_MESSAGE);
+        return Result.succeed(IndividualSoldierAuthConstantUtils.RESULT_SUCCESS_DEFAULT_MESSAGE);
     }
 
     @ApiOperation(value = "给多用户发送信息")
@@ -86,7 +86,7 @@ public class WebSocketCtrl {
                 webSocketManager.sendMessageByToken(token, websocketTokensMessage);
             }
         });
-        return Result.succeed(IndivdualSoldierAuthConstantUtils.RESULT_SUCCESS_DEFAULT_MESSAGE);
+        return Result.succeed(IndividualSoldierAuthConstantUtils.RESULT_SUCCESS_DEFAULT_MESSAGE);
     }
 
     @ApiOperation(value = "给用户列表发送信息")
@@ -103,7 +103,7 @@ public class WebSocketCtrl {
                 webSocketManager.sendMessageByUserName(toUserName, websocketGroupMessage);
             }
         });
-        return Result.succeed(IndivdualSoldierAuthConstantUtils.RESULT_SUCCESS_DEFAULT_MESSAGE);
+        return Result.succeed(IndividualSoldierAuthConstantUtils.RESULT_SUCCESS_DEFAULT_MESSAGE);
     }
 
 //    @ApiOperation(value = "给用户列表发送组信息")

@@ -1,6 +1,6 @@
 package com.key.win.websocket.endpoint;
 
-import com.key.win.basic.util.IndivdualSoldierAuthConstantUtils;
+import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
 import com.key.win.basic.util.SpringUtils;
 import com.key.win.common.auth.AuthenticationUtil;
 import com.key.win.websocket.WebSocket;
@@ -18,11 +18,11 @@ public abstract class BaseWebSocketEndpoint {
     /**
      * 路径标识：目前使用token来代表
      */
-    public static final String TOKEN = IndivdualSoldierAuthConstantUtils.TOKEN;
+    public static final String TOKEN = IndividualSoldierAuthConstantUtils.TOKEN;
     protected static final Logger logger = LoggerFactory.getLogger(BaseWebSocketEndpoint.class);
 
     public void connect(Session session, String token) {
-        if (redisAuthentiacationCheck(session, "connect", token)) return;
+        if (authenticatorToken(session, "connect", token)) return;
         try {
             WebSocketManager websocketManager = getWebSocketManager();
             WebSocket webSocket = new WebSocket();
@@ -38,7 +38,7 @@ public abstract class BaseWebSocketEndpoint {
 
     /**
      * 把用户设备为一分钟等待期
-     * 如果webscoket在一分钟还连接不上来，redis中的用户将过期
+     * 如果websocket在一分钟还连接不上来，redis中的用户将过期
      * 也就意味着用户需要重新登录了
      */
     public void disconnect(String token) {
@@ -52,10 +52,10 @@ public abstract class BaseWebSocketEndpoint {
     }
 
     public void receiveMessage(String message, Session session, String token) {
-        if (redisAuthentiacationCheck(session, "receiveMessage", token)) return;
+        if (authenticatorToken(session, "receiveMessage", token)) return;
         WebSocketManager webSocketManager = getWebSocketManager();
         //心跳监测
-        if (webSocketManager.isPing(AuthenticationUtil.getToken(), message)) {
+        if (webSocketManager.isPing(token, message)) {
             String pong = webSocketManager.pong(token, message);
             WebSocketUtil.sendMessageAsync(session, pong);
             WebSocket webSocket = webSocketManager.get(token);
@@ -69,7 +69,7 @@ public abstract class BaseWebSocketEndpoint {
         webSocketManager.onMessage(token, message);
     }
 
-    private boolean redisAuthentiacationCheck(Session session, String method, String token) {
+    public boolean authenticatorToken(Session session, String method, String token) {
         if (AuthenticationUtil.getAuthenticationToRedis(token) == null) {
             try {
                 session.close();

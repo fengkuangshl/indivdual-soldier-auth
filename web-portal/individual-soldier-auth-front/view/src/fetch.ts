@@ -4,21 +4,10 @@ import settings from '@/settings'
 import { local } from './store'
 import { LoginResponse } from './views/login/interface/response'
 import router from './router'
-
-let baseURL = settings.developmentDomain
-if (process.env.NODE_ENV === 'development') {
-  // 设置默认本地开发
-  baseURL = settings.developmentDomain
-} else if (process.env.VUE_APP_CURRENTMODE === 'uat') {
-  // 测试
-  baseURL = settings.userAcceptanceTestDomain
-} else if (process.env.VUE_APP_CURRENTMODE === 'production') {
-  // 默认正式
-  baseURL = settings.productionDomain
-}
+import { getHttpDomain } from './common/utils/get-env'
 
 const instance: AxiosInstance = axios.create({
-  baseURL: baseURL,
+  baseURL: getHttpDomain(),
   timeout: 3000
 })
 

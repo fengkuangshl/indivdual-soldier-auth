@@ -1,6 +1,5 @@
 package com.key.win.system.ctrl;
 
-import com.key.win.basic.util.IndivdualSoldierAuthConstantUtils;
 import com.key.win.basic.web.*;
 import com.key.win.common.auth.AuthenticationUtil;
 import com.key.win.common.auth.detail.Authentication;
@@ -11,8 +10,6 @@ import com.key.win.system.service.SysMenuService;
 import com.key.win.system.util.MenuUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/menu/*")

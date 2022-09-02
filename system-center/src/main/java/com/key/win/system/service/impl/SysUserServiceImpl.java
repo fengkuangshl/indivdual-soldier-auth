@@ -7,7 +7,7 @@ import com.key.win.basic.config.MyPasswordEncoder;
 import com.key.win.basic.exception.BizException;
 import com.key.win.basic.exception.UserIllegalException;
 import com.key.win.basic.util.BeanUtils;
-import com.key.win.basic.util.IndivdualSoldierAuthConstantUtils;
+import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
 import com.key.win.basic.util.UUIDUtils;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
@@ -286,10 +286,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
 
     public Map<String, Object> getUserToken(String token, String refreshToken) {
         Map<String, Object> userTokenVo = new HashMap<>();
-        userTokenVo.put(IndivdualSoldierAuthConstantUtils.REQUEST_TOKEN_KEY, token);
-        userTokenVo.put(IndivdualSoldierAuthConstantUtils.TOKEN_EXPIRES_IN_KEY, AuthenticationUtil.getTokenExpires());
-        userTokenVo.put(IndivdualSoldierAuthConstantUtils.TOKEN_BEARER_KEY, IndivdualSoldierAuthConstantUtils.TOKEN_BEARER_VAUE);
-        userTokenVo.put(IndivdualSoldierAuthConstantUtils.REFRESH_TOKEN_KEY, refreshToken);
+        userTokenVo.put(IndividualSoldierAuthConstantUtils.REQUEST_TOKEN_KEY, token);
+        userTokenVo.put(IndividualSoldierAuthConstantUtils.TOKEN_EXPIRES_IN_KEY, AuthenticationUtil.getTokenExpires());
+        userTokenVo.put(IndividualSoldierAuthConstantUtils.TOKEN_BEARER_KEY, IndividualSoldierAuthConstantUtils.TOKEN_BEARER_VAUE);
+        userTokenVo.put(IndividualSoldierAuthConstantUtils.REFRESH_TOKEN_KEY, refreshToken);
         return userTokenVo;
     }
 
@@ -300,7 +300,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             logger.error("{}用户已经存在!", sysUser.getUserName());
             throw new BizException("用户已经存在！");
         }
-        sysUser.setPassword(myPasswordEncoder.encode(IndivdualSoldierAuthConstantUtils.RESET_PASSWORD));
+        sysUser.setPassword(myPasswordEncoder.encode(IndividualSoldierAuthConstantUtils.RESET_PASSWORD));
         boolean b = this.saveOrUpdate(sysUser);
         setRoleToUser(sysUser);
         return b;
@@ -324,7 +324,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             logger.error("id为{}的用户不存在数据库中！", id);
             throw new BizException("用户不存在！");
         }
-        user.setPassword(myPasswordEncoder.encode(IndivdualSoldierAuthConstantUtils.RESET_PASSWORD));
+        user.setPassword(myPasswordEncoder.encode(IndividualSoldierAuthConstantUtils.RESET_PASSWORD));
         return this.saveOrUpdate(user);
     }
 

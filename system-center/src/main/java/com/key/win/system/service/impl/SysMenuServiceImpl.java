@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.key.win.basic.exception.BizException;
 import com.key.win.mybatis.page.MybatisPageServiceTemplate;
 import com.key.win.basic.util.BeanUtils;
-import com.key.win.basic.util.IndivdualSoldierAuthConstantUtils;
+import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
 import com.key.win.system.dao.SysMenuDao;
@@ -120,14 +120,14 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
         Map<Long, SysMenu> levelAll = new HashMap<>();
         if (!CollectionUtils.isEmpty(list)) {
             for (SysMenu sysMenu : list) {
-                if (sysMenu.getParentId().equals(IndivdualSoldierAuthConstantUtils.TREE_PARENT_ID)) {
+                if (sysMenu.getParentId().equals(IndividualSoldierAuthConstantUtils.TREE_PARENT_ID)) {
                     topTreeList.add(sysMenu);
                 }
                 levelAll.put(sysMenu.getId(), sysMenu);
             }
             for (Map.Entry<Long, SysMenu> entry : levelAll.entrySet()) {
                 SysMenu value = entry.getValue();
-                if (!value.getParentId().equals(IndivdualSoldierAuthConstantUtils.TREE_PARENT_ID)) {
+                if (!value.getParentId().equals(IndividualSoldierAuthConstantUtils.TREE_PARENT_ID)) {
                     Long key = value.getParentId();
                     SysMenu parentMenu = levelAll.get(key);
                     parentMenu.addSubMenu(value);

@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>indivdual-soldier-auth-application</artifactId>
+    <artifactId>individual-soldier-auth-application</artifactId>
 
     <dependencies>
         <!--公共模块 -->
@@ -33,6 +33,7 @@
             <groupId>com.key.win</groupId>
             <artifactId>device-auth-center</artifactId>
         </dependency>
+
     </dependencies>
 
 </project>

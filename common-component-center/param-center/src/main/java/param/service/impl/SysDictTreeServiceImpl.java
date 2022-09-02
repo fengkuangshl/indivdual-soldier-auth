@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.key.win.basic.exception.BizException;
 import com.key.win.basic.util.BeanUtils;
-import com.key.win.basic.util.IndivdualSoldierAuthConstantUtils;
+import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
 import com.key.win.mybatis.page.MybatisPageServiceTemplate;
@@ -45,14 +45,14 @@ public class SysDictTreeServiceImpl extends ServiceImpl<SysDictTreeDao, SysDictT
         Map<Long, SysDictTree> levelAll = new HashMap<>();
         if (!CollectionUtils.isEmpty(list)) {
             for (SysDictTree sysDictTree : list) {
-                if (IndivdualSoldierAuthConstantUtils.TREE_PARENT_ID.equals(sysDictTree.getParentId())) {
+                if (IndividualSoldierAuthConstantUtils.TREE_PARENT_ID.equals(sysDictTree.getParentId())) {
                     topList.add(sysDictTree);
                 }
                 levelAll.put(sysDictTree.getId(), sysDictTree);
             }
             for (Map.Entry<Long, SysDictTree> entry : levelAll.entrySet()) {
                 SysDictTree value = entry.getValue();
-                if (!IndivdualSoldierAuthConstantUtils.TREE_PARENT_ID.equals(value.getParentId())) {
+                if (!IndividualSoldierAuthConstantUtils.TREE_PARENT_ID.equals(value.getParentId())) {
                     Long key = value.getParentId();
                     SysDictTree parentDictTree = levelAll.get(key);
                     parentDictTree.addSubSysDictTree(value);
@@ -217,7 +217,7 @@ public class SysDictTreeServiceImpl extends ServiceImpl<SysDictTreeDao, SysDictT
     }
 
     private Long getGenericId(SysDictTree t) {
-        Long id = IndivdualSoldierAuthConstantUtils.TREE_PARENT_ID;
+        Long id = IndividualSoldierAuthConstantUtils.TREE_PARENT_ID;
         if (t != null) {
             id = t.getId();
         }

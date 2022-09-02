@@ -2,7 +2,7 @@ package com.key.win.websocket.config;
 
 
 import com.key.win.basic.exception.UserIllegalException;
-import com.key.win.basic.util.IndivdualSoldierAuthConstantUtils;
+import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
 import com.key.win.basic.util.SpringUtils;
 import com.key.win.common.auth.AuthenticationUtil;
 import com.key.win.common.auth.detail.Authentication;
@@ -34,7 +34,7 @@ public class GetHttpSessionConfigurator extends ServerEndpointConfig.Configurato
     private void getAuthentication(HandshakeRequest request) {
         String webSocketPath = SpringUtils.getProperty(SPRING_WEB_SOCKET_PATH);
         Map<String, String> pathVariableMap = this.matchPath(request.getRequestURI().getPath(), webSocketPath.split(","));
-        String token = pathVariableMap.get(IndivdualSoldierAuthConstantUtils.TOKEN);
+        String token = pathVariableMap.get(IndividualSoldierAuthConstantUtils.TOKEN);
         if (StringUtils.isBlank(token)) {
             throw new UserIllegalException("token缺失！");
         }

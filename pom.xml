@@ -11,10 +11,10 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.key.win</groupId>
-    <artifactId>indivdual-soldier-auth</artifactId>
+    <artifactId>individual-soldier-auth</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <description>indivdual-soldier-auth project for Spring Boot</description>
+    <description>individual-soldier-auth project for Spring Boot</description>
 
 
     <modules>

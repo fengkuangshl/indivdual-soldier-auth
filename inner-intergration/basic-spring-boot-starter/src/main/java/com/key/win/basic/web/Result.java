@@ -1,6 +1,6 @@
 package com.key.win.basic.web;
 
-import com.key.win.basic.util.IndivdualSoldierAuthConstantUtils;
+import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +22,7 @@ public class Result<T> extends BaseResult {
     }
 
     public static <T> Result<T> succeed() {
-        return succeed(IndivdualSoldierAuthConstantUtils.RESULT_SUCCESS_DEFAULT_MESSAGE);
+        return succeed(IndividualSoldierAuthConstantUtils.RESULT_SUCCESS_DEFAULT_MESSAGE);
     }
 
     public static <T> Result<T> succeed(String msg) {
@@ -34,7 +34,7 @@ public class Result<T> extends BaseResult {
     }
 
     public static <T> Result<T> succeed(T model) {
-        return succeedWith(model, CodeEnum.SUCCESS.getCode(), IndivdualSoldierAuthConstantUtils.RESULT_SUCCESS_DEFAULT_MESSAGE);
+        return succeedWith(model, CodeEnum.SUCCESS.getCode(), IndividualSoldierAuthConstantUtils.RESULT_SUCCESS_DEFAULT_MESSAGE);
     }
 
     public static <T> Result<T> succeedWith(T data, Integer code, String msg) {
@@ -62,7 +62,7 @@ public class Result<T> extends BaseResult {
     }
 
     public static <T> Result<T> result(boolean result) {
-        return result ? Result.succeed(IndivdualSoldierAuthConstantUtils.SUCCEED_INFO) : Result.failed(IndivdualSoldierAuthConstantUtils.FAILED_INFO);
+        return result ? Result.succeed(IndividualSoldierAuthConstantUtils.SUCCEED_INFO) : Result.failed(IndividualSoldierAuthConstantUtils.FAILED_INFO);
     }
 
 }

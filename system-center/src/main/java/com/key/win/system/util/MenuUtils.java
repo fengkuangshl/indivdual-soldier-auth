@@ -1,6 +1,6 @@
 package com.key.win.system.util;
 
-import com.key.win.basic.util.IndivdualSoldierAuthConstantUtils;
+import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
 import com.key.win.common.model.system.SysMenu;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -19,7 +19,7 @@ public class MenuUtils {
         List<SysMenu> menus = new ArrayList<SysMenu>();
         if (CollectionUtils.isNotEmpty(sysMenus)) {
             for (SysMenu sysMenu : sysMenus) {
-                if (sysMenu.getParentId().equals(IndivdualSoldierAuthConstantUtils.TREE_PARENT_ID)) {
+                if (sysMenu.getParentId().equals(IndividualSoldierAuthConstantUtils.TREE_PARENT_ID)) {
                     menus.add(sysMenu);
                 }
             }

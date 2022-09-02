@@ -3,7 +3,7 @@ package com.key.win.mongo.service.impl;
 import com.key.win.basic.exception.BizException;
 import com.key.win.mongo.model.MongoID;
 import com.key.win.mongo.service.IMongoService;
-import com.key.win.basic.util.IndivdualSoldierAuthConstantUtils;
+import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,7 +132,7 @@ public abstract class IMongoServiceImpl<T> implements IMongoService<T> {
     public boolean logicDeleted(Serializable id) {
         Query query = buildQueryById(id);
         Update update = new Update();
-        update.set(IndivdualSoldierAuthConstantUtils.MODEL_ENABLE_FLAG, Boolean.FALSE);
+        update.set(IndividualSoldierAuthConstantUtils.MODEL_ENABLE_FLAG, Boolean.FALSE);
         try {
             mongoTemplate.updateFirst(query, update, entityClass);
             return true;
@@ -158,10 +158,10 @@ public abstract class IMongoServiceImpl<T> implements IMongoService<T> {
 
     @Override
     public boolean logicDeletedByIds(Iterable<? extends Serializable> ids) {
-        Criteria criteria = Criteria.where(IndivdualSoldierAuthConstantUtils.MODEL_ID_MONGO).in(ids);
+        Criteria criteria = Criteria.where(IndividualSoldierAuthConstantUtils.MODEL_ID_MONGO).in(ids);
         Query query = new Query(criteria);
         Update update = new Update();
-        update.set(IndivdualSoldierAuthConstantUtils.MODEL_ENABLE_FLAG, Boolean.FALSE);
+        update.set(IndividualSoldierAuthConstantUtils.MODEL_ENABLE_FLAG, Boolean.FALSE);
         try {
             mongoTemplate.updateFirst(query, update, entityClass);
             return true;
@@ -195,7 +195,7 @@ public abstract class IMongoServiceImpl<T> implements IMongoService<T> {
     }
 
     protected Query buildQueryById(Serializable id) {
-        Criteria criteria = Criteria.where(IndivdualSoldierAuthConstantUtils.MODEL_ID_MONGO).is(id);
+        Criteria criteria = Criteria.where(IndividualSoldierAuthConstantUtils.MODEL_ID_MONGO).is(id);
         return new Query(criteria);
     }
 
@@ -323,7 +323,7 @@ public abstract class IMongoServiceImpl<T> implements IMongoService<T> {
     }
 
     protected Criteria buildCriteria(Map<String, Object> map) {
-        Criteria criteria = Criteria.where(IndivdualSoldierAuthConstantUtils.MODEL_ENABLE_FLAG).is(Boolean.TRUE);
+        Criteria criteria = Criteria.where(IndividualSoldierAuthConstantUtils.MODEL_ENABLE_FLAG).is(Boolean.TRUE);
         if (!CollectionUtils.isEmpty(map)) {
             for (String key : map.keySet()) {
                 criteria.and(key).is(map.get(key));

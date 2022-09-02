@@ -3,7 +3,7 @@ package com.key.win.basic.util;
 /**
  * 系统常量
  */
-public class IndivdualSoldierAuthConstantUtils {
+public class IndividualSoldierAuthConstantUtils {
 
 
     public static final String MODEL_ID = "id";
@@ -17,7 +17,7 @@ public class IndivdualSoldierAuthConstantUtils {
     public static final String MODEL_ID_MONGO = "_id";
     public static final String MODEL_ID_TO_UPPER_CASE = "ID";
 
-    public static final String REDIS_ROOT_KEY_PREFIX = "indivdual_soldier_auth:";
+    public static final String REDIS_ROOT_KEY_PREFIX = "individual_soldier_auth:";
     public static final String TOKEN = "token";
     public static final String REFRESH_TOKEN = "refresh:" + TOKEN;
     public static final String REDIS_TOKEN_KEY_PREFIX = REDIS_ROOT_KEY_PREFIX + TOKEN + ":";
@@ -46,11 +46,11 @@ public class IndivdualSoldierAuthConstantUtils {
     public static final String FAILED_INFO = "操作失败！";
 
     public static String getRedisTokenKey(String token) {
-        return IndivdualSoldierAuthConstantUtils.REDIS_TOKEN_KEY_PREFIX + token;
+        return IndividualSoldierAuthConstantUtils.REDIS_TOKEN_KEY_PREFIX + token;
     }
 
     public static String getRedisRefreshTokenKey(String refreshToken) {
-        return IndivdualSoldierAuthConstantUtils.REDIS_REFRESH_TOKEN_KEY_PREFIX + refreshToken;
+        return IndividualSoldierAuthConstantUtils.REDIS_REFRESH_TOKEN_KEY_PREFIX + refreshToken;
     }
 
 

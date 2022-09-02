@@ -22,6 +22,7 @@ export default class StorageSupport {
    * @param key 键
    * @param value 值
    */
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
   public save(key: string, value: any): void {
     if (value === undefined) {
       this.storage.removeItem(key)
@@ -42,6 +43,7 @@ export default class StorageSupport {
    * 根据键获取类型为any的值
    * @param key 键
    */
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
   public getAny(key: string): any {
     return this.storage.getItem(key)
   }
@@ -50,6 +52,7 @@ export default class StorageSupport {
    * 根据键获取类型为string的值
    * @param key 键
    */
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
   public getStr(key: string): string {
     return this.getAny(key) || ''
   }
@@ -58,6 +61,7 @@ export default class StorageSupport {
    * 根据键获取类型为Object的值
    * @param key 键
    */
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
   public getObj(key: string): any {
     const value = this.getAny(key)
     try {

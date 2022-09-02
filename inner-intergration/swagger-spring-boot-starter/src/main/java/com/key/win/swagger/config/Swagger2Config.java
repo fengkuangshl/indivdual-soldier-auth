@@ -103,7 +103,7 @@ public class Swagger2Config {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 // 页面标题
-                .title("indivdual soldier 使用 Swagger2 构建RESTful API")
+                .title("sysRoleMenuPermission soldier 使用 Swagger2 构建RESTful API")
                 // 创建人信息
                 .contact(new Contact("key-win", "www.key-win.com", "@@"))
                 // 版本号

@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.key.win.basic.exception.BizException;
 import com.key.win.basic.util.BeanUtils;
-import com.key.win.basic.util.IndivdualSoldierAuthConstantUtils;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
 import com.key.win.mybatis.page.MybatisPageServiceTemplate;

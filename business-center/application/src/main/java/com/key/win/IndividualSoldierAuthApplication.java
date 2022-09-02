@@ -8,10 +8,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 // @EnableLogging
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
-public class IndivdualSoldierAuthApplication {
+public class IndividualSoldierAuthApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(IndivdualSoldierAuthApplication.class, args);
+        SpringApplication.run(IndividualSoldierAuthApplication.class, args);
     }
 
 }

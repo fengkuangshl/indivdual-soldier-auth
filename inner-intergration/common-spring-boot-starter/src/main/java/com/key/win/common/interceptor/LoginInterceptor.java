@@ -1,7 +1,7 @@
 package com.key.win.common.interceptor;
 
 import com.key.win.basic.exception.UserIllegalException;
-import com.key.win.basic.util.IndivdualSoldierAuthConstantUtils;
+import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
 import com.key.win.common.auth.AuthenticationUtil;
 import com.key.win.common.auth.detail.Authentication;
 import org.apache.commons.lang3.StringUtils;
@@ -36,7 +36,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         String token = this.extractHeaderToken(request);
         if (token == null) {
             logger.warn("Token not found in headers. Trying request parameters.");
-            token = request.getParameter(IndivdualSoldierAuthConstantUtils.REQUEST_TOKEN_KEY);
+            token = request.getParameter(IndividualSoldierAuthConstantUtils.REQUEST_TOKEN_KEY);
             if (token == null) {
                 logger.error("Token not found in request parameters.  illegal request.");
             }
@@ -45,7 +45,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     }
 
     protected String extractHeaderToken(HttpServletRequest request) {
-        Enumeration headers = request.getHeaders(IndivdualSoldierAuthConstantUtils.REQUEST_HEADER_AUTHORIZATION);
+        Enumeration headers = request.getHeaders(IndividualSoldierAuthConstantUtils.REQUEST_HEADER_AUTHORIZATION);
         String value;
         do {
             if (!headers.hasMoreElements()) {
@@ -53,9 +53,9 @@ public class LoginInterceptor implements HandlerInterceptor {
             }
 
             value = (String) headers.nextElement();
-        } while (!value.toLowerCase().startsWith(IndivdualSoldierAuthConstantUtils.TOKEN_BEARER_VAUE.toLowerCase()));
+        } while (!value.toLowerCase().startsWith(IndividualSoldierAuthConstantUtils.TOKEN_BEARER_VAUE.toLowerCase()));
 
-        String authHeaderValue = value.substring(IndivdualSoldierAuthConstantUtils.TOKEN_BEARER_VAUE.length()).trim();
+        String authHeaderValue = value.substring(IndividualSoldierAuthConstantUtils.TOKEN_BEARER_VAUE.length()).trim();
 //        int commaIndex = authHeaderValue.indexOf(44);
 //        if (commaIndex > 0) {
 //            authHeaderValue = authHeaderValue.substring(0, commaIndex);

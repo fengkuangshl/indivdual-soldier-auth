@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.*;
 import com.baomidou.mybatisplus.extension.handlers.AbstractSqlParserHandler;
 import com.key.win.base.util.EntityUtils;
-import com.key.win.basic.util.IndivdualSoldierAuthConstantUtils;
+import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
 import com.key.win.common.model.basic.MybatisID;
 import com.key.win.datalog.annotation.IgnoreDataLog;
 import com.key.win.datalog.handle.BaseDataLog;
@@ -231,7 +231,7 @@ public class DataUpdateInterceptor extends AbstractSqlParserHandler implements I
             change.setNewData(valueList);
         } else if (parameterObject instanceof MybatisID) {//传进来的实体包含了Id
             MybatisID id = (MybatisID) parameterObject;
-            valueList.get(0).put(IndivdualSoldierAuthConstantUtils.MODEL_ID, id.getId().toString());
+            valueList.get(0).put(IndividualSoldierAuthConstantUtils.MODEL_ID, id.getId().toString());
             change.setNewData(valueList);
         } else if (parameterObject instanceof List) {//list中的实体包含Id
             valueList.clear();
@@ -252,12 +252,12 @@ public class DataUpdateInterceptor extends AbstractSqlParserHandler implements I
             }
         } else if (parameterObject instanceof Map) {//map中的实体包含Id
             Map map = (Map) parameterObject;
-            Object idObject = map.get(IndivdualSoldierAuthConstantUtils.MODEL_ID_TO_UPPER_CASE);
+            Object idObject = map.get(IndividualSoldierAuthConstantUtils.MODEL_ID_TO_UPPER_CASE);
             if (idObject == null) {
-                idObject = map.get(IndivdualSoldierAuthConstantUtils.MODEL_ID);
+                idObject = map.get(IndividualSoldierAuthConstantUtils.MODEL_ID);
             }
             if (idObject != null) {
-                valueList.get(0).put(IndivdualSoldierAuthConstantUtils.MODEL_ID, idObject.toString());
+                valueList.get(0).put(IndividualSoldierAuthConstantUtils.MODEL_ID, idObject.toString());
                 change.setNewData(valueList);
             } else {
                 logger.error("Map中Id不存在,不做任何处理！");

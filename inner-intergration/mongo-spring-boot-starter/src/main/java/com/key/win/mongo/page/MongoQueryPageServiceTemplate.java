@@ -1,6 +1,6 @@
 package com.key.win.mongo.page;
 
-import com.key.win.basic.util.IndivdualSoldierAuthConstantUtils;
+import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
 import com.key.win.basic.web.OrderDir;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
@@ -52,11 +52,11 @@ public abstract class MongoQueryPageServiceTemplate<T, RT> {
             if (sos != null && sos.size() > 0) {
                 orderList.addAll(sos);
             } else {
-                orderList.add(new Sort.Order(Sort.Direction.DESC, IndivdualSoldierAuthConstantUtils.QUERY_DEFAULT_ORDER_NAME));
+                orderList.add(new Sort.Order(Sort.Direction.DESC, IndividualSoldierAuthConstantUtils.QUERY_DEFAULT_ORDER_NAME));
             }
         }
         Sort sort = Sort.by(orderList);
-        Criteria criteriaEnableFlag = Criteria.where(IndivdualSoldierAuthConstantUtils.MODEL_ENABLE_FLAG).is(Boolean.TRUE);
+        Criteria criteriaEnableFlag = Criteria.where(IndividualSoldierAuthConstantUtils.MODEL_ENABLE_FLAG).is(Boolean.TRUE);
         Criteria criteria = this.constructQuery(pageParam.getT());
         criteriaEnableFlag.andOperator(criteriaEnableFlag, criteria);
         Query query = Query.query(criteriaEnableFlag);

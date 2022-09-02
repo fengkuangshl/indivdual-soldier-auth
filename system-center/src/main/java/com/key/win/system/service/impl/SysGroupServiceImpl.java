@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.key.win.basic.exception.BizException;
 import com.key.win.mybatis.page.MybatisPageServiceTemplate;
-import com.key.win.basic.util.IndivdualSoldierAuthConstantUtils;
+import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
 import com.key.win.system.dao.SysGroupDao;
@@ -60,14 +60,14 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
         Map<Long, SysGroup> levelAll = new HashMap<>();
         if (!CollectionUtils.isEmpty(list)) {
             for (SysGroup organ : list) {
-                if (organ.getParentId().equals(IndivdualSoldierAuthConstantUtils.TREE_PARENT_ID)) {
+                if (organ.getParentId().equals(IndividualSoldierAuthConstantUtils.TREE_PARENT_ID)) {
                     topList.add(organ);
                 }
                 levelAll.put(organ.getId(), organ);
             }
             for (Map.Entry<Long, SysGroup> entry : levelAll.entrySet()) {
                 SysGroup value = entry.getValue();
-                if (!value.getParentId().equals(IndivdualSoldierAuthConstantUtils.TREE_PARENT_ID)) {
+                if (!value.getParentId().equals(IndividualSoldierAuthConstantUtils.TREE_PARENT_ID)) {
                     Long key = value.getParentId();
                     SysGroup parentGroup = levelAll.get(key);
                     parentGroup.addSubGroup(value);

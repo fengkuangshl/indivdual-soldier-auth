@@ -3,13 +3,16 @@ interface ISettings {
   activePath: string
   accessToken: string
   refreshToken: string
-  developmentDomain: string
-  userAcceptanceTestDomain: string
-  productionDomain: string
+  developmentHttpDomain: string
+  userAcceptanceTestHttpDomain: string
+  productionHttpDomain: string
   menuTypeItem: string
   menuTypeDirectory: string
   defaultAvatar: string
   permissionEnable: boolean
+  developmentWsDomain: string
+  userAcceptanceTestWsDomain: string
+  productionWsDomain: string
 }
 
 // You can customize below settings :)
@@ -18,13 +21,16 @@ const settings: ISettings = {
   activePath: 'activePath',
   accessToken: 'access_token',
   refreshToken: 'refresh_token',
-  developmentDomain: 'http://127.0.0.1:9902/',
-  userAcceptanceTestDomain: 'http://localhost:9200',
-  productionDomain: 'http://127.0.0.1:9200',
+  developmentHttpDomain: 'http://127.0.0.1:9902/',
+  userAcceptanceTestHttpDomain: 'http://localhost:9200',
+  productionHttpDomain: 'http://127.0.0.1:9200',
   menuTypeItem: '菜单',
   menuTypeDirectory: '目录',
   defaultAvatar: require('./assets/head.png'),
-  permissionEnable: true
+  permissionEnable: true,
+  developmentWsDomain: '',
+  userAcceptanceTestWsDomain: '',
+  productionWsDomain: ''
 }
 
 export default settings

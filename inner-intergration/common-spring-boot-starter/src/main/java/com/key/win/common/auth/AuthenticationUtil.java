@@ -1,12 +1,11 @@
 package com.key.win.common.auth;
 
 import com.key.win.basic.exception.UserIllegalException;
-import com.key.win.basic.util.IndivdualSoldierAuthConstantUtils;
+import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
 import com.key.win.common.auth.detail.Authentication;
 import com.key.win.common.model.system.SysUser;
 import com.key.win.common.vo.RefreshTokenVo;
 import com.key.win.redis.util.RedisScanUtil;
-import com.key.win.redis.util.RedisUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,8 +31,6 @@ public class AuthenticationUtil {
 
     private static RedisTemplate<String, Object> redisTemplate;
 
-    private static RedisUtil redisUtil;
-
     private static int tokenExpires;
 
     private static int refreshTokenExpires;
@@ -52,14 +49,13 @@ public class AuthenticationUtil {
         if (loginUser != null) {
             return loginUser.getNickName();
         }
-        return IndivdualSoldierAuthConstantUtils.SYSTEM_ANONYMOUS_USER;
+        return IndividualSoldierAuthConstantUtils.SYSTEM_ANONYMOUS_USER;
     }
 
     @Value("${spring.web.socket.disconnect.tokenOutTime:60}")
     public void setWebSocketDisconnectTokenOutTime(int webSocketDisconnectTokenOutTime) {
         AuthenticationUtil.webSocketDisconnectTokenOutTime = webSocketDisconnectTokenOutTime;
     }
-
 
     @Value("${spring.global.token.expires:86400}")
     public void setTokenExpires(int expires) {
@@ -93,11 +89,6 @@ public class AuthenticationUtil {
         AuthenticationUtil.redisTemplate = redisTemplate;
     }
 
-    @Autowired
-    public void setRedisUtil(RedisUtil redisUtil) {
-        AuthenticationUtil.redisUtil = redisUtil;
-    }
-
     /**
      * 获取登陆的 LoginAppUser
      *
@@ -121,7 +112,7 @@ public class AuthenticationUtil {
         if (loginUser != null) {
             return loginUser.getUserName();
         }
-        return IndivdualSoldierAuthConstantUtils.SYSTEM_ANONYMOUS_USER;
+        return IndividualSoldierAuthConstantUtils.SYSTEM_ANONYMOUS_USER;
     }
 
     public static Long getUserId() {
@@ -129,7 +120,7 @@ public class AuthenticationUtil {
         if (loginUser != null) {
             return loginUser.getId();
         }
-        return IndivdualSoldierAuthConstantUtils.SYSTEM_ANONYMOUS_USER_ID;
+        return IndividualSoldierAuthConstantUtils.SYSTEM_ANONYMOUS_USER_ID;
     }
 
     public static String getHeadImgUrl() {
@@ -164,15 +155,15 @@ public class AuthenticationUtil {
         return token;
     }
 
-    public static String getRefershTokenException() {
-        String token = getRefershToken();
+    public static String getRefreshTokenException() {
+        String token = getRefreshToken();
         if (StringUtils.isBlank(token)) {
             throw new UserIllegalException("refreshtoken不存在！");
         }
         return token;
     }
 
-    private static String getRefershToken() {
+    private static String getRefreshToken() {
         Authentication loginUser = getAuthentication();
         if (loginUser != null) {
             return loginUser.getRefreshToken();
@@ -185,11 +176,11 @@ public class AuthenticationUtil {
     }
 
     public static void setAuthenticationToRedis(Authentication authentication, int tokenExpires) {
-        redisTemplate.opsForValue().set(IndivdualSoldierAuthConstantUtils.getRedisTokenKey(authentication.getToken()), authentication, tokenExpires, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(IndividualSoldierAuthConstantUtils.getRedisTokenKey(authentication.getToken()), authentication, tokenExpires, TimeUnit.SECONDS);
     }
 
     public static void setAuthenticationTokenExpires(String token) {
-        redisTemplate.expire(IndivdualSoldierAuthConstantUtils.getRedisTokenKey(token), tokenExpires, TimeUnit.SECONDS);
+        redisTemplate.expire(IndividualSoldierAuthConstantUtils.getRedisTokenKey(token), tokenExpires, TimeUnit.SECONDS);
     }
 
     public static Authentication getAuthenticationToRedis() {
@@ -197,21 +188,21 @@ public class AuthenticationUtil {
     }
 
     public static Authentication getAuthenticationToRedis(String token) {
-        return (Authentication) redisTemplate.opsForValue().get(IndivdualSoldierAuthConstantUtils.getRedisTokenKey(token));
+        return (Authentication) redisTemplate.opsForValue().get(IndividualSoldierAuthConstantUtils.getRedisTokenKey(token));
     }
 
     public static boolean deleteTokenToRedis(String token) {
-        return redisTemplate.delete(IndivdualSoldierAuthConstantUtils.getRedisTokenKey(token));
+        return redisTemplate.delete(IndividualSoldierAuthConstantUtils.getRedisTokenKey(token));
     }
 
     public static boolean logout() {
-        deleteRefreshTokenToRedis(getRefershTokenException());
+        deleteRefreshTokenToRedis(getRefreshTokenException());
         return deleteTokenToRedis(getTokenException());
     }
 
     public static List<Authentication> getOnLineUser() throws Exception {
         List<Authentication> authenticationList = new ArrayList<>();
-        Cursor<String> cursor = RedisScanUtil.scan(redisTemplate, IndivdualSoldierAuthConstantUtils.REDIS_TOKEN_KEY_PREFIX + "*", 999);
+        Cursor<String> cursor = RedisScanUtil.scan(redisTemplate, IndividualSoldierAuthConstantUtils.REDIS_TOKEN_KEY_PREFIX + "*", 999);
         while (cursor.hasNext()) {
             Authentication authentication = (Authentication) redisTemplate.opsForValue().get(cursor.next());
             authenticationList.add(authentication);
@@ -238,7 +229,7 @@ public class AuthenticationUtil {
     }
 
     public static RefreshTokenVo getRefreshTokenToRedis(String refreshToken) {
-        return (RefreshTokenVo) redisTemplate.opsForValue().get(IndivdualSoldierAuthConstantUtils.getRedisRefreshTokenKey(refreshToken));
+        return (RefreshTokenVo) redisTemplate.opsForValue().get(IndividualSoldierAuthConstantUtils.getRedisRefreshTokenKey(refreshToken));
     }
 
     public static void setRefreshTokenToRedis(String refreshToken) {
@@ -256,11 +247,11 @@ public class AuthenticationUtil {
     }
 
     public static void setRefreshTokenToRedis(String refreshToken, RefreshTokenVo refreshTokenVo) {
-        redisTemplate.opsForValue().set(IndivdualSoldierAuthConstantUtils.getRedisRefreshTokenKey(refreshToken), refreshTokenVo, refreshTokenExpires, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(IndividualSoldierAuthConstantUtils.getRedisRefreshTokenKey(refreshToken), refreshTokenVo, refreshTokenExpires, TimeUnit.SECONDS);
     }
 
     public static void deleteRefreshTokenToRedis(String refreshToken) {
-        redisTemplate.delete(IndivdualSoldierAuthConstantUtils.getRedisRefreshTokenKey(refreshToken));
+        redisTemplate.delete(IndividualSoldierAuthConstantUtils.getRedisRefreshTokenKey(refreshToken));
     }
 
 

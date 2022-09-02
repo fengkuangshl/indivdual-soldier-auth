@@ -1,12 +1,11 @@
 package com.key.win.base.util;
 
-import com.key.win.basic.util.IndivdualSoldierAuthConstantUtils;
+import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
 import com.key.win.basic.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -30,13 +29,13 @@ public class EntityUtils {
             Map.Entry<String, Object> next = iterator.next();
             String key = next.getKey();
             Object value = next.getValue();
-            if (key.equals(IndivdualSoldierAuthConstantUtils.MODEL_ID) ||
-                    key.equals(IndivdualSoldierAuthConstantUtils.MODEL_CREATE_DATE) ||
-                    key.equals(IndivdualSoldierAuthConstantUtils.MODEL_CREATE_USER_ID) ||
-                    key.equals(IndivdualSoldierAuthConstantUtils.MODEL_CREATE_USER_NAME) ||
-                    key.equals(IndivdualSoldierAuthConstantUtils.MODEL_UPDATE_DATE) ||
-                    key.equals(IndivdualSoldierAuthConstantUtils.MODEL_UPDATE_USER_ID) ||
-                    key.equals(IndivdualSoldierAuthConstantUtils.MODEL_UPDATE_USER_NAME) ||
+            if (key.equals(IndividualSoldierAuthConstantUtils.MODEL_ID) ||
+                    key.equals(IndividualSoldierAuthConstantUtils.MODEL_CREATE_DATE) ||
+                    key.equals(IndividualSoldierAuthConstantUtils.MODEL_CREATE_USER_ID) ||
+                    key.equals(IndividualSoldierAuthConstantUtils.MODEL_CREATE_USER_NAME) ||
+                    key.equals(IndividualSoldierAuthConstantUtils.MODEL_UPDATE_DATE) ||
+                    key.equals(IndividualSoldierAuthConstantUtils.MODEL_UPDATE_USER_ID) ||
+                    key.equals(IndividualSoldierAuthConstantUtils.MODEL_UPDATE_USER_NAME) ||
                     value == null) {
                 iterator.remove();
             }

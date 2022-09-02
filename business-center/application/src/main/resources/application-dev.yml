@@ -1,11 +1,11 @@
 spring:
   file:
-    root-path: /indivdual-soldier-auth
-    access-path-prefix: http://127.0.0.1:9901/indivdual-soldier-auth/
+    root-path: /individual-soldier-auth
+    access-path-prefix: http://127.0.0.1:9901/individual-soldier-auth/
   datasource:
     username: root
     password: key-win123
-    url: jdbc:mysql://127.0.0.1:3307/indivdual-soldier-auth?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://127.0.0.1:3307/individual-soldier-auth?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     #监控统计拦截的filters

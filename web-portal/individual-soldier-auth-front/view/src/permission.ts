@@ -14,6 +14,7 @@ import settings from '@/settings'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import { Message } from 'element-ui'
+import { SocketModule } from './store/web-socket-store'
 
 // const whiteList = ['/login', '/auth-redirect', '/registe', '/404']
 
@@ -66,6 +67,7 @@ export const getMenus = async (to: Route, from: Route, next: NavigationGuardNext
     MenuModule.changeMenu(menus)
     PermissionModule.generateRoutes()
     // router.addRoutes(PermissionModule.getDynamicRoutes)
+    SocketModule.initSocket()
     next({ ...to, replace: true } as RawLocation)
   } else {
     Message.error(msg || '获取当前用户菜单失败！')
