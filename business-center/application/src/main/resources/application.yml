@@ -13,13 +13,13 @@ spring:
   web:
     request:
       white: /user/login,/user/refresh/**,/user/register,/swagger-ui.html/**,/swagger-resources/**,/v2/**,/webjars/**,/csrf,/favicon.ico,/error,/,/individual-soldier-auth/**
-  socket:
-    disconnect:
-      tokenOutTime: 60
-    exporter:
-      enable: true
-    cluster: true
-    path: /ws/{token}
+    socket:
+      disconnect:
+        tokenOutTime: 60
+      exporter:
+        enable: true
+      cluster: true
+      path: /ws/{token}
   tx:
     manager:
       enabled: true

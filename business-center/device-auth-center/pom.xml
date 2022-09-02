@@ -20,5 +20,9 @@
             <groupId>com.key.win</groupId>
             <artifactId>data-log-spring-boot-starter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.key.win</groupId>
+            <artifactId>websocket-center</artifactId>
+        </dependency>
     </dependencies>
 </project>
