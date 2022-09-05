@@ -3,6 +3,7 @@ package com.key.win.auth.customer.ctrl;
 
 import com.key.win.auth.customer.model.CustomerInfo;
 import com.key.win.auth.customer.service.CustomerInfoService;
+import com.key.win.auth.customer.vo.CustomerInfoVo;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
 import com.key.win.basic.web.Result;
@@ -28,7 +29,7 @@ public class CustomerInfoCtrl {
     @PostMapping("/findCustomerInfoByPaged")
     @ApiOperation(value = "客户信息分页")
     @LogAnnotation(module = "device-auth", recordRequestParam = false)
-    public PageResult<CustomerInfo> findCustomerInfoByPaged(@RequestBody PageRequest<CustomerInfo> t) {
+    public PageResult<CustomerInfoVo> findCustomerInfoByPaged(@RequestBody PageRequest<CustomerInfoVo> t) {
         return customerInfoService.findCustomerByPaged(t);
     }
 

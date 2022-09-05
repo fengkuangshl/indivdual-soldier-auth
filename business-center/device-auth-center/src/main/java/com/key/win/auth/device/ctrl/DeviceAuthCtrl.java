@@ -3,6 +3,7 @@ package com.key.win.auth.device.ctrl;
 
 import com.key.win.auth.device.model.DeviceAuth;
 import com.key.win.auth.device.service.DeviceAuthService;
+import com.key.win.auth.device.vo.DeviceAuthVo;
 import com.key.win.basic.exception.BizException;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
@@ -29,7 +30,7 @@ public class DeviceAuthCtrl {
     @PostMapping("/findDeviceAuthByPaged")
     @ApiOperation(value = "客户信息分页")
     @LogAnnotation(module = "device-auth", recordRequestParam = false)
-    public PageResult<DeviceAuth> findDeviceAuthByPaged(@RequestBody PageRequest<DeviceAuth> t) {
+    public PageResult<DeviceAuthVo> findDeviceAuthByPaged(@RequestBody PageRequest<DeviceAuthVo> t) {
         return deviceAuthService.findDeviceAuthByPaged(t);
     }
 

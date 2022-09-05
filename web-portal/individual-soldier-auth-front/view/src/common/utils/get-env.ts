@@ -12,7 +12,10 @@ export function getHttpDomain(): string {
     // 默认正式
     baseURL = settings.productionHttpDomain
   }
-  return baseURL
+  if (!baseURL.endsWith('/')) {
+    baseURL += '/'
+  }
+  return processBaseURL(baseURL)
 }
 
 export function getWsDomain(): string {
@@ -26,6 +29,12 @@ export function getWsDomain(): string {
   } else if (process.env.VUE_APP_CURRENTMODE === 'production') {
     // 默认正式
     baseURL = settings.productionWsDomain
+  }
+  return processBaseURL(baseURL)
+}
+function processBaseURL(baseURL: string): string {
+  if (!baseURL.endsWith('/')) {
+    baseURL += '/'
   }
   return baseURL
 }

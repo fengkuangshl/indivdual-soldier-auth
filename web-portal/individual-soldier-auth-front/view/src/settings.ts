@@ -28,9 +28,9 @@ const settings: ISettings = {
   menuTypeDirectory: '目录',
   defaultAvatar: require('./assets/head.png'),
   permissionEnable: true,
-  developmentWsDomain: '',
-  userAcceptanceTestWsDomain: '',
-  productionWsDomain: ''
+  developmentWsDomain: 'ws://127.0.0.1:9902/ws/',
+  userAcceptanceTestWsDomain: 'ws://127.0.0.1:9902/ws/',
+  productionWsDomain: 'ws://127.0.0.1:9902/ws/'
 }
 
 export default settings
