@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
 
 @Component
 public class MessageSendUtil {
@@ -34,9 +37,25 @@ public class MessageSendUtil {
         webSocketManager.broadcast(websocketBaseMessage);
     }
 
+    public static void broadcast(Object message) {
+        webSocketManager.broadcast(message);
+    }
+
     public static void sendMessage(String action, String mapper, Object message, String token) {
         WebsocketBaseMessage websocketBaseMessage = buildWebsocketBaseMessage(action, mapper, message);
         webSocketManager.sendMessageByToken(token, websocketBaseMessage);
+    }
+
+    public static void sendMessage(Object message, String token) {
+        webSocketManager.sendMessageByToken(token, message);
+    }
+
+    public static void sendMessage(Object message, List<String> tokens) {
+        if (!CollectionUtils.isEmpty(tokens)) {
+            for (String token : tokens) {
+                webSocketManager.sendMessageByToken(token, message);
+            }
+        }
     }
 
     protected static WebsocketBaseMessage buildWebsocketBaseMessage(String action, String mapper, Object message) {

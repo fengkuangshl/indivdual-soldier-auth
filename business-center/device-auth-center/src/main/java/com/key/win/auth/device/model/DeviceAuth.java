@@ -8,13 +8,16 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.Date;
+
 @Data
 @TableName("DEVICE_AUTH")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel("设备认证")
 public class DeviceAuth extends MybatisID {
     // andriod APILevel
-    @ApiModelProperty("andriod APILevel")
+    @ApiModelProperty("android APILevel")
+    @TableField("api_Level")
     private String aPILevel;
     //屏幕对角线的像素值/对角线的尺寸
     @ApiModelProperty("屏幕对角线的像素值/对角线的尺寸")
@@ -60,11 +63,14 @@ public class DeviceAuth extends MybatisID {
     private String authCode;
     //code
     @ApiModelProperty("验证码")
-    private String code;
-
+    private String verifyCode;
     //唯一码
-    @ApiModelProperty("唯一码")
-    private String md5Code;
+    @ApiModelProperty("设备唯一码")
+    private String uniqueCode;
+
+    //	客户设备授权到期日
+    @ApiModelProperty("客户设备授权到期日")
+    private Date expireDeviceDate;
 
 
     @ApiModelProperty("设备的状态：[true:在线 false:离线]")

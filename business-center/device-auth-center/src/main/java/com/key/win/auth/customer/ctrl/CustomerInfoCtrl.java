@@ -69,7 +69,7 @@ public class CustomerInfoCtrl {
             logger.error("授权设备数量为空！");
             throw new IllegalArgumentException("授权设备数量为空！");
         }
-        if (customerInfo.getEnabledVerification() && customerInfo.getExpireDeviceDate() == null) {
+        if (customerInfo.getIsVerify() && customerInfo.getExpireDeviceDate() == null) {
             logger.error("客户设备授权到期日为空！");
             throw new IllegalArgumentException("客户设备授权到期日为空！");
         }

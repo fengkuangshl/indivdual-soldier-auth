@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.key.win.auth.customer.dao.CustomerInfoDao;
 import com.key.win.auth.customer.model.CustomerInfo;
 import com.key.win.auth.customer.service.CustomerInfoService;
+import com.key.win.auth.customer.vo.CustomerInfoVo;
 import com.key.win.basic.exception.BizException;
 import com.key.win.basic.util.BeanUtils;
 import com.key.win.basic.util.DateUtils;
@@ -29,23 +30,29 @@ public class CustomerInfoServiceImpl extends ServiceImpl<CustomerInfoDao, Custom
     private final static String CUSTOMER_SEQUENCE_PREFIX = "CNO";
 
     @Override
-    public PageResult<CustomerInfo> findCustomerByPaged(PageRequest<CustomerInfo> t) {
-        MybatisPageServiceTemplate<CustomerInfo, CustomerInfo> query = new MybatisPageServiceTemplate<CustomerInfo, CustomerInfo>(this.baseMapper) {
+    public PageResult<CustomerInfoVo> findCustomerByPaged(PageRequest<CustomerInfoVo> t) {
+        MybatisPageServiceTemplate<CustomerInfoVo, CustomerInfoVo> query = new MybatisPageServiceTemplate<CustomerInfoVo, CustomerInfoVo>(this.baseMapper) {
             @Override
-            protected AbstractWrapper constructWrapper(CustomerInfo customer) {
+            protected AbstractWrapper constructWrapper(CustomerInfoVo customer) {
                 return buildCustomerInfoLambdaQueryWrapper(customer);
             }
+            //SELECT dci.*, (select count(1) FROM device_auth da where da.auth_Code = dci.auth_Code) as authorized_quantity   from device_customer_info dci
+
+            protected String constructNativeSql() {
+                return "SELECT dci.*, (select count(1) FROM device_auth da where da.auth_Code = dci.auth_Code) as authorized_quantity   from device_customer_info dci";
+            }
+
         };
         return query.doPagingQuery(t);
     }
 
     @Override
-    public List<CustomerInfo> findCustomer(CustomerInfo customer) {
+    public List<CustomerInfo> findCustomer(CustomerInfoVo customer) {
         LambdaQueryWrapper<CustomerInfo> lambdaQueryWrapper = buildCustomerInfoLambdaQueryWrapper(customer);
         return this.list(lambdaQueryWrapper);
     }
 
-    private LambdaQueryWrapper<CustomerInfo> buildCustomerInfoLambdaQueryWrapper(CustomerInfo customer) {
+    private LambdaQueryWrapper<CustomerInfo> buildCustomerInfoLambdaQueryWrapper(CustomerInfoVo customer) {
         LambdaQueryWrapper<CustomerInfo> lambdaQueryWrapper = new LambdaQueryWrapper<CustomerInfo>();
         if (customer != null) {
             if (StringUtils.isNotBlank(customer.getSequence())) {
@@ -100,12 +107,12 @@ public class CustomerInfoServiceImpl extends ServiceImpl<CustomerInfoDao, Custom
                 logger.error("客户授权码[{}]已锁定，不允许修改！", customer.getAuthDeviceCode());
                 throw new BizException("客户授权码已锁定，不允许修改！!");
             }
-            BeanUtils.copyPropertiesToPartField(customer,po );
+            BeanUtils.copyPropertiesToPartField(customer, po);
         } else {
             po = customer;
             po.setSequence(CUSTOMER_SEQUENCE_PREFIX + DefaultIdentifierGeneratorUtils.getGeneratorLongId());
-            List<CustomerInfo> existCustomerByAuthCode = findCustomerByAuthCode(customer.getAuthDeviceCode());
-            if (!CollectionUtils.isEmpty(existCustomerByAuthCode)) {
+            CustomerInfo existCustomer = findCustomerByAuthCode(customer.getAuthDeviceCode());
+            if (existCustomer != null) {
                 logger.error("客户授权码[{}]已存在！", customer.getAuthDeviceCode());
                 throw new BizException("客户授权码已存在，不允许使用！!");
             }
@@ -113,9 +120,13 @@ public class CustomerInfoServiceImpl extends ServiceImpl<CustomerInfoDao, Custom
         return super.saveOrUpdate(customer);
     }
 
-    private List<CustomerInfo> findCustomerByAuthCode(String authCode) {
-        CustomerInfo customer = new CustomerInfo();
+    public CustomerInfo findCustomerByAuthCode(String authCode) {
+        CustomerInfoVo customer = new CustomerInfoVo();
         customer.setAuthDeviceCode(authCode);
-        return this.findCustomer(customer);
+        List<CustomerInfo> customerInfos = this.findCustomer(customer);
+        if (!CollectionUtils.isEmpty(customerInfos)) {
+            return customerInfos.get(0);
+        }
+        return null;
     }
 }

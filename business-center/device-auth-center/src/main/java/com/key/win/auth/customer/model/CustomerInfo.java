@@ -29,7 +29,7 @@ public class CustomerInfo extends MybatisID {
     private Long authDeviceNum;
     // 是否校验日期
     @ApiModelProperty("是否校验日期：true-启用，false-禁用")
-    private Boolean enabledVerification = Boolean.TRUE;
+    private Boolean isVerify = Boolean.TRUE;
     // 公司名称
     @ApiModelProperty("公司名称")
     private String companyName;
@@ -53,19 +53,5 @@ public class CustomerInfo extends MybatisID {
     //项目号
     @ApiModelProperty("项目名称")
     private String projectName;
-
-    @ApiModelProperty("查询条件的开始时间")
-    @TableField(exist = false)
-    private String startDate;
-    @ApiModelProperty("查询条件的结束时间")
-    @TableField(exist = false)
-    private String endDate;
-
-    @ApiModelProperty("查询条件的开始数量")
-    @TableField(exist = false)
-    private Integer startNum;
-    @ApiModelProperty("查询条件的结束数量")
-    @TableField(exist = false)
-    private Integer endNum;
 
 }

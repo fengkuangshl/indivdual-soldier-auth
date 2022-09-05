@@ -302,3 +302,36 @@ CREATE TABLE `DEVICE_CUSTOMER_INFO` (
   `project_name` varchar(25) DEFAULT NULL COMMENT '项目名称',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4;
+-- ---------------------------------------------------------
+-- ---------DEVICE_AUTH-----------------------------------
+DROP TABLE IF EXISTS `DEVICE_AUTH`;
+CREATE TABLE `DEVICE_AUTH` (
+    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id自增',
+    `create_date` datetime  DEFAULT NULL COMMENT '创建时间',
+    `create_user_id` int(11) NOT NULL COMMENT '创建者Id',
+    `create_user_name` varchar(255) DEFAULT NULL COMMENT '创建者名称',
+    `enable_flag` bit(1) NOT NULL COMMENT '是否删除1:正常，0：删除',
+    `update_date` datetime  DEFAULT NULL COMMENT '更新时间',
+    `update_user_id` int(11)  DEFAULT NULL COMMENT '更新者Id',
+    `update_user_name` varchar(255)  DEFAULT NULL COMMENT '更新者名称',
+    `version` int(3) NOT NULL COMMENT '版本号',
+    `api_Level` varchar(25) NOT NULL COMMENT 'android APILevel',
+    `density_Dpi` varchar(50) NOT NULL COMMENT '屏幕对角线的像素值/对角线的尺寸',
+    `height_Pixels` varchar(25)  DEFAULT NULL COMMENT  '高',
+    `width_Pixels` varchar(25) NOT NULL COMMENT '宽',
+    `android_Id` varchar(255) NOT NULL COMMENT 'androidId',
+    `board` varchar(255) NOT NULL COMMENT '主板名称',
+    `brand` varchar(255) DEFAULT NULL COMMENT '厂商名称',
+    `build_Time` varchar(15) DEFAULT NULL COMMENT '公司电话',
+    `finger_Print` varchar(255) DEFAULT NULL COMMENT '硬件识别码',
+    `hard_ware` varchar(255) DEFAULT NULL COMMENT '硬件名称',
+    `mac_Address` varchar(255) DEFAULT NULL COMMENT 'Mac地址',
+    `radio` varchar(255) NOT NULL COMMENT '无线电固件版本号',
+    `serial_Number` varchar(255) DEFAULT NULL COMMENT 'serialNumber',
+    `software_Version` varchar(255) DEFAULT NULL COMMENT '软件版本',
+    `auth_Code` varchar(25) DEFAULT NULL COMMENT '授权code',
+    `unique_Code` varchar(255) DEFAULT NULL COMMENT '设备唯一码',
+    `verify_Code` varchar(255) DEFAULT NULL COMMENT '验证码',
+    `expire_Device_Date` datetime DEFAULT NULL COMMENT '客户设备授权到期日',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4;

@@ -16,6 +16,8 @@ public interface SysDataLogService extends IService<SysDataLog> {
 
     Boolean saveDataLog(SysDataLog sysDataLog);
 
+    Boolean saveDataLog(String content, String fkId);
+
     Boolean saveBrachDataLog(List<SysDataLog> sysDataLogs);
 
     Boolean deleteDataLogById(String id);

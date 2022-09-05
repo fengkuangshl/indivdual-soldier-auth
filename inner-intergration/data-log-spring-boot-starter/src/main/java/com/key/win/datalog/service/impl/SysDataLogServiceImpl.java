@@ -42,6 +42,17 @@ public class SysDataLogServiceImpl extends ServiceImpl<SysDataLogDao, SysDataLog
     @Async
     @DataSource(name = "log")
     @Override
+    public Boolean saveDataLog(String content,String fkId) {
+        SysDataLog sysDataLog = new SysDataLog();
+        sysDataLog.setFkId(fkId);
+        sysDataLog.setContent(content);
+        return this.save(sysDataLog);
+    }
+
+
+    @Async
+    @DataSource(name = "log")
+    @Override
     public Boolean saveBrachDataLog(List<SysDataLog> sysDataLogs) {
         return this.saveBatch(sysDataLogs);
     }
