@@ -2,14 +2,19 @@ package com.key.win.auth.util;
 
 import com.key.win.auth.vo.UniqueCodeInfoVo;
 import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
+import com.key.win.common.auth.detail.Authentication;
+import com.key.win.redis.util.RedisScanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.DigestUtils;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class DeviceAuthUtils {
@@ -78,6 +83,17 @@ public class DeviceAuthUtils {
         String uniqueCode = getUniqueCode(androidId, serialNumber);
         UniqueCodeInfoVo uniqueCodeInfoVo = new UniqueCodeInfoVo(androidId, serialNumber, uniqueCode, isOnLine);
         redisTemplate.opsForValue().set(getRedisUniqueCodeKey(uniqueCode), uniqueCodeInfoVo, uniqueCodeExpires, TimeUnit.SECONDS);
+    }
+
+    public static List<UniqueCodeInfoVo> getOnLineDevices() throws Exception {
+        List<UniqueCodeInfoVo> uniqueCodeInfoVos = new ArrayList<>();
+        Cursor<String> cursor = RedisScanUtil.scan(redisTemplate, REDIS_UNIQUE_CODE_KEY_PREFIX + "*", 999);
+        while (cursor.hasNext()) {
+            UniqueCodeInfoVo uniqueCodeInfoVo = (UniqueCodeInfoVo) redisTemplate.opsForValue().get(cursor.next());
+            uniqueCodeInfoVos.add(uniqueCodeInfoVo);
+        }
+        cursor.close();
+        return uniqueCodeInfoVos;
     }
 
 }

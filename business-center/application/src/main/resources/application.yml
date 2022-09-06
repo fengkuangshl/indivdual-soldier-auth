@@ -12,7 +12,7 @@ spring:
     name: individual-soldier-auth
   web:
     request:
-      white: /user/login,/user/refresh/**,/user/register,/swagger-ui.html/**,/swagger-resources/**,/v2/**,/webjars/**,/csrf,/favicon.ico,/error,/,/individual-soldier-auth/**
+      white: /user/login,/user/refresh/**,/user/register,/swagger-ui.html/**,/swagger-resources/**,/v2/**,/webjars/**,/csrf,/favicon.ico,/error,/,/individual-soldier-auth/**,/api/auth/**
     socket:
       disconnect:
         tokenOutTime: 60

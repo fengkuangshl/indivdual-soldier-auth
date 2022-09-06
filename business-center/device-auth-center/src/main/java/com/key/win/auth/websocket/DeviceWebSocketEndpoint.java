@@ -2,15 +2,12 @@ package com.key.win.auth.websocket;
 
 
 import com.key.win.auth.util.DeviceAuthUtils;
-import com.key.win.common.auth.AuthenticationUtil;
 import com.key.win.websocket.endpoint.BaseWebSocketEndpoint;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 @Component
 @ServerEndpoint(value = "/ws/device/{androidId}/{serialNumber}")
@@ -49,16 +46,6 @@ public class DeviceWebSocketEndpoint extends BaseWebSocketEndpoint {
     }
 
     public boolean authenticatorToken(Session session, String method, String uniqueCode) {
-        if (DeviceAuthUtils.getUniqueCodeToRedis(uniqueCode) == null) {
-            try {
-                session.close();
-                this.disconnect(uniqueCode);
-                logger.info("websocket {}时，token为空时关闭websocket成功！", method);
-                return true;
-            } catch (IOException e) {
-                logger.error("websocket {}时，token为空时关闭websocket时出错：{}", method, e.getMessage(), e);
-            }
-        }
         return false;
     }
 

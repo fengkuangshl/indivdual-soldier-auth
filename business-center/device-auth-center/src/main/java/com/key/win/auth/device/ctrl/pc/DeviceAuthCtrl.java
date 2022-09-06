@@ -1,9 +1,11 @@
-package com.key.win.auth.device.ctrl;
+package com.key.win.auth.device.ctrl.pc;
 
 
 import com.key.win.auth.device.model.DeviceAuth;
 import com.key.win.auth.device.service.DeviceAuthService;
 import com.key.win.auth.device.vo.DeviceAuthVo;
+import com.key.win.auth.util.DeviceAuthUtils;
+import com.key.win.auth.vo.UniqueCodeInfoVo;
 import com.key.win.basic.exception.BizException;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
@@ -16,7 +18,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/deviceAuth/*")
@@ -30,8 +37,22 @@ public class DeviceAuthCtrl {
     @PostMapping("/findDeviceAuthByPaged")
     @ApiOperation(value = "客户信息分页")
     @LogAnnotation(module = "device-auth", recordRequestParam = false)
-    public PageResult<DeviceAuthVo> findDeviceAuthByPaged(@RequestBody PageRequest<DeviceAuthVo> t) {
-        return deviceAuthService.findDeviceAuthByPaged(t);
+    public PageResult<DeviceAuthVo> findDeviceAuthByPaged(@RequestBody PageRequest<DeviceAuthVo> t) throws Exception {
+        List<UniqueCodeInfoVo> onLineDevices = DeviceAuthUtils.getOnLineDevices();
+        PageResult<DeviceAuthVo> deviceAuthByPaged = deviceAuthService.findDeviceAuthByPaged(t);
+        if (!CollectionUtils.isEmpty(onLineDevices)) {
+            Map<String, UniqueCodeInfoVo> uniqueCodeInfoVoMap = onLineDevices.stream().collect(Collectors.toMap(UniqueCodeInfoVo::getUniqueCode, uniqueCodeInfoVo -> uniqueCodeInfoVo));
+            List<DeviceAuthVo> data = deviceAuthByPaged.getData();
+            if (!CollectionUtils.isEmpty(data)) {
+                for (DeviceAuthVo datum : data) {
+                    UniqueCodeInfoVo uniqueCodeInfoVo = uniqueCodeInfoVoMap.get(datum.getUniqueCode());
+                    if (uniqueCodeInfoVo != null) {
+                        datum.setOnLine(uniqueCodeInfoVo.isOnLine());
+                    }
+                }
+            }
+        }
+        return deviceAuthByPaged;
     }
 
     @GetMapping("/get/{id}")
@@ -41,33 +62,12 @@ public class DeviceAuthCtrl {
         return Result.succeed(deviceAuthService.getById(id));
     }
 
-    @DataLog
     @DeleteMapping("/delete/{id}")
     @ApiOperation(value = "删除")
     @LogAnnotation(module = "device-auth", recordRequestParam = true)
     public Result delete(@PathVariable Long id) {
         boolean b = deviceAuthService.removeById(id);
         return Result.result(b);
-    }
-
-    @DataLog
-    @PostMapping("/saveOrUpdate")
-    @ApiOperation(value = "新增/更新")
-    @LogAnnotation(module = "device-auth", recordRequestParam = true)
-    public Result saveOrUpdate(@RequestBody DeviceAuth deviceAuth) {
-        if (StringUtils.isBlank(deviceAuth.getAndroidId())) {
-            logger.error("AndroidId不存在！");
-            throw new BizException("AndroidId信息不存在!");
-        }
-        if (StringUtils.isBlank(deviceAuth.getSerialNumber())) {
-            logger.error("SerialNumber不存在！");
-            throw new BizException("SerialNumber信息不存在!");
-        }
-        if (StringUtils.isBlank(deviceAuth.getAuthCode())) {
-            logger.error("授权码的不存在！");
-            throw new BizException("授权码信息不存在!");
-        }
-        return deviceAuthService.saveOrUpdateDeviceAuth(deviceAuth);
     }
 
     @GetMapping("/getDeviceAuthAll")
