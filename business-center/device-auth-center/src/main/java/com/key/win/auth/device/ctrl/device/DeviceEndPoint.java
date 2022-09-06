@@ -6,6 +6,7 @@ import com.key.win.auth.util.DeviceAuthUtils;
 import com.key.win.basic.exception.BizException;
 import com.key.win.basic.web.Result;
 import com.key.win.log.annotation.LogAnnotation;
+import com.key.win.rsa.web.EncryptResponse;
 import com.key.win.websocket.utils.MessageSendUtil;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -44,20 +45,20 @@ public class DeviceEndPoint {
     @GetMapping("/deviceToOnLine/{androidId}/{serialNumber}")
     @ApiOperation(value = "设备在线")
     @LogAnnotation(module = "system", recordRequestParam = false)
-    public Result deviceToOnLine(@PathVariable String androidId, @PathVariable String serialNumber) throws Exception {
+    public EncryptResponse deviceToOnLine(@PathVariable String androidId, @PathVariable String serialNumber) throws Exception {
         DeviceAuthUtils.setUniqueCodeForOnLine(androidId, serialNumber);
         String uniqueCode = DeviceAuthUtils.getUniqueCode(androidId, serialNumber);
-        MessageSendUtil.sendMessage("设备[" + uniqueCode + "]上线！", uniqueCode);
-        return Result.succeed();
+        //MessageSendUtil.sendMessage("设备[" + uniqueCode + "]上线！", uniqueCode);
+        return EncryptResponse.succeed();
     }
 
     @GetMapping("/deviceToOffLine/{androidId}/{serialNumber}")
     @ApiOperation(value = "设备离线")
     @LogAnnotation(module = "system", recordRequestParam = false)
-    public Result deviceToOffLine(@PathVariable String androidId, @PathVariable String serialNumber) throws Exception {
+    public EncryptResponse deviceToOffLine(@PathVariable String androidId, @PathVariable String serialNumber) throws Exception {
         DeviceAuthUtils.setUniqueCodeForOffLine(androidId, serialNumber);
         String uniqueCode = DeviceAuthUtils.getUniqueCode(androidId, serialNumber);
-        MessageSendUtil.sendMessage("设备[" + uniqueCode + "]下线！", uniqueCode);
-        return Result.succeed();
+        //MessageSendUtil.sendMessage("设备[" + uniqueCode + "]下线！", uniqueCode);
+        return EncryptResponse.succeed();
     }
 }

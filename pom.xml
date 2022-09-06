@@ -184,8 +184,11 @@
                 <artifactId>system-center</artifactId>
                 <version>${core.version}</version>
             </dependency>
-
-
+            <dependency>
+                <groupId>com.key.win</groupId>
+                <artifactId>rsa-spring-boot-starter</artifactId>
+                <version>${core.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>

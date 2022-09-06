@@ -1,24 +1,13 @@
-package com.key.win.config;
+package com.key.win.rsa.config;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.key.win.basic.util.AccessPathUtils;
-import com.key.win.common.interceptor.LoginInterceptor;
 import com.key.win.rsa.message.converter.CustomEncryptHttpMessageConverter;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.text.SimpleDateFormat;
@@ -27,36 +16,10 @@ import java.util.List;
 import java.util.TimeZone;
 
 @Configuration
-public class WebAppConfigurer implements WebMvcConfigurer {
-
-    @Value("${spring.web.request.white}")
-    private List<String> excludePathPatterns;
-
-    @Bean
-    public HandlerInterceptor getLoginInterceptor() {
-        return new LoginInterceptor();
-    }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        InterceptorRegistration interceptorRegistration = registry.addInterceptor(getLoginInterceptor());
-        interceptorRegistration.addPathPatterns("/**");
-        interceptorRegistration.excludePathPatterns(excludePathPatterns);
-    }
-
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("swagger-ui.html")
-                .addResourceLocations("classpath:/META-INF/resources/");
-        registry.addResourceHandler("/webjars/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/");
-        registry.addResourceHandler("/" + AccessPathUtils.getRootPath().substring(AccessPathUtils.getRootPath().lastIndexOf("\\") + 1) + "/**")
-                .addResourceLocations("file:" + AccessPathUtils.getRootPath() + "/");
-    }
+public class RSAConfigurer implements WebMvcConfigurer {
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        MappingJackson2HttpMessageConverter jackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
         ObjectMapper objectMapper = new ObjectMapper();
         // 去掉默认的时间戳格式
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
@@ -88,8 +51,8 @@ public class WebAppConfigurer implements WebMvcConfigurer {
         // 参考它的做法, fastjson也只添加application/json的MediaType
         List<MediaType> fastMediaTypes = new ArrayList<>();
         fastMediaTypes.add(MediaType.APPLICATION_JSON);
-        jackson2HttpMessageConverter.setSupportedMediaTypes(fastMediaTypes);
-        jackson2HttpMessageConverter.setObjectMapper(objectMapper);
-        converters.add(0, jackson2HttpMessageConverter);
+        CustomEncryptHttpMessageConverter c = new CustomEncryptHttpMessageConverter(objectMapper);
+        c.setSupportedMediaTypes(fastMediaTypes);
+        converters.add(0, c);
     }
 }

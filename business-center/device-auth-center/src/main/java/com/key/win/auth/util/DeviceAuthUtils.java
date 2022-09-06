@@ -2,6 +2,7 @@ package com.key.win.auth.util;
 
 import com.key.win.auth.vo.UniqueCodeInfoVo;
 import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
+import com.key.win.common.auth.AuthenticationUtil;
 import com.key.win.common.auth.detail.Authentication;
 import com.key.win.redis.util.RedisScanUtil;
 import org.slf4j.Logger;
@@ -10,13 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
+@Component
 public class DeviceAuthUtils {
     private static final Logger logger = LoggerFactory.getLogger(DeviceAuthUtils.class);
 

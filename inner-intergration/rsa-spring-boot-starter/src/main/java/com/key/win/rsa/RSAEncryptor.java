@@ -1,4 +1,4 @@
-package com.key.win.basic.util;
+package com.key.win.rsa;
 
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
@@ -40,7 +40,7 @@ public class RSAEncryptor {
 //                    "nIIV7fVsHe8QquUbciMYbbumoMtbBuLsCr2yMB/WAhm+S/kGRPlf+k2GH8imZIYQ" + "\r" +
 //                    "QBDssVLQmS392QlxS87hnwMRJIzWw6vdRv/k79TgTfu6tI/9QTqIOvNlQIqtIcVm" + "\r" +
 //                    "R/suvydoymKgdlB+ce5/tHSxfqEOLLrL1Zl2PqJSP4A=";
-//           
+//
 //            String decryptStringFromIOS = rsaEncryptor.decryptWithBase64(rsaBase46StringFromIOS);
 //            System.out.println("Decrypt result from ios client: \n" + decryptStringFromIOS);
 
