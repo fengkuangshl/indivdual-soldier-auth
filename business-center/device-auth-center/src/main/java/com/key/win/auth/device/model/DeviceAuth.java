@@ -3,6 +3,7 @@ package com.key.win.auth.device.model;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.key.win.common.model.basic.MybatisID;
+import com.key.win.rsa.web.IEncryptor;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -14,7 +15,7 @@ import java.util.Date;
 @TableName("DEVICE_AUTH")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel("设备认证")
-public class DeviceAuth extends MybatisID {
+public class DeviceAuth extends MybatisID implements IEncryptor {
     // andriod APILevel
     @ApiModelProperty("android APILevel")
     @TableField("api_Level")

@@ -1,14 +1,10 @@
-package com.key.win.config;
+package com.key.win.common.config;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.key.win.basic.util.AccessPathUtils;
 import com.key.win.common.interceptor.LoginInterceptor;
-import com.key.win.rsa.message.converter.CustomEncryptHttpMessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,16 +38,6 @@ public class WebAppConfigurer implements WebMvcConfigurer {
         InterceptorRegistration interceptorRegistration = registry.addInterceptor(getLoginInterceptor());
         interceptorRegistration.addPathPatterns("/**");
         interceptorRegistration.excludePathPatterns(excludePathPatterns);
-    }
-
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("swagger-ui.html")
-                .addResourceLocations("classpath:/META-INF/resources/");
-        registry.addResourceHandler("/webjars/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/");
-        registry.addResourceHandler("/" + AccessPathUtils.getRootPath().substring(AccessPathUtils.getRootPath().lastIndexOf("\\") + 1) + "/**")
-                .addResourceLocations("file:" + AccessPathUtils.getRootPath() + "/");
     }
 
     @Override

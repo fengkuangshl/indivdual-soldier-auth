@@ -1,13 +1,23 @@
+#!/usr/bin/env bash
+echo "Generating RSA key pair ..."
+echo "1024 RSA key: private_key.pem"
 openssl genrsa -out private_key.pem 1024
 
+echo "create certification require file: rsaCertReq.csr"
 openssl req -new -key private_key.pem -out rsaCertReq.csr
 
-openssl x509 -req -days 36500 -in rsaCertReq.csr -signkey private_key.pem -out rsaCert.crt
+echo "create certification using x509: rsaCert.crt"
+openssl x509 -req -days 3650 -in rsaCertReq.csr -signkey private_key.pem -out rsaCert.crt
 
-openssl x509 -outform der -in rsaCert.crt -out public_key.der　　　　　　　　　　　　　　　// Create public_key.der For device
+echo "create public_key.der For device"
+openssl x509 -outform der -in rsaCert.crt -out public_key.der
 
-openssl pkcs12 -export -out private_key.p12 -inkey private_key.pem -in rsaCert.crt　　// Create private_key.p12 For device. 这一步，请记住你输入的密码，IOS代码里会用到
+echo "create private_key.p12 For device. Please remember your password. The password will be used in device."
+openssl pkcs12 -export -out private_key.p12 -inkey private_key.pem -in rsaCert.crt
 
-openssl rsa -in private_key.pem -out rsa_public_key.pem -pubout　　　　　　　　　　　　　// Create rsa_public_key.pem For Java
-　
-openssl pkcs8 -topk8 -in private_key.pem -out pkcs8_private_key.pem -nocrypt　　　　　// Create pkcs8_private_key.pem For Java
+echo "create rsa_public_key.pem For Java"
+openssl rsa -in private_key.pem -out rsa_public_key.pem -pubout
+echo "create pkcs8_private_key.pem For Java"
+openssl pkcs8 -topk8 -in private_key.pem -out pkcs8_private_key.pem -nocrypt
+
+echo "finished."

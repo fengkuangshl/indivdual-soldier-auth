@@ -1,5 +1,7 @@
 package com.key.win.rsa;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -18,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RSAEncryptor {
-
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public static void main(String[] args) throws Exception {
 
@@ -58,8 +60,8 @@ public class RSAEncryptor {
     public RSAEncryptor(String publicKeyFilePath, String privateKeyFilePath) throws Exception {
         String public_key = getKeyFromFile(publicKeyFilePath);
         String private_key = getKeyFromFile(privateKeyFilePath);
-        loadPublicKey(public_key);
         loadPrivateKey(private_key);
+        loadPublicKey(public_key);
     }
 
     public RSAEncryptor() {
@@ -149,7 +151,8 @@ public class RSAEncryptor {
         try {
             keyPairGen = KeyPairGenerator.getInstance("RSA");
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            logger.error("NoSuchAlgorithmException:" + e.getMessage(), e);
+            //e.printStackTrace();
         }
         keyPairGen.initialize(1024, new SecureRandom());
         KeyPair keyPair = keyPairGen.generateKeyPair();
@@ -178,8 +181,10 @@ public class RSAEncryptor {
             }
             loadPublicKey(sb.toString());
         } catch (IOException e) {
+            logger.error("公钥数据流读取错误:" + e.getMessage(), e);
             throw new Exception("公钥数据流读取错误");
         } catch (NullPointerException e) {
+            logger.error("公钥输入流为空:" + e.getMessage(), e);
             throw new Exception("公钥输入流为空");
         }
     }
@@ -198,12 +203,16 @@ public class RSAEncryptor {
             X509EncodedKeySpec keySpec = new X509EncodedKeySpec(buffer);
             this.publicKey = (RSAPublicKey) keyFactory.generatePublic(keySpec);
         } catch (NoSuchAlgorithmException e) {
+            logger.error("无此算法:" + e.getMessage(), e);
             throw new Exception("无此算法");
         } catch (InvalidKeySpecException e) {
+            logger.error("公钥非法:" + e.getMessage(), e);
             throw new Exception("公钥非法");
         } catch (IOException e) {
+            logger.error("公钥数据内容读取错误:" + e.getMessage(), e);
             throw new Exception("公钥数据内容读取错误");
         } catch (NullPointerException e) {
+            logger.error("公钥数据为空:" + e.getMessage(), e);
             throw new Exception("公钥数据为空");
         }
     }
@@ -230,8 +239,10 @@ public class RSAEncryptor {
             }
             loadPrivateKey(sb.toString());
         } catch (IOException e) {
+            logger.error("私钥数据读取错误:" + e.getMessage(), e);
             throw new Exception("私钥数据读取错误");
         } catch (NullPointerException e) {
+            logger.error("私钥输入流为空:" + e.getMessage(), e);
             throw new Exception("私钥输入流为空");
         }
     }
@@ -244,13 +255,16 @@ public class RSAEncryptor {
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             this.privateKey = (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
         } catch (NoSuchAlgorithmException e) {
+            logger.error("无此算法:" + e.getMessage(), e);
             throw new Exception("无此算法");
         } catch (InvalidKeySpecException e) {
-            e.printStackTrace();
+            logger.error("私钥非法:" + e.getMessage(), e);
             throw new Exception("私钥非法");
         } catch (IOException e) {
+            logger.error("私钥数据内容读取错误:" + e.getMessage(), e);
             throw new Exception("私钥数据内容读取错误");
         } catch (NullPointerException e) {
+            logger.error("私钥数据为空:" + e.getMessage(), e);
             throw new Exception("私钥数据为空");
         }
     }
@@ -265,6 +279,7 @@ public class RSAEncryptor {
      */
     public byte[] encrypt(RSAPublicKey publicKey, byte[] plainTextData) throws Exception {
         if (publicKey == null) {
+            logger.error("加密公钥为空, 请设置");
             throw new Exception("加密公钥为空, 请设置");
         }
         Cipher cipher = null;
@@ -274,15 +289,19 @@ public class RSAEncryptor {
             byte[] output = cipher.doFinal(plainTextData);
             return output;
         } catch (NoSuchAlgorithmException e) {
+            logger.error("无此加密算法:" + e.getMessage(), e);
             throw new Exception("无此加密算法");
         } catch (NoSuchPaddingException e) {
             e.printStackTrace();
             return null;
         } catch (InvalidKeyException e) {
+            logger.error("加密公钥非法,请检查:" + e.getMessage(), e);
             throw new Exception("加密公钥非法,请检查");
         } catch (IllegalBlockSizeException e) {
+            logger.error("明文长度非法:" + e.getMessage(), e);
             throw new Exception("明文长度非法");
         } catch (BadPaddingException e) {
+            logger.error("明文数据已损坏:" + e.getMessage(), e);
             throw new Exception("明文数据已损坏");
         }
     }
@@ -297,6 +316,7 @@ public class RSAEncryptor {
      */
     public byte[] decrypt(RSAPrivateKey privateKey, byte[] cipherData) throws Exception {
         if (privateKey == null) {
+            logger.error("解密私钥为空, 请设置");
             throw new Exception("解密私钥为空, 请设置");
         }
         Cipher cipher = null;
@@ -306,15 +326,19 @@ public class RSAEncryptor {
             byte[] output = cipher.doFinal(cipherData);
             return output;
         } catch (NoSuchAlgorithmException e) {
+            logger.error("无此解密算法:" + e.getMessage(), e);
             throw new Exception("无此解密算法");
         } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
+            logger.error("NoSuchPaddingException:" + e.getMessage(), e);
             return null;
         } catch (InvalidKeyException e) {
+            logger.error("解密私钥非法,请检查:" + e.getMessage(), e);
             throw new Exception("解密私钥非法,请检查");
         } catch (IllegalBlockSizeException e) {
+            logger.error("密文长度非法:" + e.getMessage(), e);
             throw new Exception("密文长度非法");
         } catch (BadPaddingException e) {
+            logger.error("密文数据已损坏:" + e.getMessage(), e);
             throw new Exception("密文数据已损坏");
         }
     }

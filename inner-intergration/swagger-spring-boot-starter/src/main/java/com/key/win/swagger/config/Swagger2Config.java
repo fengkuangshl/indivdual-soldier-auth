@@ -4,6 +4,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.builders.*;
 import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.*;
@@ -21,8 +23,16 @@ import java.util.Set;
 @Configuration
 @EnableSwagger2
 @Profile({"dev", "uat", "ds"})
-public class Swagger2Config {
+public class Swagger2Config implements WebMvcConfigurer {
 
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("swagger-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
+        registry.addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+    }
 
     /**
      * 全局参数(如header中的token)
@@ -103,7 +113,7 @@ public class Swagger2Config {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 // 页面标题
-                .title("sysRoleMenuPermission soldier 使用 Swagger2 构建RESTful API")
+                .title("individual-soldier-auth 使用 Swagger2 构建RESTful API")
                 // 创建人信息
                 .contact(new Contact("key-win", "www.key-win.com", "@@"))
                 // 版本号

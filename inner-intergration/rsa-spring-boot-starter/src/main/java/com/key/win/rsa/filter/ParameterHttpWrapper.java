@@ -1,5 +1,7 @@
 package com.key.win.rsa.filter;
 
+import org.springframework.util.StringUtils;
+
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -8,10 +10,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ParameterHttpWrapper extends HttpServletRequestWrapper {
 
@@ -39,7 +38,11 @@ public class ParameterHttpWrapper extends HttpServletRequestWrapper {
 
     @Override
     public Enumeration<String> getHeaders(String name) {
-        return Collections.enumeration(Collections.singletonList(headers.get(name)));
+        String values = headers.get(name);
+        if (!StringUtils.isEmpty(values)) {
+            return Collections.enumeration(Collections.singletonList(values));
+        }
+        return Collections.enumeration(new ArrayList<>());
     }
 
     @Override
