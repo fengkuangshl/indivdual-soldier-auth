@@ -1,6 +1,5 @@
 package com.key.win.rsa.exception;
 
-import com.key.win.basic.web.Result;
 import com.key.win.rsa.web.EncryptResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
