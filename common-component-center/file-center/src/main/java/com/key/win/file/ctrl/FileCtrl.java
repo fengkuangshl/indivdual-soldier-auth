@@ -38,6 +38,13 @@ public class FileCtrl {
         return fileService.findFileInfoByPaged(pageRequest);
     }
 
+    @GetMapping("/get/{id}")
+    @ApiOperation(value = "File分页")
+    @LogAnnotation(module = "file-center", recordRequestParam = false)
+    public Result<FileInfo> get(@PathVariable String id) {
+        FileInfoService fileService = fileServiceFactory.getFileService();
+        return Result.succeed(fileService.getById(id));
+    }
 
     /**
      * 文件上传
@@ -55,6 +62,27 @@ public class FileCtrl {
         }
         String path = bizTypeCheck(bizType);
         return uploadFile(bizType, path, file);
+    }
+
+    /**
+     * 文件上传
+     *
+     * @param files
+     * @return
+     * @throws Exception
+     */
+    @LogAnnotation(module = "file-center", recordRequestParam = false)
+    @PostMapping("/upload/{bizType}/files")
+    @ApiOperation(value = "上传附件")
+    public Result<FileInfo> uploadFiles(@RequestParam("files") MultipartFile[] files, @PathVariable String bizType) throws Exception {
+        for (MultipartFile file : files) {
+            if (file.getOriginalFilename().lastIndexOf(".") == -1) {
+                throw new BizException("originalFilename不在存在文件后缀！");
+            }
+            String path = bizTypeCheck(bizType);
+            uploadFile(bizType, path, file);
+        }
+        return Result.succeed();
     }
 
     /**

@@ -1,15 +1,16 @@
-package com.key.win.auth.device.ctrl.device;
+package com.key.win.auth.device.ctrl.app;
 
 import com.key.win.auth.device.model.DeviceAuth;
 import com.key.win.auth.device.service.DeviceAuthService;
 import com.key.win.auth.device.vo.DeviceAuthRequestVo;
 import com.key.win.auth.device.vo.DeviceAuthResponseVo;
 import com.key.win.auth.util.DeviceAuthUtils;
-import com.key.win.basic.exception.BizException;
-import com.key.win.basic.web.Result;
+import com.key.win.common.auth.AuthenticationUtil;
+import com.key.win.common.auth.detail.Authentication;
 import com.key.win.log.annotation.LogAnnotation;
 import com.key.win.rsa.exception.BizEncryptException;
 import com.key.win.rsa.web.EncryptResponse;
+import com.key.win.websocket.utils.MessageSendUtil;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -57,7 +58,9 @@ public class DeviceEndPoint {
     public EncryptResponse deviceToOnLine(@PathVariable String androidId, @PathVariable String serialNumber) throws Exception {
         DeviceAuthUtils.setUniqueCodeForOnLine(androidId, serialNumber);
         String uniqueCode = DeviceAuthUtils.getUniqueCode(androidId, serialNumber);
-        //MessageSendUtil.sendMessage("设备[" + uniqueCode + "]上线！", uniqueCode);
+        for (Authentication authentication : AuthenticationUtil.getOnLineUser()) {
+            MessageSendUtil.sendMessage("设备[" + uniqueCode + "]下线！", authentication.getToken());
+        }
         return EncryptResponse.succeed();
     }
 
@@ -67,6 +70,9 @@ public class DeviceEndPoint {
     public EncryptResponse deviceToOffLine(@PathVariable String androidId, @PathVariable String serialNumber) throws Exception {
         DeviceAuthUtils.setUniqueCodeForOffLine(androidId, serialNumber);
         String uniqueCode = DeviceAuthUtils.getUniqueCode(androidId, serialNumber);
+        for (Authentication authentication : AuthenticationUtil.getOnLineUser()) {
+            MessageSendUtil.sendMessage("设备[" + uniqueCode + "]下线！", authentication.getToken());
+        }
         //MessageSendUtil.sendMessage("设备[" + uniqueCode + "]下线！", uniqueCode);
         return EncryptResponse.succeed();
     }

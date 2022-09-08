@@ -33,6 +33,10 @@
             <groupId>com.key.win</groupId>
             <artifactId>device-auth-center</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.key.win</groupId>
+            <artifactId>file-center</artifactId>
+        </dependency>
 
     </dependencies>
 

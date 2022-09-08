@@ -274,8 +274,31 @@ CREATE TABLE `sys_data_log` (
     `fk_id` VARCHAR(255),
     PRIMARY KEY (`id`)
 ) ENGINE = INNODB AUTO_INCREMENT = 16 DEFAULT CHARSET = utf8mb4;
+
 -- ---------------------------------------------------------
--- ---------sys_user_group-----------------------------------
+-- ---------sys_file_info-----------------------------------
+DROP TABLE IF EXISTS `sys_file_info`;
+CREATE TABLE `sys_file_info` (
+     `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id自增',
+     `create_date` datetime  DEFAULT NULL COMMENT '创建时间',
+     `create_user_id` int(11) NOT NULL COMMENT '创建者Id',
+     `create_user_name` varchar(255) DEFAULT NULL COMMENT '创建者名称',
+     `enable_flag` bit(1) NOT NULL COMMENT '是否删除1:正常，0：删除',
+     `update_date` datetime  DEFAULT NULL COMMENT '更新时间',
+     `update_user_id` int(11)  DEFAULT NULL COMMENT '更新者Id',
+     `update_user_name` varchar(255)  DEFAULT NULL COMMENT '更新者名称',
+     `version` int(3) NOT NULL COMMENT '版本号',
+     `name` VARCHAR (255),
+     `md5` VARCHAR (255),
+     `content_Type` VARCHAR (255),
+     `biz_Type` VARCHAR (255),
+     `size` INT,
+     `physical_path` VARCHAR (500),
+     `path` VARCHAR (500),
+     PRIMARY KEY (`id`)
+) ENGINE = INNODB AUTO_INCREMENT = 16 DEFAULT CHARSET = utf8mb4;
+-- ---------------------------------------------------------
+-- ---------DEVICE_CUSTOMER_INFO-----------------------------------
 DROP TABLE IF EXISTS `DEVICE_CUSTOMER_INFO`;
 CREATE TABLE `DEVICE_CUSTOMER_INFO` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id自增',

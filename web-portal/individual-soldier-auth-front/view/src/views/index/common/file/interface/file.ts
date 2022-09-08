@@ -1,8 +1,7 @@
-export type SearchContent = Model.Name
+export type Name = Model.Name
 
-export interface FileInfo extends Model.BaseField {
+export interface FileInfo extends Model.BaseField, Model.Name {
   md5: string
-  name: string
   contentType: string
   size: number
   physicalPath: string

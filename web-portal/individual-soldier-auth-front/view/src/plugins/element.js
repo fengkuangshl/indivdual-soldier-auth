@@ -37,7 +37,8 @@ import {
   Upload,
   Drawer,
   DatePicker,
-  Checkbox
+  Checkbox,
+  Link
 } from 'element-ui'
 
 Vue.use(Button)
@@ -76,5 +77,6 @@ Vue.use(Upload)
 Vue.use(Drawer)
 Vue.use(DatePicker)
 Vue.use(Checkbox)
+Vue.use(Link)
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
