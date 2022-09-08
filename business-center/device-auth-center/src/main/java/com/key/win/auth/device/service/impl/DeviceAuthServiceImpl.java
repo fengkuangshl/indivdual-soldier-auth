@@ -128,7 +128,7 @@ public class DeviceAuthServiceImpl extends ServiceImpl<DeviceAuthDao, DeviceAuth
     }
 
     @Override
-    public synchronized Result saveOrUpdateDeviceAuth(DeviceAuth deviceAuth) {
+    public synchronized DeviceAuthResponseVo saveOrUpdateDeviceAuth(DeviceAuth deviceAuth) {
         deviceAuth.setUniqueCode(DeviceAuthUtils.getUniqueCode(deviceAuth.getAndroidId(), deviceAuth.getSerialNumber()));//生成唯一码
         DeviceAuth deviceAuthByUniqueCode = getDeviceAuthByUniqueCode(deviceAuth.getUniqueCode());
         if (deviceAuthByUniqueCode != null) {
@@ -148,7 +148,7 @@ public class DeviceAuthServiceImpl extends ServiceImpl<DeviceAuthDao, DeviceAuth
         return verificationDevice(deviceAuth, false);
     }
 
-    public Result verificationDevice(DeviceAuth deviceAuth, boolean isAuthorized) {
+    public DeviceAuthResponseVo verificationDevice(DeviceAuth deviceAuth, boolean isAuthorized) {
         int count = getCountByAuthCode(deviceAuth.getAuthCode());//获取设备授权数量
         CustomerInfo customerByAuthCode = customerInfoService.findCustomerByAuthCode(deviceAuth.getAuthCode());//获取客户信息
         if (customerByAuthCode != null) {
@@ -170,15 +170,15 @@ public class DeviceAuthServiceImpl extends ServiceImpl<DeviceAuthDao, DeviceAuth
                     deviceAuthResponseVo.setAuthInfo(deviceAuth.getUniqueCode() + "n");
                     sysDataLogService.saveDataLog("正常授权下发，不需要校验日期", deviceAuth.getId().toString());
                 }
-                return Result.succeed(deviceAuthResponseVo);
+                return deviceAuthResponseVo;
             } else {
                 logger.warn("设备数量已经达到授权数量[{}]的上线，不予授权！", customerByAuthCode.getAuthDeviceNum());
                 sysDataLogService.saveDataLog("设备数量已经达到授权数量[" + customerByAuthCode.getAuthDeviceNum() + "]的上线，不予授权！", deviceAuth.getId().toString());
-                return Result.failed("设备数量已经达到授权数量[" + customerByAuthCode.getAuthDeviceNum() + "]的上线，不予授权！");
+                throw new BizException("设备数量已经达到授权数量[" + customerByAuthCode.getAuthDeviceNum() + "]的上线，不予授权！");
             }
         } else {
             sysDataLogService.saveDataLog("授权码对应的客户信息不存在，不予授权！", deviceAuth.getId().toString());
-            return Result.failed("授权码对应的客户信息不存在，不予授权！");
+            throw new BizException("授权码对应的客户信息不存在，不予授权！");
         }
     }
 
@@ -196,8 +196,8 @@ public class DeviceAuthServiceImpl extends ServiceImpl<DeviceAuthDao, DeviceAuth
                 if (b) {
                     sysDataLogService.saveDataLog("更新设备授权到期日期：" + DateUtils.dateToStr(deviceAuth.getExpireDeviceDate()) + "]", deviceAuth.getId().toString());
                 }
-                Result result = verificationDevice(byId, true);
-                sendAuthInfo(result, byId);
+                DeviceAuthResponseVo deviceAuthResponseVo = verificationDevice(byId, true);
+                sendAuthInfo(deviceAuthResponseVo, byId);
                 return true;
             }
 
@@ -205,13 +205,10 @@ public class DeviceAuthServiceImpl extends ServiceImpl<DeviceAuthDao, DeviceAuth
         return false;
     }
 
-    public void sendAuthInfo(Result result, DeviceAuth deviceAuth) {
-        if (result.getCode() == -200) {
-            throw new BizException(result.getMsg());
-        }
+    public void sendAuthInfo(DeviceAuthResponseVo deviceAuthResponseVo, DeviceAuth deviceAuth) {
         UniqueCodeInfoVo uniqueCodeToRedis = DeviceAuthUtils.getUniqueCodeToRedis(deviceAuth.getUniqueCode());
         if (uniqueCodeToRedis != null) {
-            MessageSendUtil.sendMessage(result, uniqueCodeToRedis.getUniqueCode());
+            MessageSendUtil.sendMessage(deviceAuthResponseVo, uniqueCodeToRedis.getUniqueCode());
         } else {
             throw new BizException("设备离线状态,不能下发认证信息！");
         }

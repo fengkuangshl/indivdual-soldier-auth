@@ -15,7 +15,7 @@ import java.util.Date;
 @TableName("DEVICE_AUTH")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel("设备认证")
-public class DeviceAuth extends MybatisID implements IEncryptor {
+public class DeviceAuth extends MybatisID {
     // andriod APILevel
     @ApiModelProperty("android APILevel")
     @TableField("api_Level")

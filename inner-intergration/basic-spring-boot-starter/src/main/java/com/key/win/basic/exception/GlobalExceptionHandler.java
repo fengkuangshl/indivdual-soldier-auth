@@ -48,7 +48,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = IllegalArgumentException.class)
     @ResponseBody
-    public ResponseEntity<Result<String>> bizIllegalArgumentnHandler(HttpServletRequest req, IllegalArgumentException ex) {
+    public ResponseEntity<Result<String>> bizIllegalArgumentHandler(HttpServletRequest req, IllegalArgumentException ex) {
         logger.error("发生业务异常！原因是：{}", ex.getMessage(), ex);
         return ResponseEntity.ok().body(Result.failed(ex.getMessage()));
     }

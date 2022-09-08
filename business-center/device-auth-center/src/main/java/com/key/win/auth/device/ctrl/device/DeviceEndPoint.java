@@ -2,12 +2,14 @@ package com.key.win.auth.device.ctrl.device;
 
 import com.key.win.auth.device.model.DeviceAuth;
 import com.key.win.auth.device.service.DeviceAuthService;
+import com.key.win.auth.device.vo.DeviceAuthRequestVo;
+import com.key.win.auth.device.vo.DeviceAuthResponseVo;
 import com.key.win.auth.util.DeviceAuthUtils;
 import com.key.win.basic.exception.BizException;
 import com.key.win.basic.web.Result;
 import com.key.win.log.annotation.LogAnnotation;
+import com.key.win.rsa.exception.BizEncryptException;
 import com.key.win.rsa.web.EncryptResponse;
-import com.key.win.websocket.utils.MessageSendUtil;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -26,20 +28,27 @@ public class DeviceEndPoint {
     @PostMapping("/auto")
     @ApiOperation(value = "新增/更新")
     @LogAnnotation(module = "device-auth", recordRequestParam = true)
-    public Result saveOrUpdate(@RequestBody DeviceAuth deviceAuth) {
+    public EncryptResponse saveOrUpdate(@RequestBody DeviceAuthRequestVo deviceAuth) {
         if (StringUtils.isBlank(deviceAuth.getAndroidId())) {
             logger.error("AndroidId不存在！");
-            throw new BizException("AndroidId信息不存在!");
+            EncryptResponse.failed("AndroidId信息不存在!");
         }
         if (StringUtils.isBlank(deviceAuth.getSerialNumber())) {
             logger.error("SerialNumber不存在！");
-            throw new BizException("SerialNumber信息不存在!");
+            EncryptResponse.failed("SerialNumber信息不存在!");
         }
         if (StringUtils.isBlank(deviceAuth.getAuthCode())) {
             logger.error("授权码的不存在！");
-            throw new BizException("授权码信息不存在!");
+            EncryptResponse.failed("授权码信息不存在!");
         }
-        return deviceAuthService.saveOrUpdateDeviceAuth(deviceAuth);
+        try {
+            DeviceAuthResponseVo deviceAuthResponseVo = deviceAuthService.saveOrUpdateDeviceAuth((DeviceAuth) deviceAuth);
+            return EncryptResponse.succeed(deviceAuthResponseVo);
+        } catch (Exception e) {
+            logger.error("设备认证过程出错啦：" + e.getMessage(), e);
+            throw new BizEncryptException(e.getMessage());
+        }
+
     }
 
     @GetMapping("/deviceToOnLine/{androidId}/{serialNumber}")
