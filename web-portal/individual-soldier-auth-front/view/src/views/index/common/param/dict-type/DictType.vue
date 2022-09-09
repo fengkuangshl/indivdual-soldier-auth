@@ -10,7 +10,7 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入内容" v-model="t.nickName">
+          <el-input placeholder="请输入内容" v-model="t.name">
             <el-button slot="append" class="search-primary" icon="el-icon-search" @click="searchDictType"></el-button>
           </el-input>
         </el-col>
@@ -33,8 +33,8 @@
         </el-table-column>
         <el-table-column prop="status" label="状态" sortable="custom">
           <template v-slot="scope">
-            <el-switch v-model="scope.row.enabled" active-color="#13ce66" inactive-color="#ff4949"
-              @change="sysDictTypeStatusChanged(scope.row, scope.row.enabled)">
+            <el-switch v-model="scope.row.status" active-color="#13ce66" inactive-color="#ff4949"
+              @change="sysDictTypeStatusChanged(scope.row, scope.row.status)">
             </el-switch>
           </template>
         </el-table-column>
