@@ -1,9 +1,9 @@
-package param.dao;
+package com.key.win.param.dao;
 
 import com.key.win.mybatis.mapper.KeyWinMapper;
+import com.key.win.param.model.SysDictTree;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
-import param.model.SysDictTree;
 
 import java.util.List;
 

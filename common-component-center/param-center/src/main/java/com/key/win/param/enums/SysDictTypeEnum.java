@@ -1,4 +1,4 @@
-package param.enums;
+package com.key.win.param.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

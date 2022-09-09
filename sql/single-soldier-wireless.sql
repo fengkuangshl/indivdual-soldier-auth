@@ -298,6 +298,77 @@ CREATE TABLE `sys_file_info` (
      PRIMARY KEY (`id`)
 ) ENGINE = INNODB AUTO_INCREMENT = 16 DEFAULT CHARSET = utf8mb4;
 -- ---------------------------------------------------------
+-- ---------sys_dic_type-----------------------------------
+DROP TABLE IF EXISTS `sys_dic_type`;
+CREATE TABLE `sys_dic_type` (
+    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id自增',
+    `create_date` datetime  DEFAULT NULL COMMENT '创建时间',
+    `create_user_id` int(11) NOT NULL COMMENT '创建者Id',
+    `create_user_name` varchar(255) DEFAULT NULL COMMENT '创建者名称',
+    `enable_flag` bit(1) NOT NULL COMMENT '是否删除1:正常，0：删除',
+    `update_date` datetime  DEFAULT NULL COMMENT '更新时间',
+    `update_user_id` int(11)  DEFAULT NULL COMMENT '更新者Id',
+    `update_user_name` varchar(255)  DEFAULT NULL COMMENT '更新者名称',
+    `version` int(3) NOT NULL COMMENT '版本号',
+    `name` VARCHAR (255),
+    `code` VARCHAR (255),
+    `type` INT,
+    `status` INT,
+    `remark` VARCHAR (2000),
+    PRIMARY KEY (`id`)
+) ENGINE = INNODB AUTO_INCREMENT = 16 DEFAULT CHARSET = utf8mb4;
+-- ---------------------------------------------------------
+-- ---------sys_dic_data-----------------------------------
+DROP TABLE IF EXISTS `sys_dic_data`;
+CREATE TABLE `sys_dic_data` (
+    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id自增',
+    `create_date` datetime  DEFAULT NULL COMMENT '创建时间',
+    `create_user_id` int(11) NOT NULL COMMENT '创建者Id',
+    `create_user_name` varchar(255) DEFAULT NULL COMMENT '创建者名称',
+    `enable_flag` bit(1) NOT NULL COMMENT '是否删除1:正常，0：删除',
+    `update_date` datetime  DEFAULT NULL COMMENT '更新时间',
+    `update_user_id` int(11)  DEFAULT NULL COMMENT '更新者Id',
+    `update_user_name` varchar(255)  DEFAULT NULL COMMENT '更新者名称',
+    `version` int(3) NOT NULL COMMENT '版本号',
+    `label` VARCHAR (255),
+    `type` VARCHAR (255),
+    `sort` int(11),
+    `is_Default` BIGINT,
+    `status` BIGINT,
+    `value` VARCHAR (255),
+    `attr1` VARCHAR (255),
+    `attr2` VARCHAR (255),
+    `attr3` VARCHAR (255),
+    `attr4` VARCHAR (255),
+    `attr5` VARCHAR (255),
+    PRIMARY KEY (`id`)
+) ENGINE = INNODB AUTO_INCREMENT = 16 DEFAULT CHARSET = utf8mb4;
+-- ---------------------------------------------------------
+-- ---------sys_dict_tree-----------------------------------
+DROP TABLE IF EXISTS `sys_dict_tree`;
+CREATE TABLE `sys_dict_tree` (
+     `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id自增',
+     `create_date` datetime  DEFAULT NULL COMMENT '创建时间',
+     `create_user_id` int(11) NOT NULL COMMENT '创建者Id',
+     `create_user_name` varchar(255) DEFAULT NULL COMMENT '创建者名称',
+     `enable_flag` bit(1) NOT NULL COMMENT '是否删除1:正常，0：删除',
+     `update_date` datetime  DEFAULT NULL COMMENT '更新时间',
+     `update_user_id` int(11)  DEFAULT NULL COMMENT '更新者Id',
+     `update_user_name` varchar(255)  DEFAULT NULL COMMENT '更新者名称',
+     `version` int(3) NOT NULL COMMENT '版本号',
+     `label` VARCHAR (255),
+     `type` VARCHAR (36),
+     `sort` int(11),
+     `parent_Id` VARCHAR (36),
+     `value` VARCHAR (255),
+     `attr1` VARCHAR (255),
+     `attr2` VARCHAR (255),
+     `attr3` VARCHAR (255),
+     `attr4` VARCHAR (255),
+     `attr5` VARCHAR (255),
+     PRIMARY KEY (`id`)
+) ENGINE = INNODB AUTO_INCREMENT = 16 DEFAULT CHARSET = utf8mb4;
+-- ---------------------------------------------------------
 -- ---------DEVICE_CUSTOMER_INFO-----------------------------------
 DROP TABLE IF EXISTS `DEVICE_CUSTOMER_INFO`;
 CREATE TABLE `DEVICE_CUSTOMER_INFO` (

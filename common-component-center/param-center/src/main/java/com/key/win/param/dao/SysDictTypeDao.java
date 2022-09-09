@@ -1,8 +1,8 @@
-package param.dao;
+package com.key.win.param.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.key.win.param.model.SysDictType;
 import org.apache.ibatis.annotations.Mapper;
-import param.model.SysDictType;
 
 @Mapper
 public interface SysDictTypeDao extends BaseMapper<SysDictType> {

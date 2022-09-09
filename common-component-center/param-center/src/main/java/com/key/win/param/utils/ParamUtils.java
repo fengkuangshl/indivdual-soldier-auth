@@ -1,4 +1,4 @@
-package param.utils;
+package com.key.win.param.utils;
 
 import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
 

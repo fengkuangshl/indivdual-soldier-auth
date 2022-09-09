@@ -1,4 +1,4 @@
-package param.model;
+package com.key.win.param.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;

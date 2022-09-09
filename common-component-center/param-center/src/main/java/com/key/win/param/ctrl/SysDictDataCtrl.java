@@ -1,15 +1,15 @@
-package param.ctrl;
+package com.key.win.param.ctrl;
 
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
 import com.key.win.basic.web.Result;
 import com.key.win.log.annotation.LogAnnotation;
+import com.key.win.param.model.SysDictData;
+import com.key.win.param.service.SysDictDataService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import param.model.SysDictData;
-import param.service.SysDictDataService;
 
 import java.util.List;
 

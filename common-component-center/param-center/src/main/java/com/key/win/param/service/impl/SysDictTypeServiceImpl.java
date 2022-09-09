@@ -1,4 +1,4 @@
-package param.service.impl;
+package com.key.win.param.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -13,10 +13,10 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import param.dao.SysDictTypeDao;
-import param.model.SysDictType;
-import param.service.SysDictTypeService;
-import param.utils.ParamUtils;
+import com.key.win.param.dao.SysDictTypeDao;
+import com.key.win.param.model.SysDictType;
+import com.key.win.param.service.SysDictTypeService;
+import com.key.win.param.utils.ParamUtils;
 
 import java.util.List;
 

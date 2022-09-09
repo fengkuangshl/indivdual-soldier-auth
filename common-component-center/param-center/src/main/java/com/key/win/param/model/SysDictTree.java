@@ -1,4 +1,4 @@
-package param.model;
+package com.key.win.param.model;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;

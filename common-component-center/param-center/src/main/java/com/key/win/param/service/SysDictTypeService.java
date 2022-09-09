@@ -1,9 +1,9 @@
-package param.service;
+package com.key.win.param.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
-import param.model.SysDictType;
+import com.key.win.param.model.SysDictType;
 
 import java.util.List;
 

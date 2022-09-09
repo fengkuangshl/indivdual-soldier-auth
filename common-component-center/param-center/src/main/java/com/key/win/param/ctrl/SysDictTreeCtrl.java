@@ -1,9 +1,11 @@
-package param.ctrl;
+package com.key.win.param.ctrl;
 
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
 import com.key.win.basic.web.Result;
 import com.key.win.log.annotation.LogAnnotation;
+import com.key.win.param.model.SysDictTree;
+import com.key.win.param.service.SysDictTreeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -11,8 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import param.model.SysDictTree;
-import param.service.SysDictTreeService;
 
 @RestController
 @RequestMapping("/sysDictTree/*")

@@ -1,4 +1,4 @@
-package param.model;
+package com.key.win.param.model;
 
 import com.key.win.common.model.basic.MybatisID;
 import io.swagger.annotations.ApiModelProperty;

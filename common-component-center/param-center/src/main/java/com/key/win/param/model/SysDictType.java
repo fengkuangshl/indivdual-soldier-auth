@@ -1,5 +1,5 @@
 
-package param.model;
+package com.key.win.param.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.key.win.common.model.basic.MybatisID;
@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import param.enums.SysDictTypeEnum;
+import com.key.win.param.enums.SysDictTypeEnum;
 
 @Data
 @TableName("sys_dic_type")

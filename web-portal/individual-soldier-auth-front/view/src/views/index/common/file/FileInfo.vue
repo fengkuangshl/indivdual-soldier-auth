@@ -31,8 +31,6 @@
         </el-table-column>
         <el-table-column label="操作">
           <template v-slot="scope">
-            <el-button type="primary" icon="el-icon-view" size="mini" @click="showDetailDialog(scope.row.id)">
-            </el-button>
             <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteFile(scope.row.id)"></el-button>
           </template>
         </el-table-column>
