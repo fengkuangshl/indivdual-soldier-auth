@@ -38,7 +38,7 @@
         <el-table-column prop="isEnabled" label="状态" sortable="custom">
           <template v-slot="scope">
             <el-switch v-model="scope.row.enabled" v-hasPermission="userPermission+'::USER::UPDATE::ENABLED'"
-              active-color="#13ce66" inactive-color="#ff4949" @change="userStatuChanged(scope.row, scope.row.enabled)">
+              active-color="#13ce66" inactive-color="#ff4949" @change="userStatusChanged(scope.row, scope.row.enabled)">
             </el-switch>
           </template>
         </el-table-column>
@@ -89,9 +89,9 @@
 <script lang="ts">
 import { ElForm } from 'element-ui/types/form'
 import { Component, Vue, Ref } from 'vue-property-decorator'
-import { Sex, Type, UserForm, UserInfo, UserSearchRequest, UserStatuChange } from './interface/sys-user'
+import { Sex, Type, UserForm, UserInfo, UserSearchRequest, UserStatusChange } from './interface/sys-user'
 import { SysRoleSearchRequest, SysRole } from '../sys-role/interface/sys-role'
-import { UserStatuChangeRequestApi, UserGetApi, UserSaveOrUpdateApi, ResetPasswordApi } from './user-api'
+import { UserStatusChangeRequestApi, UserGetApi, UserSaveOrUpdateApi, ResetPasswordApi } from './user-api'
 import { FindAllSysRoleApi } from '../sys-role/sys-role-api'
 import KWTable from '@/components/table/Table.vue'
 import FormValidatorRule from '@/common/utils/form-validator'
@@ -107,7 +107,7 @@ export default class User extends Vue {
   title = ''
   userDialogVisble = false
   userNameDisabled = true
-  userForm: UserForm = { nickName: '', phone: '', sex: '', userName: '', roleIds: new Array<number>(), type: Type.普通 }
+  userForm: UserForm = { nickName: '', phone: '', sex: '男', userName: '', roleIds: new Array<number>(), type: Type.普通 }
   @Ref('userFormRef')
   readonly userFormRef!: ElForm
 
@@ -138,11 +138,11 @@ export default class User extends Vue {
     pageNo: 1 // 默认开始页面
   }
 
-  async userStatuChanged(userInfo: UserInfo, enabled: boolean): Promise<void> {
+  async userStatusChanged(userInfo: UserInfo, enabled: boolean): Promise<void> {
     console.log(userInfo)
-    const req: UserStatuChange = { id: userInfo.id, isEnabled: enabled }
+    const req: UserStatusChange = { id: userInfo.id, isEnabled: enabled }
     console.log(req)
-    const { code, msg }: KWResponse.Result = await UserStatuChangeRequestApi(req)
+    const { code, msg }: KWResponse.Result = await UserStatusChangeRequestApi(req)
     if (code !== 200) {
       userInfo.isEnabled = !userInfo.isEnabled
       this.$message.error(msg || '更新用户状态失败!')
@@ -216,7 +216,7 @@ export default class User extends Vue {
     this.getUserRole()
     this.$nextTick(() => {
       this.userFormRef.resetFields()
-      this.userForm = { nickName: '', phone: '', sex: Sex.男, userName: '', roleIds: new Array<number>(), type: Type.普通 }
+      this.userForm = { nickName: '', phone: '', sex: '男', userName: '', roleIds: new Array<number>(), type: Type.普通 }
     })
   }
 

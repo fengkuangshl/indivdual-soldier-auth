@@ -57,8 +57,8 @@ export interface LoginSuccessUserInfo {
   user: UserExt
 }
 
-export interface UserStatuChange extends Model.Id, Enabled {}
+export interface UserStatusChange extends Model.Id, Enabled {}
 
 export interface UserStatuChangeRequest {
-  params: UserStatuChange
+  params: UserStatusChange
 }

@@ -7,8 +7,8 @@ import com.key.win.basic.enumjson.TextureEnumSerializerCode;
 @JsonSerialize(using = TextureEnumSerializerCode.class)
 public enum SysDictTypeEnum {
 
-    NORMAL(0, "普通"),
-    TREE(1, "树");
+    NORMAL(0, "列表"),
+    TREE(1, "树结构");
     @EnumValue
     private int code;
     private String text;

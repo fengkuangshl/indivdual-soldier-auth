@@ -35,7 +35,7 @@
         <el-table-column prop="enabled" label="状态" width="100">
           <template v-slot="scope">
             <el-switch v-model="scope.row.enabled" active-color="#13ce66" inactive-color="#ff4949"
-              @change="userStatuChanged(scope.row)"> </el-switch>
+              @change="userStatusChanged(scope.row)"> </el-switch>
           </template>
         </el-table-column>
         <el-table-column label="操作">
@@ -87,9 +87,9 @@
 <script lang="ts">
 import { ElForm } from 'element-ui/types/form'
 import { Component, Vue, Ref } from 'vue-property-decorator'
-import { UserForm, UserInfo, UserSearchRequest, UserStatuChange, Sex, Type } from '@/views/index/system/user/interface/sys-user'
+import { UserForm, UserInfo, UserSearchRequest, UserStatusChange, Sex, Type } from '@/views/index/system/user/interface/sys-user'
 import { SysRoleSearchRequest, SysRole } from '@/views/index/system/sys-role/interface/sys-role'
-import { UserPagedApi, UserStatuChangeRequestApi, UserGetApi, UserSaveOrUpdateApi, ResetPasswordApi } from '@/views/index/system/user/user-api'
+import { UserPagedApi, UserStatusChangeRequestApi, UserGetApi, UserSaveOrUpdateApi, ResetPasswordApi } from '@/views/index/system/user/user-api'
 import { SysRolePagedApi } from '@/views/index/system/sys-role/sys-role-api'
 
 @Component
@@ -163,11 +163,11 @@ export default class User extends Vue {
     return Y + M + D + h + m + s
   }
 
-  async userStatuChanged(userInfo: UserInfo): Promise<void> {
+  async userStatusChanged(userInfo: UserInfo): Promise<void> {
     console.log(userInfo)
-    const req: UserStatuChange = { id: userInfo.id, isEnabled: userInfo.isEnabled }
+    const req: UserStatusChange = { id: userInfo.id, isEnabled: userInfo.isEnabled }
     console.log(req)
-    const { code, msg }: KWResponse.Result = await UserStatuChangeRequestApi(req)
+    const { code, msg }: KWResponse.Result = await UserStatusChangeRequestApi(req)
     if (code !== 200) {
       userInfo.isEnabled = !userInfo.isEnabled
       this.$message.error(msg || '更新用户状态失败!')

@@ -59,7 +59,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
     @CacheEvict(cacheNames = ParamUtils.REDIS_SYS_DICT_TYPE_KEY_PREFIX, key = "#sysDictType.code")
     public boolean saveOrUpdateSysDictType(SysDictType sysDictType) {
         SysDictType po = null;
-        if (sysDictType.getId()!=null) {
+        if (sysDictType.getId() != null) {
             po = this.getSysDictTypeById(sysDictType.getId());
             BeanUtils.copyPropertiesToPartField(sysDictType, po);
         } else {
@@ -104,5 +104,17 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
             return sysDictType.get(0);
         }
         return null;
+    }
+
+    @Override
+    public boolean updateEnabled(Long id, Boolean status) {
+        if (id != null) {
+            SysDictType byId = super.getById(id);
+            if (byId != null) {
+                byId.setStatus(status == null ? Boolean.FALSE : status);
+                return updateById(byId);
+            }
+        }
+        return false;
     }
 }

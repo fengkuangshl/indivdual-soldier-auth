@@ -20,4 +20,6 @@ public interface SysDictTypeService extends IService<SysDictType> {
     SysDictType getSysDictTypeById(Long id);
 
     SysDictType findSysDictTypeByCode(String code);
+
+    boolean updateEnabled(Long id, Boolean status);
 }

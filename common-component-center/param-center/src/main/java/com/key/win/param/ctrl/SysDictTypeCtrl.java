@@ -33,7 +33,7 @@ public class SysDictTypeCtrl {
      *
      * @param id
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     @ApiOperation(value = "删除")
     @LogAnnotation(module = "param-center", recordRequestParam = false)
     public Result delete(@PathVariable Long id) {
@@ -76,4 +76,11 @@ public class SysDictTypeCtrl {
         SysDictType sysDictType = sysDictTypeService.findSysDictTypeByCode(code);
         return Result.succeed(sysDictType, "");
     }
+    @ApiOperation("更新状态")
+    @LogAnnotation(module = "param-center", recordRequestParam = false)
+    @GetMapping("/updateEnabled/{id}/{status}")
+    public Result updateEnabled(@PathVariable Long id,@PathVariable Boolean status){
+        return Result.succeed(sysDictTypeService.updateEnabled(id,status));
+    }
+
 }
