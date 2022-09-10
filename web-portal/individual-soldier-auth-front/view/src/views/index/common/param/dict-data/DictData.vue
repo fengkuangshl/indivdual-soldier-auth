@@ -99,6 +99,7 @@ import { Component, Vue, Ref } from 'vue-property-decorator'
 import { SysDictDataForm, SysDictData, SysDictDataStatusChange } from './interface/dict-data'
 import { SysDictDataGetApi, DeleteSysDictDataApi, SysDictDataSaveOrUpdateApi, SysDictDataStatusChangeRequestApi } from './dict-data-api'
 import KWTable from '@/components/table/Table.vue'
+import FormValidatorRule from '@/common/form-validator/form-validator'
 
 @Component({
   components: {
@@ -137,18 +138,9 @@ export default class DictData extends Vue {
   readonly kwTableRef!: KWTable<SysDictDataForm, SysDictData>
 
   readonly sysDictDataFormRules: { label: Array<KWRule.Rule | KWRule.MixinRule>; value: Array<KWRule.Rule | KWRule.MixinRule>; sort: Array<KWRule.Rule | KWRule.NumberRule> } = {
-    label: [
-      { required: true, message: '请输入字典标签', trigger: 'blur' },
-      { min: 3, max: 10, message: '字典标签的长度3~10个字符之间', trigger: 'blur' }
-    ],
-    value: [
-      { required: true, message: '请输入字典键值', trigger: 'blur' },
-      { min: 3, max: 10, message: '字典键值的长度3~10个字符之间', trigger: 'blur' }
-    ],
-    sort: [
-      { required: true, message: '请输入字典排序', trigger: 'blur' },
-      { message: '请输入数字', trigger: 'blur' }
-    ]
+    label: [FormValidatorRule.requiredRule('请输入字典标签'), FormValidatorRule.mixinRul(2, 10, '字典标签的长度2~10个字符之间')],
+    value: [FormValidatorRule.requiredRule('请输入字典键值'), FormValidatorRule.mixinRul(2, 10, '字典键值的长度2~10个字符之间')],
+    sort: [FormValidatorRule.requiredRule('请输入字典排序'), FormValidatorRule.numberRule('请输入数字')]
   }
 
   async sysDictDataStatusChanged(sysDictData: SysDictData, enabled: boolean): Promise<void> {

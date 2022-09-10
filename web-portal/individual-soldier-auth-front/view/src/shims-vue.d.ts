@@ -72,14 +72,11 @@ declare module '*.vue' {
       interface Rule extends MessageRule {
         required: boolean
       }
-      interface NumberRule extends MessageRule {
-        type?: string = 'number'
-      }
       interface DateRule extends MessageRule {
-        type?: string = 'date'
+        type: string
       }
       interface ArrayRule extends MessageRule {
-        type?: string = 'array'
+        type: string
       }
       interface MixinRule extends MessageRule {
         min: number
@@ -91,6 +88,13 @@ declare module '*.vue' {
       }
       interface ValidatorRule extends TriggerRule {
         validator: ValidatorFunction
+      }
+      interface TransformFunction {
+        (value: string): number
+      }
+      interface NumberRule extends MessageRule {
+        type: string
+        transform: TransformFunction
       }
     }
   }

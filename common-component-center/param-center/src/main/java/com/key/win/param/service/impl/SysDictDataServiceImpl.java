@@ -76,7 +76,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
         checkValue(sysDictData, po);
         if (po.getIsDefault()) {
             UpdateWrapper<SysDictData> updateWrapper = new UpdateWrapper<>();
-            updateWrapper.set("isDefault", Boolean.FALSE).eq("type", sysDictData.getType());
+            updateWrapper.set("is_Default", Boolean.FALSE).eq("type", sysDictData.getType());
             super.update(null, updateWrapper);
         }
         return super.saveOrUpdate(po);
@@ -89,7 +89,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
         List<SysDictData> sysDictDatas = this.findSysDictData(sysDictData);
         if (!CollectionUtils.isEmpty(sysDictDatas)) {
             SysDictData sdt = sysDictDatas.get(0);
-            if (po.getId() != null) {
+            if (po.getId() == null) {
                 throw new BizException("value[" + sdd.getValue() + "]对应的数据字典已经存在！");
             } else if (!po.getId().equals(sdt.getId())) {
                 throw new BizException("value[" + sdd.getValue() + "]对应的数据字典已经存在！");

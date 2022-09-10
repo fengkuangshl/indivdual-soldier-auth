@@ -84,6 +84,7 @@ import { Component, Vue, Ref } from 'vue-property-decorator'
 import { SysDictTypeForm, SysDictType, SysDictTypeStatusChange, Type } from './interface/dict-type'
 import { SysDictTypeGetApi, DeleteSysDictTypeApi, SysDictTypeSaveOrUpdateApi, SysDictTypeStatusChangeRequestApi } from './dict-type-api'
 import KWTable from '@/components/table/Table.vue'
+import FormValidatorRule from '@/common/form-validator/form-validator'
 
 @Component({
   components: {
@@ -119,14 +120,8 @@ export default class DictType extends Vue {
   readonly kwTableRef!: KWTable<SysDictTypeForm, SysDictType>
 
   readonly sysDictTypeFormRules: { code: Array<KWRule.Rule | KWRule.MixinRule>; name: Array<KWRule.Rule | KWRule.MixinRule> } = {
-    code: [
-      { required: true, message: '请输入字典code', trigger: 'blur' },
-      { min: 3, max: 10, message: '字典code的长度3~10个字符之间', trigger: 'blur' }
-    ],
-    name: [
-      { required: true, message: '请输入字典名称', trigger: 'blur' },
-      { min: 3, max: 10, message: '字典名称的长度3~10个字符之间', trigger: 'blur' }
-    ]
+    code: [FormValidatorRule.requiredRule('请输入字典标签'), FormValidatorRule.mixinRul(2, 10, '字典标签的长度2~10个字符之间')],
+    name: [FormValidatorRule.requiredRule('请输入字典标签'), FormValidatorRule.mixinRul(2, 10, '字典标签的长度2~10个字符之间')]
   }
 
   async sysDictTypeStatusChanged(sysDictType: SysDictType, enabled: boolean): Promise<void> {

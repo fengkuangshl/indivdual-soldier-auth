@@ -94,7 +94,7 @@ import { SysRoleSearchRequest, SysRole } from '../sys-role/interface/sys-role'
 import { UserStatusChangeRequestApi, UserGetApi, UserSaveOrUpdateApi, ResetPasswordApi } from './user-api'
 import { FindAllSysRoleApi } from '../sys-role/sys-role-api'
 import KWTable from '@/components/table/Table.vue'
-import FormValidatorRule from '@/common/utils/form-validator'
+import FormValidatorRule from '@/common/form-validator/form-validator'
 
 @Component({
   components: {
