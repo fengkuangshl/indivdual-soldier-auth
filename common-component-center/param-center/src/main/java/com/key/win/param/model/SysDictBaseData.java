@@ -29,6 +29,12 @@ public class SysDictBaseData extends MybatisID {
     private String value;
 
     /**
+     * 备注
+     **/
+    @ApiModelProperty("备注")
+    private String remark;
+
+    /**
      * 字典类型
      */
     @ApiModelProperty("字典类型")

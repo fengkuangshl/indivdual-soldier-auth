@@ -72,7 +72,16 @@ declare module '*.vue' {
       interface Rule extends MessageRule {
         required: boolean
       }
-      interface MixinRule extends BaseRule {
+      interface NumberRule extends MessageRule {
+        type?: string = 'number'
+      }
+      interface DateRule extends MessageRule {
+        type?: string = 'date'
+      }
+      interface ArrayRule extends MessageRule {
+        type?: string = 'array'
+      }
+      interface MixinRule extends MessageRule {
         min: number
         max: number
       }

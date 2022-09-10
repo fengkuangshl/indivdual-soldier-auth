@@ -126,7 +126,7 @@ export default class Permission extends Vue {
   }
 
   addPermission(): void {
-    this.title = '添加角色'
+    this.title = '添加权限'
     this.permissionDialogVisble = true
     this.$nextTick(() => {
       this.sysPermissionFormRef.resetFields()

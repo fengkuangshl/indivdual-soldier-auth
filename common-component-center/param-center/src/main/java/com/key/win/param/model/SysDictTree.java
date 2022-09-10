@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 import java.util.ArrayList;
 import java.util.List;
 
-@ApiModel("机构实体")
+@ApiModel("字典实体")
 @Data
 @TableName("sys_dict_tree")
 @EqualsAndHashCode(callSuper = true)

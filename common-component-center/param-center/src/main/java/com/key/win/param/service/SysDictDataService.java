@@ -20,4 +20,6 @@ public interface SysDictDataService extends IService<SysDictData> {
     SysDictData getSysDictDataById(Long id);
 
     List<SysDictData> findSysDictDataByType(Long type);
+
+    boolean updateEnabled(Long id, Boolean status);
 }

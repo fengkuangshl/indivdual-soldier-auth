@@ -1,6 +1,5 @@
-export interface Enabled {
-  status: boolean
-}
+import { Enabled } from '../../base/interface/dict-base-data'
+
 export interface SysDictTypeForm extends Model.CodeField, Enabled {
   type: Model.EnumEntity | string | null
   remark: string

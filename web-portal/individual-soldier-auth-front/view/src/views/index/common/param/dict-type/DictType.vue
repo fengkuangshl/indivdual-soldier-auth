@@ -43,6 +43,10 @@
             <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
             <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteSysDictType(scope.row.id)">
             </el-button>
+            <el-tooltip effect="dark" content="字典数据管理" placement="top" :enterable="false">
+              <el-button type="warning" icon="el-icon-s-tools" size="mini" @click="dataManagement(scope.row)">
+              </el-button>
+            </el-tooltip>
           </template>
         </el-table-column>
       </KWTable>
@@ -125,11 +129,6 @@ export default class DictType extends Vue {
     ]
   }
 
-  sysDictTypeRolePage: KWRequest.PageRequest<SysDictTypeForm> = {
-    pageSize: 10, // 每页的数据条数
-    pageNo: 1 // 默认开始页面
-  }
-
   async sysDictTypeStatusChanged(sysDictType: SysDictType, enabled: boolean): Promise<void> {
     console.log(sysDictType)
     const req: SysDictTypeStatusChange = { id: sysDictType.id, status: enabled }
@@ -145,7 +144,7 @@ export default class DictType extends Vue {
 
   // 展示编辑用于的对话框
   async showEditDialog(id: number): Promise<void> {
-    this.title = '编辑用户'
+    this.title = '编辑数据字典类型'
     this.sysDictTypeCodeDisabled = true
     const res = await SysDictTypeGetApi(id)
     this.sysDictTypeForm = res.data
@@ -219,6 +218,20 @@ export default class DictType extends Vue {
 
   searchDictType(): void {
     this.kwTableRef.loadByCondition(this.t)
+  }
+
+  dataManagement(data: SysDictType): void {
+    if ((data.type as Model.EnumEntity).stringValue === Type.列表) {
+      this.$router.push({
+        path: '/dictData',
+        query: { id: data.id + '', name: data.name }
+      })
+    } else {
+      this.$router.push({
+        path: '/dictTree',
+        query: { id: data.id + '', name: data.name }
+      })
+    }
   }
 }
 </script>

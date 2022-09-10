@@ -2,26 +2,31 @@ package com.key.win.param.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.key.win.basic.exception.BizException;
 import com.key.win.basic.util.BeanUtils;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
 import com.key.win.mybatis.page.MybatisPageServiceTemplate;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import com.key.win.param.dao.SysDictDataDao;
 import com.key.win.param.model.SysDictData;
 import com.key.win.param.service.SysDictDataService;
 import com.key.win.param.utils.ParamUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
 @Service
 public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictData> implements SysDictDataService {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Override
     public PageResult<SysDictData> getSysDictDataByPaged(PageRequest<SysDictData> t) {
         MybatisPageServiceTemplate<SysDictData, SysDictData> mybatisPageServiceTemplate = new MybatisPageServiceTemplate<SysDictData, SysDictData>(super.baseMapper) {
@@ -50,6 +55,9 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
             }
             if (sysDictData.getType() != null) {
                 queryWrapper.eq(SysDictData::getType, sysDictData.getType());
+            } else {
+                logger.error("数据字典类型信息不存在！");
+                throw new BizException("数据字典类型信息不存在!");
             }
         }
         return queryWrapper;
@@ -66,6 +74,11 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
             po = sysDictData;
         }
         checkValue(sysDictData, po);
+        if (po.getIsDefault()) {
+            UpdateWrapper<SysDictData> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.set("isDefault", Boolean.FALSE).eq("type", sysDictData.getType());
+            super.update(null, updateWrapper);
+        }
         return super.saveOrUpdate(po);
     }
 
@@ -101,5 +114,17 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
         SysDictData sdd = new SysDictData();
         sdd.setType(type);
         return this.findSysDictData(sdd);
+    }
+
+    @Override
+    public boolean updateEnabled(Long id, Boolean status) {
+        if (id != null) {
+            SysDictData byId = super.getById(id);
+            if (byId != null) {
+                byId.setStatus(status == null ? Boolean.FALSE : status);
+                return updateById(byId);
+            }
+        }
+        return false;
     }
 }

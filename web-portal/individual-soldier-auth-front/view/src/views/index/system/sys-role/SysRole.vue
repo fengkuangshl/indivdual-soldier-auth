@@ -108,7 +108,7 @@ export default class Role extends Vue {
 
   // 展示编辑用于的对话框
   async showEditDialog(role: SysRole): Promise<void> {
-    this.title = '编辑用户'
+    this.title = '编辑角色'
     this.codeDisabled = true
     this.sysRoleForm = role
     this.roleDialogVisble = true

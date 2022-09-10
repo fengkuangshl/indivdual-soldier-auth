@@ -341,6 +341,7 @@ CREATE TABLE `sys_dic_data` (
     `attr3` VARCHAR (255),
     `attr4` VARCHAR (255),
     `attr5` VARCHAR (255),
+    `remark` VARCHAR (2000),
     PRIMARY KEY (`id`)
 ) ENGINE = INNODB AUTO_INCREMENT = 16 DEFAULT CHARSET = utf8mb4;
 -- ---------------------------------------------------------
@@ -366,6 +367,7 @@ CREATE TABLE `sys_dict_tree` (
      `attr3` VARCHAR (255),
      `attr4` VARCHAR (255),
      `attr5` VARCHAR (255),
+     `remark` VARCHAR (2000),
      PRIMARY KEY (`id`)
 ) ENGINE = INNODB AUTO_INCREMENT = 16 DEFAULT CHARSET = utf8mb4;
 -- ---------------------------------------------------------

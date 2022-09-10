@@ -67,7 +67,7 @@
         <el-form-item label="菜单图标" prop="css">
           <el-input v-model="sysMenuForm.css" style="max-width: 220px;"></el-input>
         </el-form-item>
-        <el-form-item label="是否隐藏" prop="css">
+        <el-form-item label="是否隐藏" prop="isHidden">
           <el-radio-group v-model="sysMenuForm.isHidden">
             <el-radio label="否"></el-radio>
             <el-radio label="是"></el-radio>
@@ -136,7 +136,7 @@ export default class Menu extends Vue {
 
   // 展示编辑用于的对话框
   async showEditDialog(id: number): Promise<void> {
-    this.title = '编辑用户'
+    this.title = '编辑菜单'
     this.getOnes()
     const { code, data, msg } = await GetMenuByIdApi(id)
     if (code === 200) {
