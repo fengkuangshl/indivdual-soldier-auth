@@ -298,17 +298,20 @@ export default class DictTree extends Vue {
     }
   }
 
-  setChecked(treeData: Array<SysDictTree>): void {
+  setChecked(treeData: Array<SysDictTree>, disable = true): void {
     if (treeData && treeData.length > 0) {
       for (const key in treeData) {
         if (Object.prototype.hasOwnProperty.call(treeData, key)) {
           const element = treeData[key]
+          if (!disable) {
+            element.status = disable
+          }
           if (element.id === this.checkedKey) {
             this.treeLeft.setChecked(element, true, false)
             break
           }
           if (element.subDictTree && element.subDictTree.length > 0) {
-            this.setChecked(element.subDictTree)
+            this.setChecked(element.subDictTree, element.status as boolean)
           }
         }
       }
@@ -379,7 +382,7 @@ export default class DictTree extends Vue {
         this.checkedKey = -100
       }
     }
-    this.searchDictTree()
+    // this.searchDictTree()
   }
 }
 </script>

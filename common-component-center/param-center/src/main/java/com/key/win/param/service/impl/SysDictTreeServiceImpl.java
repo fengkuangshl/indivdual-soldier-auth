@@ -182,7 +182,7 @@ public class SysDictTreeServiceImpl extends ServiceImpl<SysDictTreeDao, SysDictT
     }
 
     @Override
-    @CacheEvict(cacheNames = ParamUtils.REDIS_SYS_DICT_TREE_KEY_PREFIX)
+    @CacheEvict(cacheNames = ParamUtils.REDIS_SYS_DICT_TREE_KEY_PREFIX, allEntries = true, beforeInvocation = true)
     public boolean deleteById(Long id) {
         List<SysDictTree> sysDictTreeByParentId = this.findSysDictTreeByParentId(id);
         if (!CollectionUtils.isEmpty(sysDictTreeByParentId)) {
@@ -262,7 +262,7 @@ public class SysDictTreeServiceImpl extends ServiceImpl<SysDictTreeDao, SysDictT
     }
 
     @Override
-    @CacheEvict(cacheNames = ParamUtils.REDIS_SYS_DICT_TREE_KEY_PREFIX)
+    @CacheEvict(cacheNames = ParamUtils.REDIS_SYS_DICT_TREE_KEY_PREFIX, allEntries = true, beforeInvocation = true)
     public boolean updateEnabled(Long id, Boolean status) {
         if (id != null) {
             SysDictTree byId = super.getById(id);

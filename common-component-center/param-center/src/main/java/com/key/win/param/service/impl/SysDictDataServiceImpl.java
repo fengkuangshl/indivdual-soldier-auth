@@ -98,7 +98,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
     }
 
     @Override
-    @CacheEvict(cacheNames = ParamUtils.REDIS_SYS_DICT_DATA_KEY_PREFIX)
+    @CacheEvict(cacheNames = ParamUtils.REDIS_SYS_DICT_DATA_KEY_PREFIX, allEntries = true, beforeInvocation = true)
     public boolean deleteSysDictData(Long id) {
         return super.removeById(id);
     }
@@ -117,7 +117,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
     }
 
     @Override
-    @CacheEvict(cacheNames = ParamUtils.REDIS_SYS_DICT_DATA_KEY_PREFIX)
+    @CacheEvict(cacheNames = ParamUtils.REDIS_SYS_DICT_DATA_KEY_PREFIX, allEntries = true, beforeInvocation = true)
     public boolean updateEnabled(Long id, Boolean status) {
         if (id != null) {
             SysDictData byId = super.getById(id);
