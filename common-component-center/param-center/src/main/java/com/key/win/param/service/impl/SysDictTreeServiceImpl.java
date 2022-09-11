@@ -109,18 +109,16 @@ public class SysDictTreeServiceImpl extends ServiceImpl<SysDictTreeDao, SysDictT
         LambdaQueryWrapper<SysDictTree> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         if (sysDictTree != null) {
             if (StringUtils.isNotBlank(sysDictTree.getLabel())) {
-                if (StringUtils.isNotBlank(sysDictTree.getLabel())) {
-                    lambdaQueryWrapper.like(SysDictTree::getLabel, sysDictTree.getLabel());
-                }
-                if (sysDictTree.getType() != null) {
-                    lambdaQueryWrapper.eq(SysDictTree::getType, sysDictTree.getType());
-                }
-                if (StringUtils.isNotBlank(sysDictTree.getValue())) {
-                    lambdaQueryWrapper.eq(SysDictTree::getValue, sysDictTree.getValue());
-                }
-                if (sysDictTree.getParentId() != null) {
-                    lambdaQueryWrapper.eq(SysDictTree::getParentId, sysDictTree.getParentId());
-                }
+                lambdaQueryWrapper.like(SysDictTree::getLabel, sysDictTree.getLabel());
+            }
+            if (sysDictTree.getType() != null) {
+                lambdaQueryWrapper.eq(SysDictTree::getType, sysDictTree.getType());
+            }
+            if (StringUtils.isNotBlank(sysDictTree.getValue())) {
+                lambdaQueryWrapper.eq(SysDictTree::getValue, sysDictTree.getValue());
+            }
+            if (sysDictTree.getParentId() != null) {
+                lambdaQueryWrapper.eq(SysDictTree::getParentId, sysDictTree.getParentId());
             }
         }
 
@@ -161,9 +159,9 @@ public class SysDictTreeServiceImpl extends ServiceImpl<SysDictTreeDao, SysDictT
 
     private List<SysDictTree> findSysDictTreeByCode(SysDictTree sysDictTree) {
         SysDictTree dt = new SysDictTree();
-        sysDictTree.setValue(dt.getValue());
-        sysDictTree.setType(dt.getType());
-        return this.findSysDictTree(sysDictTree);
+        dt.setValue(sysDictTree.getValue());
+        dt.setType(sysDictTree.getType());
+        return this.findSysDictTree(dt);
     }
 
 

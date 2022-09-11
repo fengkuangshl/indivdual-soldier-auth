@@ -3,7 +3,7 @@ export interface Enabled {
 }
 export interface SysDictBaseData extends Enabled {
   sort: number
-  label: string
+  label?: string // 为什么加问号呢？为了炒蛋的TreeData的label属性保持一致
   value: string
   remark: string
   type: number

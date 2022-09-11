@@ -1,9 +1,12 @@
+import { TreeSelectData } from '@/components/select-tree/interface/tree-select'
 import { Enabled, SysDictBaseData } from '../../base/interface/dict-base-data'
 
-export interface SysDictDataForm extends SysDictBaseData {
-  isDefault: boolean | string
+export interface SysDictTreeForm extends SysDictBaseData {
+  parentId: number | string
 }
 
-export interface SysDictData extends SysDictDataForm, Model.BaseField {}
+export interface SysDictTree extends SysDictTreeForm, TreeSelectData {
+  subDictTree: Array<SysDictTree>
+}
 
-export interface SysDictDataStatusChange extends Model.Id, Enabled {}
+export interface SysDictTreeStatusChange extends Model.Id, Enabled {}

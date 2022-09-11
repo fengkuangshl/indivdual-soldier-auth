@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/sysDictTree/*")
+@RequestMapping("/sysDictTree")
 @Api("DictTree相关的api")
 public class SysDictTreeCtrl {
 
@@ -75,6 +75,10 @@ public class SysDictTreeCtrl {
         if (sysDictTree.getParentId() == null) {
             logger.error("parent Id is null !");
             throw new IllegalArgumentException("父节点为空！");
+        }
+        if (sysDictTree.getType() == null) {
+            logger.error("type  is null !");
+            throw new IllegalArgumentException("字典类型信息为空！");
         }
         boolean b = sysDictTreeService.saveOrUpdateDictTree(sysDictTree);
         return Result.result(b);
