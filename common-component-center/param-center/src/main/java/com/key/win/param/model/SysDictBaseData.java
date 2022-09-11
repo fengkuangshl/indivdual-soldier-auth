@@ -29,6 +29,12 @@ public class SysDictBaseData extends MybatisID {
     private String value;
 
     /**
+     * 状态（0正常 1停用）
+     */
+    @ApiModelProperty("状态（Y正常 N停用）")
+    private Boolean status;
+
+    /**
      * 备注
      **/
     @ApiModelProperty("备注")

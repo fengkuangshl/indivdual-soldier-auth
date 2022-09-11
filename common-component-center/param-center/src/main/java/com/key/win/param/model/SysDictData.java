@@ -19,10 +19,4 @@ public class SysDictData extends SysDictBaseData {
     @ApiModelProperty("是否默认（Y是 N否）")
     private Boolean isDefault;
 
-    /**
-     * 状态（0正常 1停用）
-     */
-    @ApiModelProperty("状态（Y正常 N停用）")
-    private Boolean status;
-
 }

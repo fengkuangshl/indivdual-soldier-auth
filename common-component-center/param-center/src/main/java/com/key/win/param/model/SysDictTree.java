@@ -19,6 +19,9 @@ public class SysDictTree extends SysDictBaseData {
     @ApiModelProperty("父节点Id")
     private Long parentId;
 
+    @ApiModelProperty("级联")
+    private String cascadeCode;
+
     @ApiModelProperty("孩子节点")
     @TableField(exist = false)
     private List<SysDictTree> subDictTree = new ArrayList<>();

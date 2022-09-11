@@ -313,7 +313,7 @@ CREATE TABLE `sys_dic_type` (
     `name` VARCHAR (255),
     `code` VARCHAR (255),
     `type` INT,
-    `status` INT,
+    `status`  bit(1),
     `remark` VARCHAR (2000),
     PRIMARY KEY (`id`)
 ) ENGINE = INNODB AUTO_INCREMENT = 16 DEFAULT CHARSET = utf8mb4;
@@ -333,8 +333,8 @@ CREATE TABLE `sys_dic_data` (
     `label` VARCHAR (255),
     `type` VARCHAR (255),
     `sort` int(11),
-    `is_Default` BIGINT,
-    `status` BIGINT,
+    `is_Default` bit(1),
+    `status` bit(1),
     `value` VARCHAR (255),
     `attr1` VARCHAR (255),
     `attr2` VARCHAR (255),
@@ -362,6 +362,8 @@ CREATE TABLE `sys_dict_tree` (
      `sort` int(11),
      `parent_Id` VARCHAR (36),
      `value` VARCHAR (255),
+     `status` bit(1),
+     `cascade_code` VARCHAR (255),
      `attr1` VARCHAR (255),
      `attr2` VARCHAR (255),
      `attr3` VARCHAR (255),

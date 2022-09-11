@@ -31,4 +31,6 @@ public interface SysDictTreeService extends IService<SysDictTree> {
     SysDictTree getDictTreeFullById(Long id);
 
     List<SysDictTree> getSysDictTreeByIds(Set<Long> ids);
+
+    boolean updateEnabled(Long id, Boolean status);
 }

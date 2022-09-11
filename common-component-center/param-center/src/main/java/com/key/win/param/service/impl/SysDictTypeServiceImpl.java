@@ -107,6 +107,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
     }
 
     @Override
+    @CacheEvict(cacheNames = ParamUtils.REDIS_SYS_DICT_TYPE_KEY_PREFIX)
     public boolean updateEnabled(Long id, Boolean status) {
         if (id != null) {
             SysDictType byId = super.getById(id);

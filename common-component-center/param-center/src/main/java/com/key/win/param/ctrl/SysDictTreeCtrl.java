@@ -111,4 +111,10 @@ public class SysDictTreeCtrl {
     public Result getLeafNode(@PathVariable Long type) {
         return Result.succeed(sysDictTreeService.findLeafNode(type));
     }
+
+    @LogAnnotation(module = "param-center", recordRequestParam = false)
+    @GetMapping("/updateEnabled/{id}/{status}")
+    public Result updateEnabled(@PathVariable Long id,@PathVariable Boolean status){
+        return Result.succeed(sysDictTreeService.updateEnabled(id,status));
+    }
 }

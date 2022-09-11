@@ -9,44 +9,56 @@
     </div>
     <el-card>
       <el-row :gutter="20">
-        <el-col :span="7">
-          <el-input placeholder="请输入内容" v-model="t.value">
-            <el-button slot="append" class="search-primary" icon="el-icon-search" @click="searchDictTree"></el-button>
-          </el-input>
+        <el-col :span="2">
+          <el-tree :data="treeData" show-checkbox default-expand-all check-strictly :props="defaultProps" ref="treeLeft"
+            highlight-current node-key="id" @node-click="handleNodeClick" @check-change="handleCheckChange">
+          </el-tree>
         </el-col>
-        <el-col :span="4">
-          <el-button tree="primary" @click="addDictTree">添加字典数据</el-button>
+        <el-col :span="22">
+          <el-row>
+            <el-col :span="7">
+              <el-input placeholder="请输入内容" v-model="t.value">
+                <el-button slot="append" class="search-primary" icon="el-icon-search" @click="searchDictTree">
+                </el-button>
+              </el-input>
+            </el-col>
+            <el-col :span="4">
+              <el-button tree="primary" @click="addDictTree">添加字典数据</el-button>
+            </el-col>
+          </el-row>
+          <KWTable url="sysDictTree/findSysDictTreeByPaged" :defaultLoadData="false" style="width: 100%"
+            ref="kwTableRef">
+            <el-table-column type="index" width="80" label="序号"></el-table-column>
+            <el-table-column prop="label" sortable="custom" label="标签"> </el-table-column>
+            <el-table-column prop="value" sortable="custom" label="键值"> </el-table-column>
+            <el-table-column prop="sort" label="排序" sortable="custom"></el-table-column>
+            <el-table-column prop="createDate" label="创建时间" sortable="custom">
+              <template slot-scope="scope">{{ scope.row.createDate | dateTimeFormat }}</template>
+            </el-table-column>
+            <el-table-column prop="status" label="状态" sortable="custom">
+              <template v-slot="scope">
+                <el-switch v-model="scope.row.status" active-color="#13ce66" inactive-color="#ff4949"
+                  @change="sysDictTreeStatusChanged(scope.row, scope.row.status)">
+                </el-switch>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作">
+              <template v-slot="scope">
+                <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)">
+                </el-button>
+                <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteSysDictTree(scope.row.id)">
+                </el-button>
+              </template>
+            </el-table-column>
+          </KWTable>
         </el-col>
       </el-row>
-      <KWTable url="sysDictTree/findSysDictTreeByPaged" :defaultLoadTree="false" style="width: 100%" ref="kwTableRef">
-        <el-table-column type="index" width="80" label="序号"></el-table-column>
-        <el-table-column prop="label" sortable="custom" label="标签"> </el-table-column>
-        <el-table-column prop="value" sortable="custom" label="键值"> </el-table-column>
-        <el-table-column prop="sort" label="排序" sortable="custom"></el-table-column>
-        <el-table-column prop="createDate" label="创建时间" sortable="custom">
-          <template slot-scope="scope">{{ scope.row.createDate | dateTimeFormat }}</template>
-        </el-table-column>
-        <el-table-column prop="status" label="状态" sortable="custom">
-          <template v-slot="scope">
-            <el-switch v-model="scope.row.status" active-color="#13ce66" inactive-color="#ff4949"
-              @change="sysDictTreeStatusChanged(scope.row, scope.row.status)">
-            </el-switch>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作">
-          <template v-slot="scope">
-            <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteSysDictTree(scope.row.id)">
-            </el-button>
-          </template>
-        </el-table-column>
-      </KWTable>
     </el-card>
     <el-dialog :title="title" @close="aditDictTreeClosed" :visible.sync="sysDictTreeDialogVisble" width="20%">
       <el-form :model="sysDictTreeForm" :rules="sysDictTreeFormRules" ref="sysDictTreeFormRef" label-width="100px">
         <el-form-item label="父节点" prop="parentId">
           <KWTreeSelect v-model="sysDictTreeForm.parentId" filterable :data="treeData" v-on:input="input"
-            :props="{children:'subDictTree', label: 'label'}" />
+            :props="defaultProps" />
         </el-form-item>
         <el-form-item label="字典键值" prop="value">
           <el-input v-model="sysDictTreeForm.value" style="max-width: 220px;" :disabled="sysDictTreeValueDisabled">
@@ -94,7 +106,8 @@
 <script lang="ts">
 import { ElForm } from 'element-ui/types/form'
 import { Component, Vue, Ref } from 'vue-property-decorator'
-import { SysDictTreeForm, SysDictTree, SysDictTreeStatusChange } from './interface/dict-tree'
+import { ElTree } from 'element-ui/types/tree'
+import { SysDictTreeForm, SysDictTree, SysDictTreeStatusChange, SysDictTreeSearch } from './interface/dict-tree'
 import { SysDictTreeGetApi, DeleteSysDictTreeApi, SysDictTreeSaveOrUpdateApi, SysDictTreeStatusChangeRequestApi, GetSysDictTreeByTypeApi } from './dict-tree-api'
 import KWTable from '@/components/table/Table.vue'
 import KWTreeSelect from '@/components/select-tree/TreeSelect.vue'
@@ -110,6 +123,7 @@ export default class DictTree extends Vue {
   treeData: Array<SysDictTree> = [
     {
       id: -1,
+      cascadeCode: '',
       subDictTree: [],
       parentId: -100,
       sort: 0,
@@ -122,12 +136,26 @@ export default class DictTree extends Vue {
       attr3: '',
       attr4: '',
       attr5: '',
-      status: ''
+      status: true
     }
   ]
 
-  t: SysDictTreeForm = {
-    parentId: '',
+  defaultProps = {
+    children: 'subDictTree',
+    label: 'label',
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    disabled: function (data: SysDictTree, node: Node): boolean {
+      if (data) {
+        return !data.status
+      }
+      return false
+    }
+  }
+
+  checkedKey = -100
+
+  t: SysDictTreeSearch = {
+    cascadeCode: '',
     sort: 0,
     label: '',
     value: '',
@@ -138,7 +166,7 @@ export default class DictTree extends Vue {
     attr3: '',
     attr4: '',
     attr5: '',
-    status: '启用'
+    status: true
   }
 
   title = ''
@@ -146,15 +174,32 @@ export default class DictTree extends Vue {
   dictTypeId = -1
   sysDictTreeDialogVisble = false
   sysDictTreeValueDisabled = true
-  sysDictTreeForm: SysDictTreeForm = this.t
+  sysDictTreeForm: SysDictTreeForm = {
+    parentId: '',
+    cascadeCode: '',
+    sort: 0,
+    label: '',
+    value: '',
+    remark: '',
+    type: 0,
+    attr1: '',
+    attr2: '',
+    attr3: '',
+    attr4: '',
+    attr5: '',
+    status: true
+  }
 
   @Ref('sysDictTreeFormRef')
   readonly sysDictTreeFormRef!: ElForm
 
+  @Ref('treeLeft')
+  readonly treeLeft!: ElTree<string | number | null, SysDictTree>
+
   sysDictTreePermission = 'system::sysDictTree::SysDictTree'
 
   @Ref('kwTableRef')
-  readonly kwTableRef!: KWTable<SysDictTreeForm, SysDictTree>
+  readonly kwTableRef!: KWTable<SysDictTreeSearch, SysDictTree>
 
   readonly sysDictTreeFormRules: { label: Array<KWRule.Rule | KWRule.MixinRule>; value: Array<KWRule.Rule | KWRule.MixinRule>; sort: Array<KWRule.Rule | KWRule.NumberRule> } = {
     label: [FormValidatorRule.requiredRule('请输入字典标签'), FormValidatorRule.mixinRul(2, 10, '字典标签的长度2~10个字符之间')],
@@ -171,6 +216,7 @@ export default class DictTree extends Vue {
       sysDictTree.status = !sysDictTree.status
       this.$message.error(msg || '更新字典数据状态失败!')
     } else {
+      this.getSysDictTree()
       this.$message.success('更新新字典数据状态成功!')
     }
   }
@@ -183,13 +229,13 @@ export default class DictTree extends Vue {
     this.sysDictTreeForm = res.data
     this.sysDictTreeForm.status = (this.sysDictTreeForm.status as boolean) ? '启用' : '禁用'
     console.log(res)
-    this.getSysDictTree()
     this.sysDictTreeDialogVisble = true
   }
 
   aditDictTreeClosed(): void {
     this.sysDictTreeDialogVisble = false
     this.sysDictTreeFormRef.resetFields()
+    this.sysDictTreeForm.status = (this.sysDictTreeForm.status as string) === '启用'
   }
 
   editDictTreeInfo(): void {
@@ -205,6 +251,7 @@ export default class DictTree extends Vue {
       } else {
         this.sysDictTreeDialogVisble = false
         this.searchDictTree()
+        this.getSysDictTree()
         this.$message.success('操作字典数据信息成功!')
       }
     })
@@ -215,9 +262,12 @@ export default class DictTree extends Vue {
     this.sysDictTreeValueDisabled = false
     this.sysDictTreeDialogVisble = true
     this.$nextTick(() => {
+      const parentId = this.sysDictTreeForm.parentId
+      const cascadeCode = this.sysDictTreeForm.cascadeCode
       this.sysDictTreeFormRef.resetFields()
       this.sysDictTreeForm = {
-        parentId: '',
+        parentId: parentId,
+        cascadeCode: cascadeCode,
         sort: 0,
         label: '',
         value: '',
@@ -230,7 +280,6 @@ export default class DictTree extends Vue {
         attr5: '',
         status: '启用'
       }
-      this.getSysDictTree()
     })
   }
 
@@ -241,6 +290,28 @@ export default class DictTree extends Vue {
     } else {
       this.treeData[0].subDictTree = []
       this.treeData[0].subDictTree.push(...data)
+      const key = this.checkedKey
+      this.$nextTick(() => {
+        this.checkedKey = key
+        this.setChecked(this.treeData)
+      })
+    }
+  }
+
+  setChecked(treeData: Array<SysDictTree>): void {
+    if (treeData && treeData.length > 0) {
+      for (const key in treeData) {
+        if (Object.prototype.hasOwnProperty.call(treeData, key)) {
+          const element = treeData[key]
+          if (element.id === this.checkedKey) {
+            this.treeLeft.setChecked(element, true, false)
+            break
+          }
+          if (element.subDictTree && element.subDictTree.length > 0) {
+            this.setChecked(element.subDictTree)
+          }
+        }
+      }
     }
   }
 
@@ -281,9 +352,32 @@ export default class DictTree extends Vue {
     if (this.$route.query.id != null) {
       this.sysDictTreeForm.type = Number.parseInt(this.$route.query.id as string)
       this.dictTypeId = this.sysDictTreeForm.type
+      this.t.type = this.sysDictTreeForm.type
     }
     if (this.$route.query.name != null) {
       this.navigationTitle = (this.$route.query.name as string) + '的字典数据管理'
+    }
+    this.searchDictTree()
+    this.getSysDictTree()
+  }
+
+  handleNodeClick(data: SysDictTree): void {
+    console.log(data)
+  }
+
+  handleCheckChange(data: SysDictTree, checked: boolean, indeterminate: boolean): void {
+    console.log(data, checked, indeterminate)
+    if (checked) {
+      this.t.cascadeCode = data.cascadeCode
+      this.sysDictTreeForm.parentId = data.id as number
+      this.checkedKey = data.id as number
+      this.treeLeft.setCheckedKeys([data.id])
+    } else {
+      if (this.checkedKey === data.id) {
+        this.t.cascadeCode = ''
+        this.sysDictTreeForm.parentId = ''
+        this.checkedKey = -100
+      }
     }
     this.searchDictTree()
   }

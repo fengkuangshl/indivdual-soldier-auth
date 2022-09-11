@@ -1,7 +1,11 @@
 import { TreeSelectData } from '@/components/select-tree/interface/tree-select'
 import { Enabled, SysDictBaseData } from '../../base/interface/dict-base-data'
 
-export interface SysDictTreeForm extends SysDictBaseData {
+export interface SysDictTreeSearch extends SysDictBaseData {
+  cascadeCode: string
+}
+
+export interface SysDictTreeForm extends SysDictTreeSearch {
   parentId: number | string
 }
 

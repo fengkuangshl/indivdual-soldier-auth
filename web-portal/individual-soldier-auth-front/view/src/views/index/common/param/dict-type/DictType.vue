@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="navigation-breadcrumb">
-      <div>字典类型管理</div>
+      <div>字典管理</div>
       <el-breadcrumb>
         <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>字典类型列表</el-breadcrumb-item>
+        <el-breadcrumb-item>字典列表</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <el-card>
@@ -15,7 +15,7 @@
           </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" @click="addDictType">添加字典类型</el-button>
+          <el-button type="primary" @click="addDictType">添加字典</el-button>
         </el-col>
       </el-row>
       <KWTable url="sysDictType/getSysDictTypeByPaged" style="width: 100%" ref="kwTableRef">
@@ -131,15 +131,15 @@ export default class DictType extends Vue {
     const { code, msg }: KWResponse.Result = await SysDictTypeStatusChangeRequestApi(req)
     if (code !== 200) {
       sysDictType.status = !sysDictType.status
-      this.$message.error(msg || '更新字典类型状态失败!')
+      this.$message.error(msg || '更新字典状态失败!')
     } else {
-      this.$message.success('更新新字典类型状态成功!')
+      this.$message.success('更新新字典状态成功!')
     }
   }
 
   // 展示编辑用于的对话框
   async showEditDialog(id: number): Promise<void> {
-    this.title = '编辑数据字典类型'
+    this.title = '编辑数据字典'
     this.sysDictTypeCodeDisabled = true
     const res = await SysDictTypeGetApi(id)
     this.sysDictTypeForm = res.data
@@ -162,17 +162,17 @@ export default class DictType extends Vue {
       this.sysDictTypeForm.type = this.sysDictTypeForm.type === '列表' ? Type.列表 : Type.树结构
       const { code, msg } = await SysDictTypeSaveOrUpdateApi(this.sysDictTypeForm)
       if (code !== 200) {
-        this.$message.error(msg || '操作字典类型信息失败!')
+        this.$message.error(msg || '操作字典信息失败!')
       } else {
         this.sysDictTypeDialogVisble = false
         this.searchDictType()
-        this.$message.success('操作字典类型信息成功!')
+        this.$message.success('操作字典信息成功!')
       }
     })
   }
 
   addDictType(): void {
-    this.title = '添加用户'
+    this.title = '添加字典'
     this.sysDictTypeCodeDisabled = false
     this.sysDictTypeDialogVisble = true
     this.$nextTick(() => {

@@ -9,6 +9,10 @@ import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
 import com.key.win.mybatis.page.MybatisPageServiceTemplate;
+import com.key.win.param.dao.SysDictTreeDao;
+import com.key.win.param.model.SysDictTree;
+import com.key.win.param.service.SysDictTreeService;
+import com.key.win.param.utils.ParamUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +20,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import com.key.win.param.dao.SysDictTreeDao;
-import com.key.win.param.model.SysDictTree;
-import com.key.win.param.service.SysDictTreeService;
-import com.key.win.param.utils.ParamUtils;
 
 import java.util.*;
 
@@ -115,10 +115,13 @@ public class SysDictTreeServiceImpl extends ServiceImpl<SysDictTreeDao, SysDictT
                 lambdaQueryWrapper.eq(SysDictTree::getType, sysDictTree.getType());
             }
             if (StringUtils.isNotBlank(sysDictTree.getValue())) {
-                lambdaQueryWrapper.eq(SysDictTree::getValue, sysDictTree.getValue());
+                lambdaQueryWrapper.like(SysDictTree::getValue, sysDictTree.getValue());
             }
             if (sysDictTree.getParentId() != null) {
                 lambdaQueryWrapper.eq(SysDictTree::getParentId, sysDictTree.getParentId());
+            }
+            if (StringUtils.isNotBlank(sysDictTree.getCascadeCode())) {
+                lambdaQueryWrapper.likeRight(SysDictTree::getCascadeCode, sysDictTree.getCascadeCode());
             }
         }
 
@@ -152,6 +155,14 @@ public class SysDictTreeServiceImpl extends ServiceImpl<SysDictTreeDao, SysDictT
                 logger.error("基础树信息的value[{}]已存在！", sysDictTree.getValue());
                 throw new BizException("基础树信息的value已存在！");
             }
+        }
+        if (sysDictTree.getParentId() != -1) {
+            SysDictTree byId = super.getById(sysDictTree.getParentId());
+            if (byId != null) {
+                po.setCascadeCode(byId.getCascadeCode() + "::" + po.getValue());
+            }
+        } else {
+            po.setCascadeCode(po.getValue());
         }
         boolean b = this.saveOrUpdate(po);
         return b;
@@ -248,5 +259,18 @@ public class SysDictTreeServiceImpl extends ServiceImpl<SysDictTreeDao, SysDictT
         Map<String, Long> map = new HashMap<>();
         map.put("pId", getGenericId(sysDictTree));
         return map;
+    }
+
+    @Override
+    @CacheEvict(cacheNames = ParamUtils.REDIS_SYS_DICT_TREE_KEY_PREFIX)
+    public boolean updateEnabled(Long id, Boolean status) {
+        if (id != null) {
+            SysDictTree byId = super.getById(id);
+            if (byId != null) {
+                byId.setStatus(status == null ? Boolean.FALSE : status);
+                return updateById(byId);
+            }
+        }
+        return false;
     }
 }
