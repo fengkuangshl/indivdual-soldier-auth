@@ -127,9 +127,10 @@ const PermissionUtil = {
     if (settings.permissionEnable === false) {
       return true
     }
+    const allPermission = '*::*::*'
     const permissions = (UserModule.loginUser as LoginSuccessUserInfo).permissions
     const hasPermissions = permissions.filter(permission => {
-      return code.includes(permission.permissionCode)
+      return allPermission === permission.permissionCode || code.includes(permission.permissionCode)
     })
     if (hasPermissions.length === 0) {
       return false
