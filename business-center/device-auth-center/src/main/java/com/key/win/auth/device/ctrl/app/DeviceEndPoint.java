@@ -56,11 +56,7 @@ public class DeviceEndPoint {
     @ApiOperation(value = "设备在线")
     @LogAnnotation(module = "system", recordRequestParam = false)
     public EncryptResponse deviceToOnLine(@PathVariable String androidId, @PathVariable String serialNumber) throws Exception {
-        DeviceAuthUtils.setUniqueCodeForOnLine(androidId, serialNumber);
-        String uniqueCode = DeviceAuthUtils.getUniqueCode(androidId, serialNumber);
-        for (Authentication authentication : AuthenticationUtil.getOnLineUser()) {
-            MessageSendUtil.sendMessage("deviceOnLineNotifyAction", "", "设备[" + uniqueCode + "]上线！", authentication.getToken());
-        }
+        DeviceAuthUtils.deviceOnLineNotifyAction(androidId,serialNumber);
         return EncryptResponse.succeed();
     }
 
@@ -68,12 +64,7 @@ public class DeviceEndPoint {
     @ApiOperation(value = "设备离线")
     @LogAnnotation(module = "system", recordRequestParam = false)
     public EncryptResponse deviceToOffLine(@PathVariable String androidId, @PathVariable String serialNumber) throws Exception {
-        DeviceAuthUtils.setUniqueCodeForOffLine(androidId, serialNumber);
-        String uniqueCode = DeviceAuthUtils.getUniqueCode(androidId, serialNumber);
-        for (Authentication authentication : AuthenticationUtil.getOnLineUser()) {
-            MessageSendUtil.sendMessage("deviceOffLineNotifyAction", "", "设备[" + uniqueCode + "]下线！", authentication.getToken());
-        }
-        //MessageSendUtil.sendMessage("设备[" + uniqueCode + "]下线！", uniqueCode);
+        DeviceAuthUtils.deviceOffLineNotifyAction(androidId,serialNumber);
         return EncryptResponse.succeed();
     }
 }

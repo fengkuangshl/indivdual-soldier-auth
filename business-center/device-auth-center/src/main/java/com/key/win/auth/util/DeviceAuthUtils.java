@@ -5,6 +5,7 @@ import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
 import com.key.win.common.auth.AuthenticationUtil;
 import com.key.win.common.auth.detail.Authentication;
 import com.key.win.redis.util.RedisScanUtil;
+import com.key.win.websocket.utils.MessageSendUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -96,6 +98,23 @@ public class DeviceAuthUtils {
         }
         cursor.close();
         return uniqueCodeInfoVos;
+    }
+
+
+    public static  void deviceOnLineNotifyAction( String androidId, String serialNumber) throws Exception {
+        DeviceAuthUtils.setUniqueCodeForOnLine(androidId, serialNumber);
+        String uniqueCode = DeviceAuthUtils.getUniqueCode(androidId, serialNumber);
+        for (Authentication authentication : AuthenticationUtil.getOnLineUser()) {
+            MessageSendUtil.sendMessage("deviceOnLineNotifyAction", "", "设备[" + uniqueCode + "]上线！", authentication.getToken());
+        }
+    }
+
+    public static  void deviceOffLineNotifyAction( String androidId, String serialNumber) throws Exception {
+        DeviceAuthUtils.setUniqueCodeForOnLine(androidId, serialNumber);
+        String uniqueCode = DeviceAuthUtils.getUniqueCode(androidId, serialNumber);
+        for (Authentication authentication : AuthenticationUtil.getOnLineUser()) {
+            MessageSendUtil.sendMessage("deviceOffLineNotifyAction", "", "设备[" + uniqueCode + "]下线！", authentication.getToken());
+        }
     }
 
 }

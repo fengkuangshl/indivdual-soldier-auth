@@ -12,7 +12,7 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入内容" v-hasPermissionQueryPage="menuPermission" v-model="t.name">
+          <el-input placeholder="请输入内容" v-hasPermissionQueryList="menuPermission" v-model="t.name">
             <el-button slot="append" class="search-primary" icon="el-icon-search" @click="searchMenu"></el-button>
           </el-input>
         </el-col>
@@ -22,7 +22,7 @@
             v-hasPermission="menuPermission+'::GRANT::PAGE::PERMISSION'">菜单页面权限设置</el-button>
         </el-col>
       </el-row>
-      <KWTable url="menu/getMenuAll" method="GET" v-hasPermissionQueryPage="menuPermission"
+      <KWTable url="menu/getMenuAll" method="GET" v-hasPermissionQueryList="menuPermission"
         :tableDataFilter="tableDataFilter" :renderPreFn="menuTreeAssemble" :treeProps="treeProps"
         :isPagination="isPagination" style="width: 100%" ref="kwTableRef">
         <el-table-column prop="name" sortable label="菜单名称"> </el-table-column>

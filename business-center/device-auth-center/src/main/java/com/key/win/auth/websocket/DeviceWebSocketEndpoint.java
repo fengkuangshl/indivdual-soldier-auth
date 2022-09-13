@@ -19,8 +19,9 @@ public class DeviceWebSocketEndpoint extends BaseWebSocketEndpoint {
             logger.info("*** WebSocket opened from sessionId: {} , androidId: {} ,serialNumber: {}", session.getId(), androidId, serialNumber);
             DeviceAuthUtils.setUniqueCodeForOnLine(androidId, serialNumber);
             connect(session, DeviceAuthUtils.getUniqueCode(androidId, serialNumber));
+            DeviceAuthUtils.deviceOnLineNotifyAction(androidId, serialNumber);
         } catch (Exception ex) {
-            logger.error("建立webSocket出错:", ex);
+            logger.error("建立webSocket出错:" + ex.getMessage(), ex);
         }
 
     }
@@ -36,6 +37,11 @@ public class DeviceWebSocketEndpoint extends BaseWebSocketEndpoint {
     public void onClose(Session session, @PathParam("androidId") String androidId, @PathParam("serialNumber") String serialNumber) {
         logger.info("*** WebSocket closed from sessionId {}  androidId: {} ,serialNumber: {} ", session.getId(), androidId, serialNumber);
         disconnect(DeviceAuthUtils.getUniqueCode(androidId, serialNumber));
+        try {
+            DeviceAuthUtils.deviceOffLineNotifyAction(androidId, serialNumber);
+        } catch (Exception e) {
+            logger.error("deviceOffLineNotifyAction出错:" + e.getMessage(), e);
+        }
     }
 
     @OnError
@@ -43,6 +49,11 @@ public class DeviceWebSocketEndpoint extends BaseWebSocketEndpoint {
         logger.info("发生异常：androidId: {} ,serialNumber: {} ", androidId, serialNumber);
         logger.error(t.getMessage(), t);
         disconnect(DeviceAuthUtils.getUniqueCode(androidId, serialNumber));
+        try {
+            DeviceAuthUtils.deviceOffLineNotifyAction(androidId, serialNumber);
+        } catch (Exception e) {
+            logger.error("deviceOffLineNotifyAction出错:" + e.getMessage(), e);
+        }
     }
 
     public boolean authenticatorToken(Session session, String method, String uniqueCode) {
