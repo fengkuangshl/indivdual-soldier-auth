@@ -10,18 +10,21 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入内容" v-model="t.name">
+          <el-input placeholder="请输入内容" v-model="t.name" v-hasPermissionQueryPage="permissionPrefix">
             <el-button slot="append" class="search-primary" icon="el-icon-search" @click="searchFile"></el-button>
           </el-input>
         </el-col>
         <el-col :span="7">
-          <el-button type="primary" @click="addFile">上传文件</el-button>
+          <el-button type="primary" v-hasPermission="permissionPrefix+'::UPLOAD'" @click="addFile">上传文件</el-button>
         </el-col>
       </el-row>
-      <KWTable url="file/getFileInfoByPaged" method="POST" style="width: 100%" ref="kwTableRef">
+      <KWTable url="file/getFileInfoByPaged" method="POST" v-hasPermissionQueryPage="permissionPrefix"
+        style="width: 100%" ref="kwTableRef">
         <el-table-column prop="name" sortable label="文件名称">
           <template slot-scope="scope">
-            <el-link type="primary" :href="scope.row.accessPath" target="_blank">{{ scope.row.name}}</el-link>
+            <el-link type="primary" v-hasPermission="permissionPrefix+'::DOWNLOAD'" :href="scope.row.accessPath"
+              target="_blank">{{ scope.row.name}}</el-link>
+            <span v-if="hasPermission()">{{ scope.row.name}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="contentType" sortable label="文件类型"> </el-table-column>
@@ -31,7 +34,8 @@
         </el-table-column>
         <el-table-column label="操作">
           <template v-slot="scope">
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteFile(scope.row.id)"></el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini" v-hasPermissionDelete="permissionPrefix"
+              @click="deleteFile(scope.row.id)"></el-button>
           </template>
         </el-table-column>
       </KWTable>
@@ -55,6 +59,7 @@ import { FileInfo, Name } from './interface/file'
 import { FileDeleteApi, FileUploadApi } from './file-api'
 import KWTable from '@/components/table/Table.vue'
 import { ElUpload, ElUploadInternalFileDetail, HttpRequestOptions } from 'node_modules/_element-ui@2.15.9@element-ui/types/upload'
+import PermissionUtil from '@/common/utils/permission/permission-util'
 
 @Component({
   components: {
@@ -63,7 +68,7 @@ import { ElUpload, ElUploadInternalFileDetail, HttpRequestOptions } from 'node_m
 })
 export default class File extends Vue {
   t: Name = { name: '' }
-
+  permissionPrefix = 'common::file::FileInfo'
   fileList: Array<ElUploadInternalFileDetail> = []
 
   title = ''
@@ -106,6 +111,10 @@ export default class File extends Vue {
   addFile(): void {
     this.title = '上传文件'
     this.fileDialogVisble = true
+  }
+
+  hasPermission(): boolean {
+    return !PermissionUtil.hasPermission(this.permissionPrefix + '::DOWNLOAD')
   }
 
   deleteFile(id: number): void {
