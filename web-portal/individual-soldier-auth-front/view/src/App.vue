@@ -51,9 +51,8 @@ body {
   background: #cccccc;
 }
 
-/*滚动条里面轨道*/
-::-webkit-scrollbar-track //scroll轨道背景
- {
+/*滚动条里面轨道*/ // scroll轨道背景
+::-webkit-scrollbar-track {
   -webkit-box-shadow: none;
   border-radius: 10px;
   background-color: transparent;

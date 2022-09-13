@@ -3,6 +3,7 @@ import store, { local } from '@/store'
 import Socket from '@/common/web-socket/web-socket'
 import settings from '@/settings'
 import { getWsDomain } from '@/common/utils/get-env'
+import WebSocketActionProcess from '@/common/web-socket/message-process/WebSocketActionProcess'
 
 export interface ISocketState<T, RT> {
   webSocket: Socket<T, RT> | null
@@ -55,6 +56,7 @@ class SocketStore<T, RT> extends VuexModule implements ISocketState<T, RT> {
     const wbSocket = new Socket<T, RT>({ url: ws })
     wbSocket.onmessage((data: RT) => {
       const str = JSON.stringify(data)
+      WebSocketActionProcess.getInstance().processAction(str)
     })
     this.context.commit('CHANGE_SOCKET', wbSocket)
   }

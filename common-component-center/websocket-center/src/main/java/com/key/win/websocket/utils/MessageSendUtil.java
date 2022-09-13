@@ -46,6 +46,11 @@ public class MessageSendUtil {
         webSocketManager.sendMessageByToken(token, websocketBaseMessage);
     }
 
+    public static void sendMessage(String action, String mapper, Object message, List<String> tokens) {
+        WebsocketBaseMessage websocketBaseMessage = buildWebsocketBaseMessage(action, mapper, message);
+        sendMessage(websocketBaseMessage, tokens);
+    }
+
     public static void sendMessage(Object message, String token) {
         webSocketManager.sendMessageByToken(token, message);
     }
@@ -62,7 +67,12 @@ public class MessageSendUtil {
         WebsocketBaseMessage websocketBaseMessage = new WebsocketBaseMessage();
         websocketBaseMessage.setAction(action);
         websocketBaseMessage.setMapper(mapper);
-        websocketBaseMessage.setMessage(JsonUtils.toJsonNoException(message));
+        if (message instanceof String) {
+            websocketBaseMessage.setMessage((String) message);
+        } else {
+            websocketBaseMessage.setMessage(JsonUtils.toJsonNoException(message));
+        }
+
         return websocketBaseMessage;
     }
 }

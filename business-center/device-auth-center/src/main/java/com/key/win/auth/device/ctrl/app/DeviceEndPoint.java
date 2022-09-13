@@ -59,7 +59,7 @@ public class DeviceEndPoint {
         DeviceAuthUtils.setUniqueCodeForOnLine(androidId, serialNumber);
         String uniqueCode = DeviceAuthUtils.getUniqueCode(androidId, serialNumber);
         for (Authentication authentication : AuthenticationUtil.getOnLineUser()) {
-            MessageSendUtil.sendMessage("设备[" + uniqueCode + "]下线！", authentication.getToken());
+            MessageSendUtil.sendMessage("deviceOnLineNotifyAction", "", "设备[" + uniqueCode + "]上线！", authentication.getToken());
         }
         return EncryptResponse.succeed();
     }
@@ -71,7 +71,7 @@ public class DeviceEndPoint {
         DeviceAuthUtils.setUniqueCodeForOffLine(androidId, serialNumber);
         String uniqueCode = DeviceAuthUtils.getUniqueCode(androidId, serialNumber);
         for (Authentication authentication : AuthenticationUtil.getOnLineUser()) {
-            MessageSendUtil.sendMessage("设备[" + uniqueCode + "]下线！", authentication.getToken());
+            MessageSendUtil.sendMessage("deviceOffLineNotifyAction", "", "设备[" + uniqueCode + "]下线！", authentication.getToken());
         }
         //MessageSendUtil.sendMessage("设备[" + uniqueCode + "]下线！", uniqueCode);
         return EncryptResponse.succeed();

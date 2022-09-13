@@ -5,6 +5,6 @@ import org.springframework.context.annotation.Import;
 
 
 @Configuration
-@Import({SendMessageAction.class, RemoveAction.class})
+@Import({SendMessageAction.class, SendMessageForTokenAction.class, BroadcastMessageAction.class, RemoveAction.class})
 public class ActionConfig {
 }
