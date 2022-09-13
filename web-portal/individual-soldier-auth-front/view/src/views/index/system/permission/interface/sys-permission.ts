@@ -1,6 +1,6 @@
 export type Name = Model.Name
 
-export interface PermissionForm extends Name, Model.Id {
+export interface PermissionForm extends Name {
   permission: string
 }
 

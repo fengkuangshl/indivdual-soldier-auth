@@ -78,7 +78,7 @@ export default class Permission extends Vue {
 
   title = ''
   permissionDialogVisble = false
-  sysPermissionForm: PermissionForm = { id: -1, name: '', permission: '' }
+  sysPermissionForm: PermissionForm = { name: '', permission: '' }
   @Ref('sysPermissionFormRef')
   readonly sysPermissionFormRef!: ElForm
 
@@ -100,7 +100,7 @@ export default class Permission extends Vue {
   async showEditDialog(permission: PermissionResponse): Promise<void> {
     this.title = '编辑权限'
     this.getPermissionEnum()
-    this.sysPermissionForm = { id: permission.id, name: permission.name, permission: permission.permission }
+    this.sysPermissionForm = { id: permission.id, name: permission.name, permission: permission.permission } as PermissionForm
     this.permissionDialogVisble = true
   }
 
@@ -130,7 +130,7 @@ export default class Permission extends Vue {
     this.permissionDialogVisble = true
     this.$nextTick(() => {
       this.sysPermissionFormRef.resetFields()
-      this.sysPermissionForm = { id: -1, name: '', permission: '' }
+      this.sysPermissionForm = { name: '', permission: '' }
       this.getPermissionEnum()
     })
   }

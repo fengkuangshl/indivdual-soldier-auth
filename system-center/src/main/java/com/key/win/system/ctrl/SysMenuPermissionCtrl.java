@@ -108,7 +108,7 @@ public class SysMenuPermissionCtrl {
     @GetMapping("/get/page")
     @ApiOperation(value = "获取所有页面权限，并进行组装返回")
     @LogAnnotation(module = "system", recordRequestParam = false)
-    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "GRANT::PAGE::PERMISSION')")
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::LIST')")
     public Result getPagePermission() {
         Map<String, Object> content = new HashMap<>();
         List<SysMenu> treeMenu = MenuUtils.treeBuilder(menuService.list());

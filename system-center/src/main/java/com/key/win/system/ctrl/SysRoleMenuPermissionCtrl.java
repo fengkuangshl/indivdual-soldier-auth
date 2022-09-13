@@ -124,7 +124,7 @@ public class SysRoleMenuPermissionCtrl {
     @GetMapping("/get/grant/{roleId}")
     @ApiOperation(value = "根据角色Id获取菜单和权限并进行组装")
     @LogAnnotation(module = "system", recordRequestParam = false)
-    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "ROLE::GRANT')")
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::LIST')")
     public Result getPagePermission(@PathVariable Long roleId) {
         Map<String, Object> content = new HashMap<>();
         List<SysMenuPermission> sysMenuPermissionByChecked = sysMenuPermissionService.findSysMenuPermissionByChecked(true);

@@ -152,11 +152,13 @@ export default class File extends Vue {
     console.log(params.file) // 拿到上传的文件
     var formdata = new FormData()
     formdata.append('file', params.file)
-    const { code, data, msg } = await FileUploadApi(formdata, 'default')
-    if (code === 200) {
-      this.fileInfo = data
+    const { code, msg } = await FileUploadApi(formdata, 'default')
+    if (code !== 200) {
+      this.$message.error(msg || '上传失败!')
     } else {
-      this.$message.error(msg || '文件获取失败！')
+      this.searchFile()
+      this.$message.success('上传成功!')
+      this.fileDialogVisble = false
     }
   }
 

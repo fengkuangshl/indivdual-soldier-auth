@@ -9,12 +9,12 @@
     </div>
     <el-card>
       <el-row :gutter="20">
-        <el-col :span="2">
+        <el-col :span="4">
           <el-tree :data="treeData" show-checkbox default-expand-all check-strictly :props="defaultProps" ref="treeLeft"
             highlight-current node-key="id" @node-click="handleNodeClick" @check-change="handleCheckChange">
           </el-tree>
         </el-col>
-        <el-col :span="22">
+        <el-col :span="20">
           <el-row>
             <el-col :span="7">
               <el-input placeholder="请输入内容" v-model="t.value">

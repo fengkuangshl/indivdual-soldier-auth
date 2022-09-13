@@ -16,21 +16,31 @@
         </el-col>
       </el-row>
       <el-table :data="tableDatas" row-key="key" border default-expand-all
-        v-hasPermission="menuPermissionPrefix+'QUERY::LIST'"
+        v-hasPermission="menuPermissionPrefix+'QUERY::LIST'" height="610"
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }" style="margin-top:20px;width: 100%">
-        <el-table-column v-for="item in tableTiles" :key="item.propertyName" :prop="item.propertyName" align='center'>
-          <template slot="header">
-            <el-checkbox v-if="item.permissionId > 0" v-on:change="checked => onTitleChane(checked, item)">
-            </el-checkbox>&nbsp;&nbsp;{{ item.permissionName }}
-          </template>
-          <template slot-scope="scope">
-            {{ scope.row[item.propertyName].permissionName }}
-            <el-checkbox v-on:change="onChane()"
-              v-if="!(scope.row.children && scope.row.children.length > 0) && scope.row[item.propertyName].permissionId > 0"
-              v-model="scope.row[item.propertyName].checked">
-            </el-checkbox>
-          </template>
-        </el-table-column>
+        <template v-for="(item,index) in tableTiles">
+          <el-table-column width="150" fixed v-if="index==0" :key="item.propertyName" :prop="item.propertyName"
+            align='left'>
+            <template slot="header">{{ item.permissionName }}</template>
+            <template slot-scope="scope">
+              {{ scope.row[item.propertyName].permissionName }}
+            </template>
+          </el-table-column>
+          <el-table-column width="200" v-if=" index > 0" :key="item.propertyName" :prop="item.propertyName"
+            align='center'>
+            <template slot="header">
+              <el-checkbox v-if="item.permissionId > 0" v-on:change="checked => onTitleChane(checked, item)">
+              </el-checkbox>&nbsp;&nbsp;{{ item.permissionName }}
+            </template>
+            <template slot-scope="scope">
+              {{ scope.row[item.propertyName].permissionName }}
+              <el-checkbox v-on:change="onChane()"
+                v-if="!(scope.row.children && scope.row.children.length > 0) && scope.row[item.propertyName].permissionId > 0"
+                v-model="scope.row[item.propertyName].checked">
+              </el-checkbox>
+            </template>
+          </el-table-column>
+        </template>
       </el-table>
     </el-card>
   </div>

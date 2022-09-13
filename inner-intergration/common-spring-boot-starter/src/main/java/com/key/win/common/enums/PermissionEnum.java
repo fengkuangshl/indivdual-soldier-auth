@@ -19,7 +19,12 @@ public enum PermissionEnum {
     USER_GRANTED_ROLE("USER::GRANTED::ROLE", "用户设置角色权限"),
     USER_RESET_PASSWORD("USER::RESET::PASSWORD", "重置密码权限"),
     ROLE_GRANT("ROLE::GRANT", "授权权限"),
-    GRANT_PAGE_PERMISSION("GRANT::PAGE::PERMISSION", "菜单页面权限");
+    GRANT_PAGE_PERMISSION("GRANT::PAGE::PERMISSION", "菜单页面权限"),
+    UPLOAD("UPLOAD","上传权限"),
+    DOWNLOAD("DOWNLOAD","下载权限"),
+    IMPORT("IMPORT", "导入权限"),
+    EXPORT("EXPORT","导出权限")
+    ;
     private String code;
     private String text;
 
