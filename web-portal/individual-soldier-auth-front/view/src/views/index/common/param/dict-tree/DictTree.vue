@@ -206,7 +206,8 @@ export default class DictTree extends Vue {
   @Ref('kwTableRef')
   readonly kwTableRef!: KWTable<SysDictTreeSearch, SysDictTree>
 
-  readonly sysDictTreeFormRules: { label: Array<KWRule.Rule | KWRule.MixinRule>; value: Array<KWRule.Rule | KWRule.MixinRule>; sort: Array<KWRule.Rule | KWRule.NumberRule> } = {
+  readonly sysDictTreeFormRules: { parentId: Array<KWRule.Rule>; label: Array<KWRule.Rule | KWRule.MixinRule>; value: Array<KWRule.Rule | KWRule.MixinRule>; sort: Array<KWRule.Rule | KWRule.NumberRule> } = {
+    parentId: [FormValidatorRule.requiredRule('请选择父节点')],
     label: [FormValidatorRule.requiredRule('请输入字典标签'), FormValidatorRule.mixinRul(2, 10, '字典标签的长度2~10个字符之间')],
     value: [FormValidatorRule.requiredRule('请输入字典键值'), FormValidatorRule.mixinRul(2, 10, '字典键值的长度2~10个字符之间')],
     sort: [FormValidatorRule.requiredRule('请输入字典排序'), FormValidatorRule.numberRule('请输入数字')]
