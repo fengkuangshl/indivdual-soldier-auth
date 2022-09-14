@@ -277,7 +277,7 @@ public class SysUserCtrl {
     @ApiOperation(value = "修改用户状态")
     @PostMapping("/updateEnabled")
     @LogAnnotation(module = "user-center", recordRequestParam = false)
-    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "USER::UPDATE::ENABLED')")
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "UPDATE::ENABLED')")
     public Result updateEnabled(@RequestBody SysUser sysUser) {
         boolean b = sysUserService.updateEnabled(sysUser);
         return Result.result(b);

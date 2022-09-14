@@ -6,6 +6,7 @@ import com.key.win.basic.web.Result;
 import com.key.win.log.annotation.LogAnnotation;
 import com.key.win.param.model.SysDictTree;
 import com.key.win.param.service.SysDictTreeService;
+import com.key.win.security.annotation.PreAuthorize;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -20,12 +21,15 @@ import org.springframework.web.bind.annotation.*;
 public class SysDictTreeCtrl {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final static String AUTHORITY_PREFIX = "common::param::dict-tree::DictTree::";
+
     @Autowired
     private SysDictTreeService sysDictTreeService;
 
     @PostMapping("/findSysDictTreeByPaged")
     @ApiOperation(value = "DictTree分页")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::PAGED')")
     public PageResult<SysDictTree> findSysDictTreeByPaged(@RequestBody PageRequest<SysDictTree> t) {
         return sysDictTreeService.findSysDictTreeByPaged(t);
     }
@@ -33,6 +37,7 @@ public class SysDictTreeCtrl {
     @PostMapping("/findChildrenNodeByParentId")
     @ApiOperation(value = "获取当前树节点的所有孩子节点&分页")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::PAGED')")
     public PageResult<SysDictTree> findChildrenNodeByParentId(@RequestBody PageRequest<SysDictTree> t) {
         return sysDictTreeService.findChildrenNodeByParentId(t);
     }
@@ -40,6 +45,7 @@ public class SysDictTreeCtrl {
     @PostMapping("/findParentNodeByParentId")
     @ApiOperation(value = "获取当前树节点的所有父节点&分页")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::PAGED')")
     public PageResult<SysDictTree> findParentNodeByParentId(@RequestBody PageRequest<SysDictTree> t) {
         return sysDictTreeService.findParentNodeByParentId(t);
     }
@@ -48,6 +54,7 @@ public class SysDictTreeCtrl {
     @GetMapping("/get/{id}")
     @ApiOperation(value = "获取DictTree")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::ID')")
     public Result get(@PathVariable String id) {
         return Result.succeed(sysDictTreeService.getById(id));
     }
@@ -55,6 +62,7 @@ public class SysDictTreeCtrl {
     @DeleteMapping("/delete/{id}")
     @ApiOperation(value = "删除")
     @LogAnnotation(module = "system", recordRequestParam = true)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "DELETE')")
     public Result delete(@PathVariable Long id) {
         boolean b = sysDictTreeService.deleteById(id);
         return Result.result(b);
@@ -63,6 +71,7 @@ public class SysDictTreeCtrl {
     @PostMapping("/saveOrUpdate")
     @ApiOperation(value = "新增/更新")
     @LogAnnotation(module = "system", recordRequestParam = true)
+    @PreAuthorize("hasAnyAuthority('" + AUTHORITY_PREFIX + "MODIFY','" + AUTHORITY_PREFIX + "ADD')")
     public Result saveOrUpdate(@RequestBody SysDictTree sysDictTree) {
         if (StringUtils.isBlank(sysDictTree.getValue())) {
             logger.error("value为空！");
@@ -94,6 +103,7 @@ public class SysDictTreeCtrl {
     @GetMapping("/getDictTreeByParenId/{parentId}")
     @ApiOperation(value = "根据父节点获取所有孩子节点")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::ID')")
     public Result getDictTreeByParenId(@PathVariable Long parentId) {
         return Result.succeed(sysDictTreeService.findSysDictTreeByParentId(parentId));
     }
@@ -101,6 +111,7 @@ public class SysDictTreeCtrl {
     @GetMapping("/getDictTree/{type}")
     @ApiOperation(value = "获取机构树")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::LIST')")
     public Result getDictTree(@PathVariable Long type) {
         return Result.succeed(sysDictTreeService.getDictTree(type));
     }
@@ -108,12 +119,14 @@ public class SysDictTreeCtrl {
     @GetMapping("/findLeafNode/{type}")
     @ApiOperation(value = "获取所有叶节点")
     @LogAnnotation(module = "system", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::LIST')")
     public Result getLeafNode(@PathVariable Long type) {
         return Result.succeed(sysDictTreeService.findLeafNode(type));
     }
 
     @LogAnnotation(module = "param-center", recordRequestParam = false)
     @GetMapping("/updateEnabled/{id}/{status}")
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "UPDATE::ENABLED')")
     public Result updateEnabled(@PathVariable Long id,@PathVariable Boolean status){
         return Result.succeed(sysDictTreeService.updateEnabled(id,status));
     }

@@ -32,7 +32,7 @@
         <el-table-column prop="createDate" label="创建时间" sortable="custom">
           <template slot-scope="scope">{{ scope.row.createDate | dateTimeFormat }}</template>
         </el-table-column>
-        <el-table-column prop="status" label="状态" sortable="custom" v-hasPermissionEnabled="dicTypePermissionPrefix">
+        <el-table-column prop="status" label="状态" sortable="custom" v-if="hasPermissionEnabled()">
           <template v-slot="scope">
             <el-switch v-model="scope.row.status" active-color="#13ce66" inactive-color="#ff4949"
               @change="sysDictTypeStatusChanged(scope.row, scope.row.status)">
@@ -161,6 +161,10 @@ export default class DictType extends Vue {
     } else {
       return PermissionUtil.hasPermission(PermissionCodeUtils.dictTypeGrantDictTypeGotoDictTree)
     }
+  }
+
+  hasPermissionEnabled(): boolean {
+    return PermissionUtil.hasPermissionForEnabled(this.dicTypePermissionPrefix)
   }
 
   aditDictTypeClosed(): void {

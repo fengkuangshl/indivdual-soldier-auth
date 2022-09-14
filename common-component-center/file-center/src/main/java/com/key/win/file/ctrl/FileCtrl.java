@@ -11,6 +11,7 @@ import com.key.win.file.util.Base64Util;
 import com.key.win.file.util.FilePropertyUtils;
 import com.key.win.file.vo.FileBase64Vo;
 import com.key.win.log.annotation.LogAnnotation;
+import com.key.win.security.annotation.PreAuthorize;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Api("File相关的api")
 public class FileCtrl {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-
+    private final static String AUTHORITY_PREFIX = "common::file::FileInfo::";
 
     @Autowired
     private FileServiceFactory fileServiceFactory;
@@ -33,6 +34,7 @@ public class FileCtrl {
     @PostMapping("/file/getFileInfoByPaged")
     @ApiOperation(value = "File分页")
     @LogAnnotation(module = "file-center", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::PAGED')")
     public PageResult<FileInfo> findFileInfoByPaged(@RequestBody PageRequest<FileInfo> pageRequest) {
         FileInfoService fileService = fileServiceFactory.getFileService();
         return fileService.findFileInfoByPaged(pageRequest);
@@ -41,6 +43,7 @@ public class FileCtrl {
     @GetMapping("/get/{id}")
     @ApiOperation(value = "File分页")
     @LogAnnotation(module = "file-center", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::ID')")
     public Result<FileInfo> get(@PathVariable String id) {
         FileInfoService fileService = fileServiceFactory.getFileService();
         return Result.succeed(fileService.getById(id));
@@ -56,6 +59,7 @@ public class FileCtrl {
     @LogAnnotation(module = "file-center", recordRequestParam = false)
     @PostMapping("/upload/{bizType}/file")
     @ApiOperation(value = "上传附件")
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "UPLOAD')")
     public Result<FileInfo> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable String bizType) throws Exception {
         if (file.getOriginalFilename().lastIndexOf(".") == -1) {
             throw new BizException("originalFilename不在存在文件后缀！");
@@ -74,6 +78,7 @@ public class FileCtrl {
     @LogAnnotation(module = "file-center", recordRequestParam = false)
     @PostMapping("/upload/{bizType}/files")
     @ApiOperation(value = "上传附件")
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "UPLOAD')")
     public Result<FileInfo> uploadFiles(@RequestParam("files") MultipartFile[] files, @PathVariable String bizType) throws Exception {
         for (MultipartFile file : files) {
             if (file.getOriginalFilename().lastIndexOf(".") == -1) {
@@ -95,6 +100,7 @@ public class FileCtrl {
     @LogAnnotation(module = "file-center", recordRequestParam = false)
     @PostMapping("/upload/{bizType}/base64")
     @ApiOperation(value = "上传附件")
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "UPLOAD')")
     public Result<FileInfo> uploadBase64File(@RequestBody FileBase64Vo fileBase64Vo, @PathVariable String bizType) throws Exception {
         String path = bizTypeCheck(bizType);
         MultipartFile multipartFile = Base64Util.base64ToMultipart(fileBase64Vo.getQrcode(), fileBase64Vo.getName());
@@ -128,6 +134,7 @@ public class FileCtrl {
     @LogAnnotation(module = "file-center", recordRequestParam = false)
     @DeleteMapping("/files/{id}")
     @ApiOperation(value = "删除附件")
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "DELETE')")
     public Result delete(@PathVariable String id) {
 
         try {

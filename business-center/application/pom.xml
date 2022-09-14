@@ -38,6 +38,11 @@
             <artifactId>file-center</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.key.win</groupId>
+            <artifactId>param-center</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

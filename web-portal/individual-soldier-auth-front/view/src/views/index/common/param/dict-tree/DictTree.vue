@@ -37,8 +37,7 @@
             <el-table-column prop="createDate" label="创建时间" sortable="custom">
               <template slot-scope="scope">{{ scope.row.createDate | dateTimeFormat }}</template>
             </el-table-column>
-            <el-table-column prop="status" label="状态" sortable="custom"
-              v-hasPermissionEnabled="sysDictTreePermissionPrefix">
+            <el-table-column prop="status" label="状态" sortable="custom" v-if="hasPermissionEnabled()">
               <template v-slot="scope">
                 <el-switch v-model="scope.row.status" active-color="#13ce66" inactive-color="#ff4949"
                   @change="sysDictTreeStatusChanged(scope.row, scope.row.status)">
@@ -118,6 +117,7 @@ import KWTable from '@/components/table/Table.vue'
 import KWTreeSelect from '@/components/select-tree/TreeSelect.vue'
 import FormValidatorRule from '@/common/form-validator/form-validator'
 import PermissionPrefixUtils from '@/common/utils/permission/permission-prefix'
+import PermissionUtil from '@/common/utils/permission/permission-util'
 @Component({
   components: {
     KWTable,
@@ -211,6 +211,10 @@ export default class DictTree extends Vue {
     label: [FormValidatorRule.requiredRule('请输入字典标签'), FormValidatorRule.mixinRul(2, 10, '字典标签的长度2~10个字符之间')],
     value: [FormValidatorRule.requiredRule('请输入字典键值'), FormValidatorRule.mixinRul(2, 10, '字典键值的长度2~10个字符之间')],
     sort: [FormValidatorRule.requiredRule('请输入字典排序'), FormValidatorRule.numberRule('请输入数字')]
+  }
+
+  hasPermissionEnabled(): boolean {
+    return PermissionUtil.hasPermissionForEnabled(this.sysDictTreePermissionPrefix)
   }
 
   async sysDictTreeStatusChanged(sysDictTree: SysDictTree, enabled: boolean): Promise<void> {

@@ -35,7 +35,7 @@
         <el-table-column prop="createDate" label="创建时间" sortable="custom">
           <template slot-scope="scope">{{ scope.row.createDate | dateTimeFormat }}</template>
         </el-table-column>
-        <el-table-column prop="isEnabled" label="状态" v-hasPermissionEnabled="userPermission" sortable="custom">
+        <el-table-column prop="isEnabled" label="状态" v-if="hasPermissionEnabled()" sortable="custom">
           <template v-slot="scope">
             <el-switch v-model="scope.row.enabled" active-color="#13ce66" inactive-color="#ff4949"
               @change="userStatusChanged(scope.row, scope.row.enabled)">
@@ -97,6 +97,7 @@ import KWTable from '@/components/table/Table.vue'
 import FormValidatorRule from '@/common/form-validator/form-validator'
 import PermissionPrefixUtils from '@/common/utils/permission/permission-prefix'
 import PermissionCodeUtils from '@/common/utils/permission/permission-code'
+import PermissionUtil from '@/common/utils/permission/permission-util'
 
 @Component({
   components: {
@@ -139,6 +140,10 @@ export default class User extends Vue {
   userRolePage: KWRequest.PageRequest<SysRoleSearchRequest> = {
     pageSize: 1000000, // 每页的数据条数
     pageNo: 1 // 默认开始页面
+  }
+
+  hasPermissionEnabled(): boolean {
+    return PermissionUtil.hasPermissionForEnabled(this.userPermission)
   }
 
   async userStatusChanged(userInfo: UserInfo, enabled: boolean): Promise<void> {

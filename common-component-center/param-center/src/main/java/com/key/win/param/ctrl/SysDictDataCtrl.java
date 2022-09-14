@@ -7,6 +7,7 @@ import com.key.win.basic.web.Result;
 import com.key.win.log.annotation.LogAnnotation;
 import com.key.win.param.model.SysDictData;
 import com.key.win.param.service.SysDictDataService;
+import com.key.win.security.annotation.PreAuthorize;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -22,12 +23,14 @@ import java.util.List;
 @RequestMapping("/sysDictData")
 public class SysDictDataCtrl {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final static String AUTHORITY_PREFIX = "common::param::dict-data::DictData::";
     @Autowired
     private SysDictDataService sysDictDataService;
 
     @GetMapping("/get/{id}")
     @ApiOperation(value = "get")
     @LogAnnotation(module = "param-center", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::ID')")
     public Result get(@PathVariable Long id) {
         return Result.succeed(sysDictDataService.getSysDictDataById(id), "");
     }
@@ -40,6 +43,7 @@ public class SysDictDataCtrl {
     @DeleteMapping("/delete/{id}")
     @ApiOperation(value = "删除")
     @LogAnnotation(module = "param-center", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "DELETE')")
     public Result delete(@PathVariable Long id) {
         boolean b = sysDictDataService.deleteSysDictData(id);
         return b ? Result.succeed("删除成功！") : Result.failed("删除失败");
@@ -53,6 +57,7 @@ public class SysDictDataCtrl {
     @PostMapping("/saveOrUpdate")
     @ApiOperation(value = "新增")
     @LogAnnotation(module = "param-center", recordRequestParam = false)
+    @PreAuthorize("hasAnyAuthority('" + AUTHORITY_PREFIX + "MODIFY','" + AUTHORITY_PREFIX + "ADD')")
     public Result saveOrUpdate(@RequestBody SysDictData param) {
         if(param==null){
             logger.error("数据字典为空！！");
@@ -69,6 +74,7 @@ public class SysDictDataCtrl {
     @ApiOperation("分页")
     @LogAnnotation(module = "param-center", recordRequestParam = false)
     @PostMapping("/getSysDictDataByPaged")
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::PAGED')")
     public PageResult<SysDictData> getSysDictDataByPaged(@RequestBody PageRequest<SysDictData> t) {
         return sysDictDataService.getSysDictDataByPaged(t);
     }
@@ -76,6 +82,7 @@ public class SysDictDataCtrl {
     @ApiOperation("根据条件查询")
     @LogAnnotation(module = "param-center", recordRequestParam = false)
     @PostMapping("/findSysDictData")
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::LIST')")
     public Result getSysDictData(@RequestBody SysDictData sysDictData) {
         List<SysDictData> list = sysDictDataService.findSysDictData(sysDictData);
         return Result.succeed(list, "");
@@ -84,6 +91,7 @@ public class SysDictDataCtrl {
     @ApiOperation("根据Type查询")
     @LogAnnotation(module = "param-center", recordRequestParam = false)
     @GetMapping("/findSysDictData/{type}")
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::LIST')")
     public Result getSysDictDataByType(@PathVariable Long type) {
         List<SysDictData> list = sysDictDataService.findSysDictDataByType(type);
         return Result.succeed(list, "");
@@ -92,6 +100,7 @@ public class SysDictDataCtrl {
     @ApiOperation("更新状态")
     @LogAnnotation(module = "param-center", recordRequestParam = false)
     @GetMapping("/updateEnabled/{id}/{status}")
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "UPDATE::ENABLED')")
     public Result updateEnabled(@PathVariable Long id,@PathVariable Boolean status){
         return Result.succeed(sysDictDataService.updateEnabled(id,status));
     }
