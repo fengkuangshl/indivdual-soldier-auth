@@ -1,0 +1,6 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://127.0.0.1:27017/ssw
+      # 需要用户名和密码认证
+      #uri:  mongodb://username:password@ip:port/admin

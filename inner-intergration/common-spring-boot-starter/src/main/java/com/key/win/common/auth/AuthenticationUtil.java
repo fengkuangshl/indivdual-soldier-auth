@@ -37,12 +37,6 @@ public class AuthenticationUtil {
 
     private static boolean isRefreshSelf;
 
-    private static int webSocketDisconnectTokenOutTime;
-
-
-    public static int getWebSocketDisconnectTokenOutTime() {
-        return webSocketDisconnectTokenOutTime;
-    }
 
     public static String getNickName() {
         Authentication loginUser = getAuthentication();
@@ -50,11 +44,6 @@ public class AuthenticationUtil {
             return loginUser.getNickName();
         }
         return IndividualSoldierAuthConstantUtils.SYSTEM_ANONYMOUS_USER;
-    }
-
-    @Value("${spring.web.socket.disconnect.tokenOutTime:60}")
-    public void setWebSocketDisconnectTokenOutTime(int webSocketDisconnectTokenOutTime) {
-        AuthenticationUtil.webSocketDisconnectTokenOutTime = webSocketDisconnectTokenOutTime;
     }
 
     @Value("${spring.global.token.expires:86400}")

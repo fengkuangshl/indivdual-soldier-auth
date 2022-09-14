@@ -1,0 +1,7 @@
+spring:
+  web:
+    socket:
+      exporter:
+        enable: true
+      cluster: true
+      path: /ws/{token}

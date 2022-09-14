@@ -1,0 +1,46 @@
+spring:
+  datasource:
+    dynamic:
+      enable: true
+      primary: core #设置默认的数据源或者数据源组,默认值即为master
+    druid:
+      # JDBC 配置(驱动类自动从url的mysql识别,数据源类型自动识别)
+      core:
+        url: jdbc:mysql://127.0.0.1:3307/single-soldier-wireless?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+        username: root
+        password: key-win123
+        driver-class-name:  com.mysql.cj.jdbc.Driver
+      log:
+        url: jdbc:mysql://127.0.0.1:3307/log-center?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+        username: root
+        password: key-win123
+        driver-class-name:  com.mysql.cj.jdbc.Driver
+      #连接池配置(通常来说，只需要修改initialSize、minIdle、maxActive
+      filters: stat,wall
+      filter:
+        stat:
+          enabled: true
+      initial-size: 1
+      max-active: 20
+      max-pool-prepared-statement-per-connection-size: 20
+      max-wait: 60000
+      min-evictable-idle-time-millis: 300000
+      min-idle: 1
+      pool-prepared-statements: true
+      stat-view-servlet:
+        enabled: true
+        login-password: admin
+        login-username: admin
+        reset-enable: true
+        url-pattern: /druid/*
+      test-on-borrow: false
+      test-on-return: false
+      test-while-idle: true
+      time-between-eviction-runs-millis: 60000
+      validation-query: SELECT 'x'
+      web-stat-filter:
+        enabled: true
+        exclusions: '"*.js , *.gif ,*.jpg ,*.png ,*.css ,*.ico , /druid/*"'
+        profile-enable: true
+        session-stat-max-count: 1000
+        url-pattern: /*

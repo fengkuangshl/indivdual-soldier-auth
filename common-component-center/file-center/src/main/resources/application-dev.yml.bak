@@ -1,0 +1,15 @@
+spring:
+  file:
+    root-path: /individual-soldier-auth
+    access-path-prefix: http://127.0.0.1:9902/individual-soldier-auth/
+    upload:
+      channel: local
+      default:
+        path: /default
+ftp:
+  #  host: 127.0.0.1
+  host: 192.168.1.41
+  port: 21
+  #  username: administrator
+  username: ftpadmin
+  password: 123456

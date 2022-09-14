@@ -1,0 +1,5 @@
+spring:
+  global:
+    method:
+      security:
+        enable: true

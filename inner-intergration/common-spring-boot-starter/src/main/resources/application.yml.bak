@@ -1,0 +1,19 @@
+spring:
+  web:
+    request:
+      white: /user/login,/user/refresh/**,/user/register,/swagger-ui.html/**,/swagger-resources/**,/v2/**,/webjars/**,/csrf,/favicon.ico,/error,/,/individual-soldier-auth/**,/api/auth/**
+  tx:
+    manager:
+      enabled: true
+    service:
+      pointcut:
+        expression: execution (* com.key.win..service.impl.*Impl.*(..))
+      method:
+        timeout: -1
+  global:
+    token:
+      expires: 86400
+    refresh:
+      token:
+        expires: 604800
+        isRefreshSelf: true

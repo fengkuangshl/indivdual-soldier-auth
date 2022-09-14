@@ -1,0 +1,5 @@
+spring:
+  rsa:
+    private-key-path: D:/dev-env/workspace-boot/individual-soldier-auth/inner-intergration/rsa-spring-boot-starter/rsa-encryptor/java/rsa_public_key.pem
+    public-key-path: D:/dev-env/workspace-boot/individual-soldier-auth/inner-intergration/rsa-spring-boot-starter/rsa-encryptor/java/pkcs8_private_key.pem
+    intercept-url-path: /api/auth/*
