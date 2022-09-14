@@ -18,8 +18,8 @@
         </el-col>
         <el-col :span="7">
           <el-button type="primary" @click="addMenu" v-hasPermissionAdd="menuPermission">添加菜单</el-button>
-          <el-button type="primary" @click="setPagePermission"
-            v-hasPermission="menuPermission+'::GRANT::PAGE::PERMISSION'">菜单页面权限设置</el-button>
+          <el-button type="primary" @click="setPagePermission" v-hasPermission="menuGrantPagePermission">
+            菜单页面权限设置</el-button>
         </el-col>
       </el-row>
       <KWTable url="menu/getMenuAll" method="GET" v-hasPermissionQueryList="menuPermission"
@@ -103,7 +103,8 @@ import { Name, MenuResponse, MenuForm } from './interface/sys-menu'
 import { DeleteSysMenuApi, SysMuenSaveOrUpdateApi, GetMenuByIdApi, GetOnesApi } from './menu-api'
 import KWTable from '@/components/table/Table.vue'
 import settings from '@/settings'
-
+import PermissionPrefixUtils from '@/common/utils/permission/permission-prefix'
+import PermissionCodeUtils from '@/common/utils/permission/permission-code'
 @Component({
   components: {
     KWTable
@@ -121,7 +122,8 @@ export default class Menu extends Vue {
   @Ref('sysMenuFormRef')
   readonly sysMenuFormRef!: ElForm
 
-  menuPermission = 'system::menu::SysMenu'
+  menuPermission = PermissionPrefixUtils.menu
+  menuGrantPagePermission = PermissionCodeUtils.menuGrantPagePermission
 
   @Ref('kwTableRef')
   readonly kwTableRef!: KWTable<Name, MenuResponse>

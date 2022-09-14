@@ -4,6 +4,54 @@ import { LoginSuccessUserInfo } from '@/views/index/system/user/interface/sys-us
 import { PermissionBaseEnum } from './permission-base-enum'
 
 const PermissionUtil = {
+  hasPermissionForUpload: (permissionPrefix: string): boolean => {
+    const code = PermissionUtil.getUploadPermissionExpression(permissionPrefix)
+    if (PermissionUtil.hasPermission(code)) {
+      return true
+    }
+    return false
+  },
+
+  getUploadPermissionExpression: (permissionPrefix: string): string => {
+    return permissionPrefix + PermissionBaseEnum.UPLOAD
+  },
+
+  hasPermissionForDownload: (permissionPrefix: string): boolean => {
+    const code = PermissionUtil.getDownloadPermissionExpression(permissionPrefix)
+    if (PermissionUtil.hasPermission(code)) {
+      return true
+    }
+    return false
+  },
+
+  getDownloadPermissionExpression: (permissionPrefix: string): string => {
+    return permissionPrefix + PermissionBaseEnum.DOWNLOAD
+  },
+
+  hasPermissionForImport: (permissionPrefix: string): boolean => {
+    const code = PermissionUtil.getImportPermissionExpression(permissionPrefix)
+    if (PermissionUtil.hasPermission(code)) {
+      return true
+    }
+    return false
+  },
+
+  getImportPermissionExpression: (permissionPrefix: string): string => {
+    return permissionPrefix + PermissionBaseEnum.IMPORT
+  },
+
+  hasPermissionForExport: (permissionPrefix: string): boolean => {
+    const code = PermissionUtil.getExportPermissionExpression(permissionPrefix)
+    if (PermissionUtil.hasPermission(code)) {
+      return true
+    }
+    return false
+  },
+
+  getExportPermissionExpression: (permissionPrefix: string): string => {
+    return permissionPrefix + PermissionBaseEnum.EXPORT
+  },
+
   hasPermissionForQueryPaged: (permissionPrefix: string): boolean => {
     const code = PermissionUtil.getQueryPagedPermissionExpression(permissionPrefix)
     if (PermissionUtil.hasPermission(code)) {
@@ -39,6 +87,18 @@ const PermissionUtil = {
     return permissionPrefix + PermissionBaseEnum.QUERY_ID
   },
 
+  hasPermissionForEnabled: (permissionPrefix: string): boolean => {
+    const code = PermissionUtil.getEnabledPermissionExpression(permissionPrefix)
+    if (PermissionUtil.hasPermission(code)) {
+      return true
+    }
+    return false
+  },
+
+  getEnabledPermissionExpression: (permissionPrefix: string): string => {
+    return permissionPrefix + PermissionBaseEnum.UPDATE_ENABLED
+  },
+
   hasPermissionForAdd: (permissionPrefix: string): boolean => {
     const code = PermissionUtil.getAddPermissionExpression(permissionPrefix)
     if (PermissionUtil.hasPermission(code)) {
@@ -46,7 +106,6 @@ const PermissionUtil = {
     }
     return false
   },
-
   getAddPermissionExpression: (permissionPrefix: string): string => {
     return permissionPrefix + PermissionBaseEnum.ADD
   },

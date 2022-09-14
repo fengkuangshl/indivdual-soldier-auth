@@ -10,15 +10,16 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入内容" v-model="t.name">
+          <el-input placeholder="请输入内容" v-model="t.name" v-hasPermissionQueryPage="dicTypePermissionPrefix">
             <el-button slot="append" class="search-primary" icon="el-icon-search" @click="searchDictType"></el-button>
           </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" @click="addDictType">添加字典</el-button>
+          <el-button type="primary" v-hasPermissionAdd="dicTypePermissionPrefix" @click="addDictType">添加字典</el-button>
         </el-col>
       </el-row>
-      <KWTable url="sysDictType/getSysDictTypeByPaged" style="width: 100%" ref="kwTableRef">
+      <KWTable url="sysDictType/getSysDictTypeByPaged" v-hasPermissionQueryPage="dicTypePermissionPrefix"
+        style="width: 100%" ref="kwTableRef">
         <el-table-column type="index" width="80" label="序号"></el-table-column>
         <el-table-column prop="name" sortable="custom" label="字典名称"> </el-table-column>
         <el-table-column prop="code" sortable="custom" label="字典code"> </el-table-column>
@@ -31,7 +32,7 @@
         <el-table-column prop="createDate" label="创建时间" sortable="custom">
           <template slot-scope="scope">{{ scope.row.createDate | dateTimeFormat }}</template>
         </el-table-column>
-        <el-table-column prop="status" label="状态" sortable="custom">
+        <el-table-column prop="status" label="状态" sortable="custom" v-hasPermissionEnabled="dicTypePermissionPrefix">
           <template v-slot="scope">
             <el-switch v-model="scope.row.status" active-color="#13ce66" inactive-color="#ff4949"
               @change="sysDictTypeStatusChanged(scope.row, scope.row.status)">
@@ -40,10 +41,13 @@
         </el-table-column>
         <el-table-column label="操作">
           <template v-slot="scope">
-            <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteSysDictType(scope.row.id)">
+            <el-button type="primary" icon="el-icon-edit" v-hasPermissionUpdate="dicTypePermissionPrefix" size="mini"
+              @click="showEditDialog(scope.row.id)"></el-button>
+            <el-button type="danger" icon="el-icon-delete" v-hasPermissionDelete="dicTypePermissionPrefix" size="mini"
+              @click="deleteSysDictType(scope.row.id)">
             </el-button>
-            <el-tooltip effect="dark" content="字典数据管理" placement="top" :enterable="false">
+            <el-tooltip effect="dark" content="字典数据管理" v-if="hasPermission(scope.row)" placement="top"
+              :enterable="false">
               <el-button type="warning" icon="el-icon-s-tools" size="mini" @click="dataManagement(scope.row)">
               </el-button>
             </el-tooltip>
@@ -85,6 +89,9 @@ import { SysDictTypeForm, SysDictType, SysDictTypeStatusChange, Type } from './i
 import { SysDictTypeGetApi, DeleteSysDictTypeApi, SysDictTypeSaveOrUpdateApi, SysDictTypeStatusChangeRequestApi } from './dict-type-api'
 import KWTable from '@/components/table/Table.vue'
 import FormValidatorRule from '@/common/form-validator/form-validator'
+import PermissionUtil from '@/common/utils/permission/permission-util'
+import PermissionPrefixUtils from '@/common/utils/permission/permission-prefix'
+import PermissionCodeUtils from '@/common/utils/permission/permission-code'
 
 @Component({
   components: {
@@ -100,6 +107,7 @@ export default class DictType extends Vue {
     status: true
   }
 
+  dicTypePermissionPrefix = PermissionPrefixUtils.dictType
   title = ''
   sysDictTypeDialogVisble = false
   sysDictTypeCodeDisabled = true
@@ -113,8 +121,6 @@ export default class DictType extends Vue {
 
   @Ref('sysDictTypeFormRef')
   readonly sysDictTypeFormRef!: ElForm
-
-  sysDictTypePermission = 'system::sysDictType::SysDictType'
 
   @Ref('kwTableRef')
   readonly kwTableRef!: KWTable<SysDictTypeForm, SysDictType>
@@ -147,6 +153,14 @@ export default class DictType extends Vue {
     this.sysDictTypeForm.type = type.text
     console.log(res)
     this.sysDictTypeDialogVisble = true
+  }
+
+  hasPermission(data: SysDictType): boolean {
+    if ((data.type as Model.EnumEntity).stringValue === Type.列表) {
+      return PermissionUtil.hasPermission(PermissionCodeUtils.dictTypeGrantDictTypeGotoDictData)
+    } else {
+      return PermissionUtil.hasPermission(PermissionCodeUtils.dictTypeGrantDictTypeGotoDictTree)
+    }
   }
 
   aditDictTypeClosed(): void {

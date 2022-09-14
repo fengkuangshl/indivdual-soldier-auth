@@ -35,10 +35,10 @@
         <el-table-column prop="createDate" label="创建时间" sortable="custom">
           <template slot-scope="scope">{{ scope.row.createDate | dateTimeFormat }}</template>
         </el-table-column>
-        <el-table-column prop="isEnabled" label="状态" sortable="custom">
+        <el-table-column prop="isEnabled" label="状态" v-hasPermissionEnabled="userPermission" sortable="custom">
           <template v-slot="scope">
-            <el-switch v-model="scope.row.enabled" v-hasPermission="userPermission+'::USER::UPDATE::ENABLED'"
-              active-color="#13ce66" inactive-color="#ff4949" @change="userStatusChanged(scope.row, scope.row.enabled)">
+            <el-switch v-model="scope.row.enabled" active-color="#13ce66" inactive-color="#ff4949"
+              @change="userStatusChanged(scope.row, scope.row.enabled)">
             </el-switch>
           </template>
         </el-table-column>
@@ -46,8 +46,8 @@
           <template v-slot="scope">
             <el-button type="primary" icon="el-icon-edit" v-hasPermissionUpdate="userPermission" size="mini"
               @click="showEditDialog(scope.row.id)"></el-button>
-            <el-tooltip effect="dark" content="重置密码" v-hasPermission="userPermission+'::USER::RESET::PASSWORD'"
-              placement="top" :enterable="false">
+            <el-tooltip effect="dark" content="重置密码" v-hasPermission="userResetPasswrodPermission" placement="top"
+              :enterable="false">
               <el-button type="warning" icon="el-icon-setting" size="mini" @click="passwordReset(scope.row.id)">
               </el-button>
             </el-tooltip>
@@ -95,6 +95,8 @@ import { UserStatusChangeRequestApi, UserGetApi, UserSaveOrUpdateApi, ResetPassw
 import { FindAllSysRoleApi } from '../sys-role/sys-role-api'
 import KWTable from '@/components/table/Table.vue'
 import FormValidatorRule from '@/common/form-validator/form-validator'
+import PermissionPrefixUtils from '@/common/utils/permission/permission-prefix'
+import PermissionCodeUtils from '@/common/utils/permission/permission-code'
 
 @Component({
   components: {
@@ -111,7 +113,8 @@ export default class User extends Vue {
   @Ref('userFormRef')
   readonly userFormRef!: ElForm
 
-  userPermission = 'system::user::SysUser'
+  userPermission = PermissionPrefixUtils.user
+  userResetPasswrodPermission = PermissionCodeUtils.userResetPasswrodPermission
 
   @Ref('kwTableRef')
   readonly kwTableRef!: KWTable<UserSearchRequest, UserInfo>

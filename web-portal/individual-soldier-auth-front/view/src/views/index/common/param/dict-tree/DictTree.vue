@@ -10,24 +10,26 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="4">
-          <el-tree :data="treeData" show-checkbox default-expand-all check-strictly :props="defaultProps" ref="treeLeft"
-            highlight-current node-key="id" @node-click="handleNodeClick" @check-change="handleCheckChange">
+          <el-tree :data="treeData" v-hasPermissionQueryList="sysDictTreePermissionPrefix" show-checkbox
+            default-expand-all check-strictly :props="defaultProps" ref="treeLeft" highlight-current node-key="id"
+            @node-click="handleNodeClick" @check-change="handleCheckChange">
           </el-tree>
         </el-col>
         <el-col :span="20">
           <el-row>
             <el-col :span="7">
-              <el-input placeholder="请输入内容" v-model="t.value">
+              <el-input placeholder="请输入内容" v-model="t.value" v-hasPermissionQueryPage="sysDictTreePermissionPrefix">
                 <el-button slot="append" class="search-primary" icon="el-icon-search" @click="searchDictTree">
                 </el-button>
               </el-input>
             </el-col>
             <el-col :span="4">
-              <el-button tree="primary" @click="addDictTree">添加字典数据</el-button>
+              <el-button tree="primary" v-hasPermissionAdd="sysDictTreePermissionPrefix" @click="addDictTree">添加字典数据
+              </el-button>
             </el-col>
           </el-row>
-          <KWTable url="sysDictTree/findSysDictTreeByPaged" :defaultLoadData="false" style="width: 100%"
-            ref="kwTableRef">
+          <KWTable url="sysDictTree/findSysDictTreeByPaged" v-hasPermissionQueryPage="sysDictTreePermissionPrefix"
+            :defaultLoadData="false" style="width: 100%" ref="kwTableRef">
             <el-table-column type="index" width="80" label="序号"></el-table-column>
             <el-table-column prop="label" sortable="custom" label="标签"> </el-table-column>
             <el-table-column prop="value" sortable="custom" label="键值"> </el-table-column>
@@ -35,7 +37,8 @@
             <el-table-column prop="createDate" label="创建时间" sortable="custom">
               <template slot-scope="scope">{{ scope.row.createDate | dateTimeFormat }}</template>
             </el-table-column>
-            <el-table-column prop="status" label="状态" sortable="custom">
+            <el-table-column prop="status" label="状态" sortable="custom"
+              v-hasPermissionEnabled="sysDictTreePermissionPrefix">
               <template v-slot="scope">
                 <el-switch v-model="scope.row.status" active-color="#13ce66" inactive-color="#ff4949"
                   @change="sysDictTreeStatusChanged(scope.row, scope.row.status)">
@@ -44,9 +47,11 @@
             </el-table-column>
             <el-table-column label="操作">
               <template v-slot="scope">
-                <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)">
+                <el-button type="primary" icon="el-icon-edit" v-hasPermissionUpdate="sysDictTreePermissionPrefix"
+                  size="mini" @click="showEditDialog(scope.row.id)">
                 </el-button>
-                <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteSysDictTree(scope.row.id)">
+                <el-button type="danger" icon="el-icon-delete" v-hasPermissionDelete="sysDictTreePermissionPrefix"
+                  size="mini" @click="deleteSysDictTree(scope.row.id)">
                 </el-button>
               </template>
             </el-table-column>
@@ -112,7 +117,7 @@ import { SysDictTreeGetApi, DeleteSysDictTreeApi, SysDictTreeSaveOrUpdateApi, Sy
 import KWTable from '@/components/table/Table.vue'
 import KWTreeSelect from '@/components/select-tree/TreeSelect.vue'
 import FormValidatorRule from '@/common/form-validator/form-validator'
-
+import PermissionPrefixUtils from '@/common/utils/permission/permission-prefix'
 @Component({
   components: {
     KWTable,
@@ -196,7 +201,7 @@ export default class DictTree extends Vue {
   @Ref('treeLeft')
   readonly treeLeft!: ElTree<string | number | null, SysDictTree>
 
-  sysDictTreePermission = 'system::sysDictTree::SysDictTree'
+  sysDictTreePermissionPrefix = PermissionPrefixUtils.dictTree
 
   @Ref('kwTableRef')
   readonly kwTableRef!: KWTable<SysDictTreeSearch, SysDictTree>
@@ -308,7 +313,6 @@ export default class DictTree extends Vue {
           }
           if (element.id === this.checkedKey) {
             this.treeLeft.setChecked(element, true, false)
-            break
           }
           if (element.subDictTree && element.subDictTree.length > 0) {
             this.setChecked(element.subDictTree, element.status as boolean)

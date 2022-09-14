@@ -10,14 +10,14 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="12" class="col-rigth">
-          <el-button type="primary" v-hasPermission="roleMenuPermissionPrefix+'ADD'"
-            :disabled="roleMenuPermissionVisble" @click="saveData()">保存
+          <el-button type="primary" v-hasPermissionAdd="roleMenuPermissionPrefix" :disabled="roleMenuPermissionVisble"
+            @click="saveData()">保存
           </el-button>
           <el-button @click="resetTableData()">重置</el-button>
         </el-col>
       </el-row>
       <el-table :data="tableDatas" row-key="key" border default-expand-all
-        v-hasPermission="roleMenuPermissionPrefix+'QUERY::LIST'" height="610"
+        v-hasPermissionQueryList="roleMenuPermissionPrefix" height="610"
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }" style="margin-top:20px;width: 100%">
         <template v-for="(item,index) in tableTiles">
           <el-table-column fixed v-if="index == 0" width="200" :key="item.propertyName" :prop="item.propertyName"
@@ -52,6 +52,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { GetPagePermissionApi, SysRoleMenuPermissionSaveOrUpdateApi } from './role-menu-permission-api'
 import { RoleMenuPermissionDetail, RoleMenuPermissionForm, SysRoleMenuPermissionResponse, SysRoleMenuPermissionTableDataType } from './interface/sys-role-menu-permission'
+import PermissionPrefixUtils from '@/common/utils/permission/permission-prefix'
 
 @Component
 export default class RoleMenuPermission extends Vue {
@@ -61,7 +62,7 @@ export default class RoleMenuPermission extends Vue {
   roleMenuPermissionVisble = true
   roleId = -1
   title = '权限管理'
-  roleMenuPermissionPrefix = 'system::role-menu-permission::SysRoleMenuPermission::'
+  roleMenuPermissionPrefix = PermissionPrefixUtils.roleMenuPermission
 
   created(): void {
     if (this.$route.query.id != null) {

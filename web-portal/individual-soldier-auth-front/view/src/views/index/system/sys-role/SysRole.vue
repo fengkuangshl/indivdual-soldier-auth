@@ -31,7 +31,7 @@
               @click="showEditDialog(scope.row)"></el-button>
             <el-button type="danger" icon="el-icon-delete" size="mini" v-hasPermissionDelete="rolePermission"
               @click="deleteRole(scope.row.id)"></el-button>
-            <el-tooltip effect="dark" content="菜单权限管理" placement="top" v-hasPermission="rolePermission+'::ROLE::GRANT'"
+            <el-tooltip effect="dark" content="菜单权限管理" placement="top" v-hasPermission="roleGrantPermission"
               :enterable="false">
               <el-button type="warning" icon="el-icon-s-tools" size="mini" @click="grantPermission(scope.row)">
               </el-button>
@@ -63,6 +63,8 @@ import { Component, Vue, Ref } from 'vue-property-decorator'
 import { SysRole, SysRoleSearchRequest, SysRoleForm } from './interface/sys-role'
 import { DeleteSysRoleApi, SysRoleSaveOrUpdateApi } from './sys-role-api'
 import KWTable from '@/components/table/Table.vue'
+import PermissionPrefixUtils from '@/common/utils/permission/permission-prefix'
+import PermissionCodeUtils from '@/common/utils/permission/permission-code'
 
 @Component({
   components: {
@@ -82,7 +84,8 @@ export default class Role extends Vue {
   @Ref('sysRoleFormRef')
   readonly sysRoleFormRef!: ElForm
 
-  rolePermission = 'system::sys-role::SysRole'
+  rolePermission = PermissionPrefixUtils.role
+  roleGrantPermission = PermissionCodeUtils.roleGrantPermission
 
   @Ref('kwTableRef')
   readonly kwTableRef!: KWTable<SysRoleSearchRequest, SysRole>

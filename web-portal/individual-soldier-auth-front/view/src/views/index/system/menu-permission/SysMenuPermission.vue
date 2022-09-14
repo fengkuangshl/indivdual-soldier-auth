@@ -10,13 +10,13 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="12" class="col-rigth">
-          <el-button type="primary" :disabled="menuPermissionVisble" v-hasPermission="menuPermissionPrefix+'ADD'"
+          <el-button type="primary" :disabled="menuPermissionVisble" v-hasPermissionAdd="menuPermissionPrefix"
             @click="saveData()">保存</el-button>
           <el-button @click="resetTableData()">重置</el-button>
         </el-col>
       </el-row>
       <el-table :data="tableDatas" row-key="key" border default-expand-all
-        v-hasPermission="menuPermissionPrefix+'QUERY::LIST'" height="610"
+        v-hasPermissionQueryList="menuPermissionPrefix" height="610"
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }" style="margin-top:20px;width: 100%">
         <template v-for="(item,index) in tableTiles">
           <el-table-column width="150" fixed v-if="index==0" :key="item.propertyName" :prop="item.propertyName"
@@ -50,6 +50,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { GetPagePermissionApi, SysMenuPermissionSaveOrUpdateApi } from './menu-permission-api'
 import { MenuPermissionDetail, MenuPermissionForm, SysMenuPermissionResponse, SysMenuPermissionTableDataType } from './interface/sys-menu-permission'
+import PermissionPrefixUtils from '@/common/utils/permission/permission-prefix'
 
 @Component
 export default class MenuPermission extends Vue {
@@ -58,7 +59,7 @@ export default class MenuPermission extends Vue {
   tableTiles: Array<MenuPermissionDetail> = new Array<MenuPermissionDetail>()
   menuPermissionVisble = true
 
-  menuPermissionPrefix = 'system::menu-permission::SysMenuPermission::'
+  menuPermissionPrefix = PermissionPrefixUtils.menuPermission
 
   created(): void {
     this.getMenuPermission()

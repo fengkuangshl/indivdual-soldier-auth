@@ -67,7 +67,7 @@ import { Component, Vue, Ref } from 'vue-property-decorator'
 import { Name, PermissionResponse, PermissionForm, PermissionEnum } from './interface/sys-permission'
 import KWTable from '@/components/table/Table.vue'
 import { SysPermissionSaveOrUpdateApi, DeleteSysPermissionApi, GetPermissionEnumApi } from './permission-api'
-
+import PermissionPrefixUtils from '@/common/utils/permission/permission-prefix'
 @Component({
   components: {
     KWTable
@@ -82,7 +82,7 @@ export default class Permission extends Vue {
   @Ref('sysPermissionFormRef')
   readonly sysPermissionFormRef!: ElForm
 
-  permissionPrefix = 'system::permission::SysPermission'
+  permissionPrefix = PermissionPrefixUtils.permission
   permissionOptions: Array<PermissionEnum> | [] = []
 
   @Ref('kwTableRef')

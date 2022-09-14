@@ -15,14 +15,15 @@
           </el-input>
         </el-col>
         <el-col :span="7">
-          <el-button type="primary" v-hasPermission="permissionPrefix+'::UPLOAD'" @click="addFile">上传文件</el-button>
+          <el-button type="primary" v-hasPermissionUpload="permissionPrefix" @click="addFile">上传文件
+          </el-button>
         </el-col>
       </el-row>
       <KWTable url="file/getFileInfoByPaged" method="POST" v-hasPermissionQueryPage="permissionPrefix"
         style="width: 100%" ref="kwTableRef">
         <el-table-column prop="name" sortable label="文件名称">
           <template slot-scope="scope">
-            <el-link type="primary" v-hasPermission="permissionPrefix+'::DOWNLOAD'" :href="scope.row.accessPath"
+            <el-link type="primary" v-hasPermissionDownload="permissionPrefix" :href="scope.row.accessPath"
               target="_blank">{{ scope.row.name}}</el-link>
             <span v-if="hasPermission()">{{ scope.row.name}}</span>
           </template>
@@ -60,7 +61,7 @@ import { FileDeleteApi, FileUploadApi } from './file-api'
 import KWTable from '@/components/table/Table.vue'
 import { ElUpload, ElUploadInternalFileDetail, HttpRequestOptions } from 'node_modules/_element-ui@2.15.9@element-ui/types/upload'
 import PermissionUtil from '@/common/utils/permission/permission-util'
-
+import PermissionPrefixUtils from '@/common/utils/permission/permission-prefix'
 @Component({
   components: {
     KWTable
@@ -68,7 +69,7 @@ import PermissionUtil from '@/common/utils/permission/permission-util'
 })
 export default class File extends Vue {
   t: Name = { name: '' }
-  permissionPrefix = 'common::file::FileInfo'
+  permissionPrefix = PermissionPrefixUtils.fileInfo
   fileList: Array<ElUploadInternalFileDetail> = []
 
   title = ''
@@ -114,7 +115,7 @@ export default class File extends Vue {
   }
 
   hasPermission(): boolean {
-    return !PermissionUtil.hasPermission(this.permissionPrefix + '::DOWNLOAD')
+    return !PermissionUtil.hasPermissionForDownload(this.permissionPrefix)
   }
 
   deleteFile(id: number): void {

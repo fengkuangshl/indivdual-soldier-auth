@@ -10,15 +10,17 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入内容" v-model="t.value">
+          <el-input placeholder="请输入内容" v-model="t.value" v-hasPermissionQueryPage="sysDictDataPermissionPrefix">
             <el-button slot="append" class="search-primary" icon="el-icon-search" @click="searchDictData"></el-button>
           </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button data="primary" @click="addDictData">添加字典数据</el-button>
+          <el-button data="primary" @click="addDictData" v-hasPermissionAdd="sysDictDataPermissionPrefix">添加字典数据
+          </el-button>
         </el-col>
       </el-row>
-      <KWTable url="sysDictData/getSysDictDataByPaged" :defaultLoadData="false" style="width: 100%" ref="kwTableRef">
+      <KWTable url="sysDictData/getSysDictDataByPaged" v-hasPermissionQueryPage="sysDictDataPermissionPrefix"
+        :defaultLoadData="false" style="width: 100%" ref="kwTableRef">
         <el-table-column type="index" width="80" label="序号"></el-table-column>
         <el-table-column prop="label" sortable="custom" label="标签"> </el-table-column>
         <el-table-column prop="value" sortable="custom" label="键值"> </el-table-column>
@@ -26,7 +28,8 @@
         <el-table-column prop="createDate" label="创建时间" sortable="custom">
           <template slot-scope="scope">{{ scope.row.createDate | dateTimeFormat }}</template>
         </el-table-column>
-        <el-table-column prop="status" label="状态" sortable="custom">
+        <el-table-column prop="status" label="状态" sortable="custom"
+          v-hasPermissionEnabled="sysDictDataPermissionPrefix">
           <template v-slot="scope">
             <el-switch v-model="scope.row.status" active-color="#13ce66" inactive-color="#ff4949"
               @change="sysDictDataStatusChanged(scope.row, scope.row.status)">
@@ -35,8 +38,10 @@
         </el-table-column>
         <el-table-column label="操作">
           <template v-slot="scope">
-            <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteSysDictData(scope.row.id)">
+            <el-button type="primary" v-hasPermissionUpdate="sysDictDataPermissionPrefix" icon="el-icon-edit"
+              size="mini" @click="showEditDialog(scope.row.id)"></el-button>
+            <el-button type="danger" v-hasPermissionDelete="sysDictDataPermissionPrefix" icon="el-icon-delete"
+              size="mini" @click="deleteSysDictData(scope.row.id)">
             </el-button>
           </template>
         </el-table-column>
@@ -100,7 +105,7 @@ import { SysDictDataForm, SysDictData, SysDictDataStatusChange } from './interfa
 import { SysDictDataGetApi, DeleteSysDictDataApi, SysDictDataSaveOrUpdateApi, SysDictDataStatusChangeRequestApi } from './dict-data-api'
 import KWTable from '@/components/table/Table.vue'
 import FormValidatorRule from '@/common/form-validator/form-validator'
-
+import PermissionPrefixUtils from '@/common/utils/permission/permission-prefix'
 @Component({
   components: {
     KWTable
@@ -132,7 +137,7 @@ export default class DictData extends Vue {
   @Ref('sysDictDataFormRef')
   readonly sysDictDataFormRef!: ElForm
 
-  sysDictDataPermission = 'system::sysDictData::SysDictData'
+  sysDictDataPermissionPrefix = PermissionPrefixUtils.dictData
 
   @Ref('kwTableRef')
   readonly kwTableRef!: KWTable<SysDictDataForm, SysDictData>
