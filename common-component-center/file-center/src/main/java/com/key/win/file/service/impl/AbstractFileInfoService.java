@@ -58,15 +58,9 @@ public abstract class AbstractFileInfoService extends ServiceImpl<FileInfoDao, F
 //            throw new IllegalArgumentException("缺少后缀名");
 //        }
         String fileName = fileInfo.getId() + fileInfo.getFileSuffix();
-        Calendar cal = Calendar.getInstance();
-        int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH);
-        int day = cal.get(Calendar.DATE);
-        filePath = filePath.replaceAll("/", Matcher.quoteReplacement(File.separator));
-        String path = filePath + File.separator + year + File.separator + (month + 1) + File.separator + day + File.separator;
-        uploadFile(AccessPathUtils.getRootPath() + path, fileName, inputStream);
-        fileInfo.setPath(path + fileName);
-        fileInfo.setPhysicalPath(AccessPathUtils.getRootPath() + path + fileName);
+        uploadFile(FileUtils.getFilePhysicalPath(filePath), fileName, inputStream);
+        fileInfo.setPath(FileUtils.getFileFullPath(filePath) + fileName);
+        fileInfo.setPhysicalPath(FileUtils.getFilePhysicalPath(filePath) + fileName);
         fileInfo.setBizType(bizType);
         getFileDao().insert(fileInfo);// 将文件信息保存到数据库
         logger.info("上传文件：{}", fileInfo);

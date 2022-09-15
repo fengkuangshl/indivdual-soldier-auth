@@ -7,7 +7,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Base64;
+import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.stream.Stream;
 
 public class FileUtils {
 
@@ -114,5 +121,58 @@ public class FileUtils {
     public static InputStream base64ToInputStream(String base64) {
         byte[] bytes = Base64.getDecoder().decode(base64);
         return new ByteArrayInputStream(bytes);
+    }
+
+    public static String getFileFullPath(String filePath) {
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DATE);
+        filePath = filePath.replaceAll("/", Matcher.quoteReplacement(File.separator));
+        return AccessPathUtils.getRootPath() + filePath + File.separator + year + File.separator + (month + 1) + File.separator + day + File.separator;
+    }
+
+    public static String getFilePhysicalPath(String filePath) {
+        return AccessPathUtils.getRootPath() + FileUtils.getFileFullPath(filePath) + File.separator ;
+    }
+
+    public static String getChunkFilePhysicalPath(String filePath, String md5) {
+        return AccessPathUtils.getRootPath() + FileUtils.getFileFullPath(filePath) + File.separator + "chunk" + File.separator + md5 + File.separator ;
+    }
+
+    /**
+     * 文件合并
+     *
+     * @param targetFile
+     * @param folder
+     */
+    public static void merge(String targetFile, String folder, String filename) {
+        try {
+            Files.createFile(Paths.get(targetFile));
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+        try (Stream<Path> stream = Files.list(Paths.get(folder))) {
+            stream.filter(path -> !path.getFileName().toString().equals(filename))
+                    .sorted((o1, o2) -> {
+                        String p1 = o1.getFileName().toString();
+                        String p2 = o2.getFileName().toString();
+                        int i1 = p1.lastIndexOf("-");
+                        int i2 = p2.lastIndexOf("-");
+                        return Integer.valueOf(p2.substring(i2)).compareTo(Integer.valueOf(p1.substring(i1)));
+                    })
+                    .forEach(path -> {
+                        try {
+                            //以追加的形式写入文件
+                            Files.write(Paths.get(targetFile), Files.readAllBytes(path), StandardOpenOption.APPEND);
+                            //合并后删除该块
+                            Files.delete(path);
+                        } catch (IOException e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    });
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 }

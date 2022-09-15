@@ -1,11 +1,15 @@
 package com.key.win.file.ctrl;
 
 import com.key.win.basic.exception.BizException;
+import com.key.win.basic.util.FileUtils;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
 import com.key.win.basic.web.Result;
+import com.key.win.file.config.ChunkFileServiceFactory;
 import com.key.win.file.config.FileServiceFactory;
+import com.key.win.file.model.ChunkFile;
 import com.key.win.file.model.FileInfo;
+import com.key.win.file.service.ChunkFileService;
 import com.key.win.file.service.FileInfoService;
 import com.key.win.file.util.Base64Util;
 import com.key.win.file.util.FilePropertyUtils;
@@ -64,7 +68,7 @@ public class FileCtrl {
         if (file.getOriginalFilename().lastIndexOf(".") == -1) {
             throw new BizException("originalFilename不在存在文件后缀！");
         }
-        String path = bizTypeCheck(bizType);
+        String path = FilePropertyUtils.bizTypeCheck(bizType);
         return uploadFile(bizType, path, file);
     }
 
@@ -84,7 +88,7 @@ public class FileCtrl {
             if (file.getOriginalFilename().lastIndexOf(".") == -1) {
                 throw new BizException("originalFilename不在存在文件后缀！");
             }
-            String path = bizTypeCheck(bizType);
+            String path =  FilePropertyUtils.bizTypeCheck(bizType);
             uploadFile(bizType, path, file);
         }
         return Result.succeed();
@@ -102,7 +106,7 @@ public class FileCtrl {
     @ApiOperation(value = "上传附件")
     @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "UPLOAD')")
     public Result<FileInfo> uploadBase64File(@RequestBody FileBase64Vo fileBase64Vo, @PathVariable String bizType) throws Exception {
-        String path = bizTypeCheck(bizType);
+        String path =  FilePropertyUtils.bizTypeCheck(bizType);
         MultipartFile multipartFile = Base64Util.base64ToMultipart(fileBase64Vo.getQrcode(), fileBase64Vo.getName());
         return uploadFile(bizType, path, multipartFile);
     }
@@ -110,19 +114,6 @@ public class FileCtrl {
     private Result<FileInfo> uploadFile(@PathVariable String bizType, String path, MultipartFile multipartFile) throws Exception {
         FileInfoService fileService = fileServiceFactory.getFileService();
         return Result.succeed(fileService.upload(multipartFile, path, bizType));
-    }
-
-    private String bizTypeCheck(@PathVariable String bizType) {
-        if (StringUtils.isBlank(bizType)) {
-            logger.error("上传文件业务类型为空！");
-            throw new BizException("上传文件业务类型为空！");
-        }
-        String path = FilePropertyUtils.getPropertyByUploadBiz(bizType);
-        if (StringUtils.isBlank(path)) {
-            logger.error("上传文件业务路径不存在！");
-            throw new BizException("上传文件业务路径不存在！");
-        }
-        return path;
     }
 
 
@@ -146,6 +137,5 @@ public class FileCtrl {
         } catch (Exception ex) {
             return Result.failed("操作失败");
         }
-
     }
 }
