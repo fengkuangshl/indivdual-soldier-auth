@@ -340,6 +340,12 @@ export default class KWUploader extends Vue {
     } else {
       this.emit('fileSuccess')
       console.log('上传成功')
+      this.$notify({
+        title: '操作',
+        message: file.name + '上传成功',
+        type: 'success',
+        duration: 2000
+      })
     }
   }
 

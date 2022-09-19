@@ -79,7 +79,7 @@ Vue.use(Drawer)
 Vue.use(DatePicker)
 Vue.use(Checkbox)
 Vue.use(Link)
-Vue.use(Notification)
+Vue.component(Notification)
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
 Vue.prototype.$notify = Notification
