@@ -38,7 +38,8 @@ import {
   Drawer,
   DatePicker,
   Checkbox,
-  Link
+  Link,
+  Notification
 } from 'element-ui'
 
 Vue.use(Button)
@@ -78,5 +79,7 @@ Vue.use(Drawer)
 Vue.use(DatePicker)
 Vue.use(Checkbox)
 Vue.use(Link)
+Vue.use(Notification)
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
+Vue.prototype.$notify = Notification

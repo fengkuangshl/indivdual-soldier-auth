@@ -102,3 +102,5 @@ declare module '*.vue' {
 }
 declare module 'nprogress'
 declare module 'viewerjs'
+declare module 'spark-md5'
+declare module 'vue-simple-uploader'

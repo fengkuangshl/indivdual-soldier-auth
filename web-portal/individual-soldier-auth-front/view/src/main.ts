@@ -9,6 +9,7 @@ import './assets/fonts/iconfont.css'
 import './common/filters/global-filter'
 import '@/permission'
 import { plugins } from './plugins/index' // 引入全局插件
+import uploader from 'vue-simple-uploader'
 
 new Vue({
   router,
@@ -17,5 +18,5 @@ new Vue({
 }).$mount('#app')
 
 Vue.use(plugins)
-
+Vue.use(uploader)
 Vue.config.productionTip = false

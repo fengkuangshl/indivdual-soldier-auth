@@ -14,7 +14,12 @@ public interface FileInfoService extends IService<FileInfo> {
 
     FileInfo getById(String id);
 
+    FileInfo getFileInfoByMd5(String md5);
+
     PageResult<FileInfo> findFileInfoByPaged(PageRequest<FileInfo> t);
+
+
+
 
 
 }

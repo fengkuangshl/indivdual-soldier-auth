@@ -1,6 +1,6 @@
 export type Name = Model.Name
 
-export interface FileInfo extends Model.BaseField, Model.Name {
+export interface FileInfoBase extends Model.Name {
   md5: string
   contentType: string
   size: number
@@ -11,3 +11,5 @@ export interface FileInfo extends Model.BaseField, Model.Name {
   pathProcess: string
   fileSuffix: string
 }
+
+export interface FileInfo extends Model.BaseField, FileInfoBase {}

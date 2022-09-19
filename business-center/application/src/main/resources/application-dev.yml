@@ -1,6 +1,6 @@
 spring:
   file:
-    root-path: /individual-soldier-auth
+    root-path: d:/individual-soldier-auth
     access-path-prefix: http://127.0.0.1:9902/individual-soldier-auth/
     upload:
       channel: local

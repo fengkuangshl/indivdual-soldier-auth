@@ -6,6 +6,8 @@ import com.key.win.file.dao.FileInfoDao;
 import com.key.win.file.model.ChunkFile;
 import com.key.win.file.model.FileInfo;
 import com.key.win.file.util.FtpUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +17,7 @@ import java.io.InputStream;
 @Service("ftpChunkFileServiceImpl")
 public class FtpChunkFileServiceImpl extends AbstractChunkFileService {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private ChunkFileDao chunkFileDao;
@@ -43,8 +46,15 @@ public class FtpChunkFileServiceImpl extends AbstractChunkFileService {
     }
 
     @Override
-    protected String uploadFileSub(String pathName, String fileName, InputStream inputStream, boolean chunkOne) throws Exception {
-        return ftpUtils.uploadFileSub(pathName, fileName, inputStream, chunkOne);
+    protected String uploadFileSub(ChunkFile file, InputStream inputStream, boolean chunkOne) throws Exception {
+        String s = ftpUtils.uploadFileSub(file.getPhysicalPath(), file.getFilename(), inputStream, chunkOne);
+        if (chunkOne) {
+            logger.info("最后一次分片结束，进行合成！");
+            super.merge(file);
+
+        }
+
+        return s;
     }
 
     @Override
@@ -72,7 +82,7 @@ public class FtpChunkFileServiceImpl extends AbstractChunkFileService {
     }
 
     @Override
-    public boolean merge(FileInfo fileInfo) {
-        return false;
+    protected void mergeFile(String targetFile, String folder, String filename) {
+
     }
 }

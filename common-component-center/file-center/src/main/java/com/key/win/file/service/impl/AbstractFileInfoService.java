@@ -15,11 +15,13 @@ import com.key.win.mybatis.page.MybatisPageServiceTemplate;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.InputStream;
 import java.util.Calendar;
+import java.util.List;
 import java.util.regex.Matcher;
 
 public abstract class AbstractFileInfoService extends ServiceImpl<FileInfoDao, FileInfo> implements FileInfoService {
@@ -109,23 +111,39 @@ public abstract class AbstractFileInfoService extends ServiceImpl<FileInfoDao, F
         return getFileDao().selectById(id);
     }
 
+    private LambdaQueryWrapper<FileInfo> buildFileInfoLambdaQueryWrapper(FileInfo fileInfo) {
+        LambdaQueryWrapper<FileInfo> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        if (fileInfo != null) {
+            if (StringUtils.isNotBlank(fileInfo.getName())) {
+                lambdaQueryWrapper.like(FileInfo::getName, fileInfo.getName());
+            }
+            if (StringUtils.isNotBlank(fileInfo.getMd5())) {
+                lambdaQueryWrapper.like(FileInfo::getMd5, fileInfo.getMd5());
+            }
+        }
+        return lambdaQueryWrapper;
+    }
+
     @Override
     public PageResult<FileInfo> findFileInfoByPaged(PageRequest<FileInfo> t) {
         MybatisPageServiceTemplate<FileInfo, FileInfo> query = new MybatisPageServiceTemplate<FileInfo, FileInfo>(this.baseMapper) {
             @Override
             protected AbstractWrapper constructWrapper(FileInfo fileInfo) {
-                LambdaQueryWrapper<FileInfo> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-                if (fileInfo != null) {
-                    if (StringUtils.isNotBlank(fileInfo.getName())) {
-                        lambdaQueryWrapper.like(FileInfo::getName, fileInfo.getName());
-                    }
-                    if (StringUtils.isNotBlank(fileInfo.getName())) {
-                        lambdaQueryWrapper.like(FileInfo::getName, fileInfo.getName());
-                    }
-                }
+                LambdaQueryWrapper<FileInfo> lambdaQueryWrapper = buildFileInfoLambdaQueryWrapper(fileInfo);
                 return lambdaQueryWrapper;
             }
         };
         return query.doPagingQuery(t);
+    }
+
+    @Override
+    public FileInfo getFileInfoByMd5(String md5) {
+        FileInfo fileInfo = new FileInfo();
+        fileInfo.setMd5(md5);
+        List<FileInfo> list = super.list(this.buildFileInfoLambdaQueryWrapper(fileInfo));
+        if (!CollectionUtils.isEmpty(list)) {
+            return list.get(0);
+        }
+        return null;
     }
 }

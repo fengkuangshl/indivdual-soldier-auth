@@ -15,13 +15,11 @@ import org.springframework.web.multipart.MultipartFile;
 @EqualsAndHashCode(callSuper = true)
 @ApiModel("分片文件实体")
 public class ChunkFile extends MybatisID {
-
-    private Long id;
     /**
      * 当前文件块，从1开始
      */
     @ApiModelProperty("当前文件块，从1开始")
-    private Integer chunkNumber;
+    private Long chunkNumber;
     /**
      * 分块大小
      */
@@ -41,12 +39,14 @@ public class ChunkFile extends MybatisID {
      * 文件标识
      */
     @ApiModelProperty("文件标识")
-    private String md5;
+    private String identifier;
     /**
      * 文件名
      */
-    @ApiModelProperty("文件名")
-    private String filename;
+    @ApiModelProperty("分片文件名")
+    private String chunkFileName;
+
+
     /**
      * 相对路径
      */
@@ -60,13 +60,25 @@ public class ChunkFile extends MybatisID {
      * 总块数
      */
     @ApiModelProperty("总块数")
-    private Integer totalChunks;
+    private Long totalChunks;
     /**
      * 文件类型
      */
     @ApiModelProperty("文件类型")
     private String bizType;
+    /**
+     * 上传文件类型
+     */
+    @ApiModelProperty("上传文件类型")
+    private String fileType;
+
     @ApiModelProperty("上传文件")
     @TableField(exist = false)
     private MultipartFile file;
+
+    @ApiModelProperty("文件名")
+    @TableField(exist = false)
+    private String filename;
+
+
 }

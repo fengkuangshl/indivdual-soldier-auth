@@ -13,6 +13,7 @@ import com.key.win.file.service.ChunkFileService;
 import com.key.win.file.service.FileInfoService;
 import com.key.win.file.util.Base64Util;
 import com.key.win.file.util.FilePropertyUtils;
+import com.key.win.file.vo.ChunkFileCheckResponseVo;
 import com.key.win.file.vo.FileBase64Vo;
 import com.key.win.log.annotation.LogAnnotation;
 import com.key.win.security.annotation.PreAuthorize;
@@ -22,8 +23,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @Api("File相关的api")
@@ -35,8 +43,11 @@ public class ChunkFileCtrl {
     @Autowired
     private ChunkFileServiceFactory chunkFileServiceFactory;
 
+    @Autowired
+    private FileServiceFactory fileServiceFactory;
 
-    @PostMapping("/file/getFileInfoByPaged")
+
+    @PostMapping("/chunk/file/getFileInfoByPaged")
     @ApiOperation(value = "File分页")
     @LogAnnotation(module = "file-center", recordRequestParam = false)
     @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::PAGED')")
@@ -45,7 +56,7 @@ public class ChunkFileCtrl {
         return fileService.findFileInfoByPaged(pageRequest);
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/chunk/get/{id}")
     @ApiOperation(value = "File分页")
     @LogAnnotation(module = "file-center", recordRequestParam = false)
     @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::ID')")
@@ -60,7 +71,7 @@ public class ChunkFileCtrl {
      * @param id
      */
     @LogAnnotation(module = "file-center", recordRequestParam = false)
-    @DeleteMapping("/files/{id}")
+    @DeleteMapping("/chunk/files/{id}")
     @ApiOperation(value = "删除附件")
     @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "DELETE')")
     public Result delete(@PathVariable String id) {
@@ -81,36 +92,45 @@ public class ChunkFileCtrl {
     @LogAnnotation(module = "file-center", recordRequestParam = false)
     @ApiOperation(value = "分片上传")
     @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "UPLOAD')")
-    public Result uploadChunk(@RequestBody ChunkFile chunkFile) throws Exception {
+    public Result uploadChunk(ChunkFile chunkFile) throws Exception {
         chunkFileServiceFactory.getFileService().upload(chunkFile);
-//        MultipartFile file = chunkFile.getFile();
-//        logger.debug("file originName: {}, chunkNumber: {}", file.getOriginalFilename(), chunkFile.getChunkNumber());
-//
-//        FileUtils.uploadFile(file.getInputStream(), FileUtils.getChunkFilePhysicalPath(path, chunkFile.getMd5()), chunkFile.getFilename() + "-" + chunkFile.getChunkNumber());
-//        logger.debug("文件 {} 写入成功, uuid:{}", chunkFile.getFilename(), chunkFile.getMd5());
-//        chunkService.saveChunk(chunkFile);
         return Result.succeed("操作成功");
     }
 
-    @GetMapping("/chunk/{md5}/{chunkNumber}")
+    @GetMapping("/chunk")
     @LogAnnotation(module = "file-center", recordRequestParam = false)
     @ApiOperation(value = "分片上传")
     @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "UPLOAD')")
-    public Result checkChunk(@PathVariable String md5, @PathVariable Integer chunkNumber) {
-        if (chunkFileServiceFactory.getFileService().checkChunk(md5, chunkNumber)) {
-            return Result.succeed(true);
+    public Result checkChunk(@RequestParam Map<String, Object> chunkFile) {
+        ChunkFileCheckResponseVo chunkFileCheckResponseVo = new ChunkFileCheckResponseVo();
+        String identifier = chunkFile.get("identifier").toString();
+        FileInfo fileInfoByMd5 = fileServiceFactory.getFileService().getFileInfoByMd5(identifier);
+        if (fileInfoByMd5 != null) {
+            chunkFileCheckResponseVo.setSkipUpload(true);
+            chunkFileCheckResponseVo.setAccessPath(fileInfoByMd5.getAccessPath());
+            chunkFileCheckResponseVo.setContentType(fileInfoByMd5.getContentType());
+            chunkFileCheckResponseVo.setTitle(fileInfoByMd5.getName());
+            chunkFileCheckResponseVo.setResourceId(fileInfoByMd5.getId());
+            return Result.succeed(chunkFileCheckResponseVo);
         }
-        return Result.succeed(false);
+        ChunkFile cf = new ChunkFile();
+        cf.setIdentifier(identifier);
+        List<ChunkFile> chunkFiles = chunkFileServiceFactory.getFileService().findChunkFile(cf);
+        if (!CollectionUtils.isEmpty(chunkFiles)) {
+            List<Long> collect = chunkFiles.stream().map(ChunkFile::getChunkNumber).collect(Collectors.toList());
+            Collections.sort(collect);
+            chunkFileCheckResponseVo.setUploaded(collect);
+        }
+        return Result.succeed(chunkFileCheckResponseVo);
     }
 
-    @PostMapping("/mergeFile")
+    @PostMapping("/chunk/mergeFile")
     @LogAnnotation(module = "file-center", recordRequestParam = false)
     @ApiOperation(value = "分片上传")
     @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "UPLOAD')")
-    public String mergeFile(@RequestBody FileInfo fileInfo) {
-
+    public Result mergeFile(@RequestBody ChunkFile fileInfo) {
         // FileUtils.merge(file, folder, filename);
-
-        return "合并成功";
+        boolean merge = chunkFileServiceFactory.getFileService().merge(fileInfo);
+        return Result.succeed(merge ? "合并成功" : "合并失败");
     }
 }

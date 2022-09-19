@@ -7,18 +7,23 @@ import com.key.win.file.dao.FileInfoDao;
 import com.key.win.file.model.ChunkFile;
 import com.key.win.file.model.FileInfo;
 import com.key.win.file.util.FilePropertyUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service("localChunkFileServiceImpl")
 public class LocalChunkFileServiceImpl extends AbstractChunkFileService {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private ChunkFileDao chunkFileDao;
@@ -43,7 +48,14 @@ public class LocalChunkFileServiceImpl extends AbstractChunkFileService {
     }
 
     @Override
-    protected String uploadFileSub(String pathName, String fileName, InputStream inputStream, boolean chunkOne) throws Exception {
+    protected String uploadFileSub(ChunkFile file, InputStream inputStream, boolean chunkOne) throws Exception {
+        FileUtils.uploadFile(inputStream, file.getPhysicalPath(),file.getChunkFileName() );
+        if (chunkOne) {
+            logger.info("最后一次分片结束，进行合成！");
+            //FileUtils.merge(FileUtils.getFilePhysicalPath(filePath), FileUtils.getChunkFileFullPath(filePath, fileInfo.getIdentifier()), fileInfo.getFilename());chunkOne
+            super.merge(file);
+
+        }
         return null;
     }
 
@@ -71,25 +83,8 @@ public class LocalChunkFileServiceImpl extends AbstractChunkFileService {
 
     }
 
-
     @Override
-    public boolean merge(FileInfo fileInfo) {
-        String filename = fileInfo.getName();
-        String path = FilePropertyUtils.bizTypeCheck(fileInfo.getBizType());
-        String file = FileUtils.getFilePhysicalPath(path);
-        String folder = FileUtils.getChunkFilePhysicalPath(path, fileInfo.getMd5());
-        FileUtils.merge(file, folder, filename);
-        fileInfo.setPath(path + filename);
-        fileInfo.setPhysicalPath(path + filename);
-        if (fileServiceFactory.getFileService().save(fileInfo)) {
-            ChunkFile chunkFile = new ChunkFile();
-            chunkFile.setMd5(fileInfo.getMd5());
-            List<ChunkFile> chunkFiles = super.findChunkFile(chunkFile);
-            if (!CollectionUtils.isEmpty(chunkFiles)) {
-                boolean b = super.removeByIds(chunkFiles.stream().map(ChunkFile::getId).collect(Collectors.toSet()));
-                return b;
-            }
-        }
-        return false;
+    protected void mergeFile(String targetFile, String folder, String filename) {
+        FileUtils.merge(targetFile, folder, filename);
     }
 }

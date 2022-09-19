@@ -314,6 +314,32 @@ CREATE TABLE `sys_file_info` (
      PRIMARY KEY (`id`)
 ) ENGINE = INNODB AUTO_INCREMENT = 16 DEFAULT CHARSET = utf8mb4;
 -- ---------------------------------------------------------
+-- ---------sys_file_info-----------------------------------
+DROP TABLE IF EXISTS `sys_chunk_file`;
+CREATE TABLE `sys_chunk_file` (
+     `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id自增',
+     `create_date` datetime  DEFAULT NULL COMMENT '创建时间',
+     `create_user_id` int(11) NOT NULL COMMENT '创建者Id',
+     `create_user_name` varchar(255) DEFAULT NULL COMMENT '创建者名称',
+     `enable_flag` bit(1) NOT NULL COMMENT '是否删除1:正常，0：删除',
+     `update_date` datetime  DEFAULT NULL COMMENT '更新时间',
+     `update_user_id` int(11)  DEFAULT NULL COMMENT '更新者Id',
+     `update_user_name` varchar(255)  DEFAULT NULL COMMENT '更新者名称',
+     `version` int(3) NOT NULL COMMENT '版本号',
+     `chunk_number` int(3) NOT NULL COMMENT '当前文件块，从1开始',
+     `chunk_size` int(11) NOT NULL COMMENT '分块大小',
+     `current_chunk_size` int(11) NOT NULL COMMENT '当前分块大小',
+     `total_Size` int(11) NOT NULL COMMENT '总大小',
+     `total_chunks` int(3) NOT NULL COMMENT '总块数',
+     `identifier` VARCHAR (255) NOT NULL COMMENT '文件标识',
+     `chunk_File_Name` VARCHAR (255) NOT NULL COMMENT '文件名',
+     `biz_Type` VARCHAR (255)  NOT NULL COMMENT '业务类型',
+     `physical_path` VARCHAR (500)  NOT NULL COMMENT '物理路径',
+     `relative_Path` VARCHAR (500)  NOT NULL COMMENT '相对路径',
+     `file_type`  VARCHAR (255),
+     PRIMARY KEY (`id`)
+) ENGINE = INNODB AUTO_INCREMENT = 16 DEFAULT CHARSET = utf8mb4;
+-- ---------------------------------------------------------
 -- ---------sys_dic_type-----------------------------------
 DROP TABLE IF EXISTS `sys_dic_type`;
 CREATE TABLE `sys_dic_type` (

@@ -129,15 +129,19 @@ public class FileUtils {
         int month = cal.get(Calendar.MONTH);
         int day = cal.get(Calendar.DATE);
         filePath = filePath.replaceAll("/", Matcher.quoteReplacement(File.separator));
-        return AccessPathUtils.getRootPath() + filePath + File.separator + year + File.separator + (month + 1) + File.separator + day + File.separator;
+        return filePath + File.separator + year + File.separator + (month + 1) + File.separator + day + File.separator;
+    }
+
+    public static String getChunkFileFullPath(String filePath, String md5) {
+        return FileUtils.getFileFullPath(filePath) + "chunk" + File.separator + md5 + File.separator;
     }
 
     public static String getFilePhysicalPath(String filePath) {
-        return AccessPathUtils.getRootPath() + FileUtils.getFileFullPath(filePath) + File.separator ;
+        return AccessPathUtils.getRootPath() + FileUtils.getFileFullPath(filePath);
     }
 
     public static String getChunkFilePhysicalPath(String filePath, String md5) {
-        return AccessPathUtils.getRootPath() + FileUtils.getFileFullPath(filePath) + File.separator + "chunk" + File.separator + md5 + File.separator ;
+        return AccessPathUtils.getRootPath() + FileUtils.getChunkFileFullPath(filePath,md5);
     }
 
     /**
