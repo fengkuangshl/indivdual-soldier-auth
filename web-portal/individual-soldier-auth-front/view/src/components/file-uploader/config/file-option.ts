@@ -53,7 +53,7 @@ export interface IChunk extends ChunkSize {
 
 export interface IOpts extends ChunkSize {
   allowDuplicateUploads: boolean
-  checkChunkUploadedByResponse: (chunk: any, message: string) => void
+  checkChunkUploadedByResponse: (chunk: IChunk, message: string) => void
   chunkRetryInterval: null
   fileParameterName: string
   forceChunkSize: boolean
@@ -67,11 +67,7 @@ export interface IOpts extends ChunkSize {
   permanentErrors: Array<number>
   preprocess: null
   prioritizeFirstAndLastChunk: boolean
-  processParams: (e: Event) => void
-  processResponse: (e: Event, t: any) => void
   progressCallbacksInterval: number
-  query: (params: any) => void
-  readFileFn: (e: any, t: any, i: any, r: any, o: any) => void
   simultaneousUploads: number
   singleFile: boolean
   speedSmoothingFactor: number

@@ -45,7 +45,7 @@ public abstract class AbstractChunkFileService extends ServiceImpl<ChunkFileDao,
     protected RedisTemplate<String, Object> redisTemplate;
 
     @Override
-    public  ChunkFile upload(ChunkFile chunkFile) throws Exception {
+    public ChunkFile upload(ChunkFile chunkFile) throws Exception {
         upload(chunkFile.getFile().getInputStream(), chunkFile);
         return chunkFile;
     }
@@ -171,8 +171,8 @@ public abstract class AbstractChunkFileService extends ServiceImpl<ChunkFileDao,
 
         mergeFile(filePhysicalPath + filename, folder, filename);
         FileInfo file = new FileInfo();
-        file.setPath(FileUtils.getFileFullPath(path));
-        file.setPhysicalPath(FileUtils.getFilePhysicalPath(path));
+        file.setPath(FileUtils.getFileFullPath(path) + filename);
+        file.setPhysicalPath(FileUtils.getFilePhysicalPath(path) + filename);
         file.setBizType(fileInfo.getBizType());
         file.setContentType(fileInfo.getFileType());
         file.setMd5(fileInfo.getIdentifier());
