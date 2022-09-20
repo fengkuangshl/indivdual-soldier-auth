@@ -1,10 +1,12 @@
 package com.key.win.file.service.impl;
 
+import com.key.win.basic.util.FileUtils;
 import com.key.win.file.config.FileServiceFactory;
 import com.key.win.file.dao.ChunkFileDao;
 import com.key.win.file.dao.FileInfoDao;
 import com.key.win.file.model.ChunkFile;
 import com.key.win.file.model.FileInfo;
+import com.key.win.file.util.FilePropertyUtils;
 import com.key.win.file.util.FtpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +84,10 @@ public class FtpChunkFileServiceImpl extends AbstractChunkFileService {
     }
 
     @Override
-    protected void mergeFile(String targetFile, String folder, String filename) {
-
+    protected void mergeFile(String targetFile, String folder, ChunkFile chunkFile) throws Exception {
+        String filePhysicalPath = folder + chunkFile.getFilename();
+        filePhysicalPath = filePhysicalPath.replaceAll("\\\\", "/");
+        targetFile = targetFile.replaceAll("\\\\", "/");
+        ftpUtils.copyFileToPath(filePhysicalPath, targetFile);
     }
 }

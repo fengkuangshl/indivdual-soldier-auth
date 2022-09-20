@@ -84,7 +84,7 @@ public abstract class AbstractChunkFileService extends ServiceImpl<ChunkFileDao,
 
     protected abstract void downloadFile(String pathName, String filename, String localpath) throws Exception;
 
-    protected abstract void mergeFile(String targetFile, String folder, String filename);
+    protected abstract void mergeFile(String targetFile, String folder, ChunkFile filename) throws Exception ;
 
 
     @Override
@@ -163,13 +163,13 @@ public abstract class AbstractChunkFileService extends ServiceImpl<ChunkFileDao,
     }
 
     @Override
-    public boolean merge(ChunkFile fileInfo) {
+    public boolean merge(ChunkFile fileInfo) throws Exception  {
         String filename = fileInfo.getFilename();
         String path = FilePropertyUtils.bizTypeCheck(fileInfo.getBizType());
         String filePhysicalPath = FileUtils.getFilePhysicalPath(path);
         String folder = FileUtils.getChunkFilePhysicalPath(path, fileInfo.getIdentifier());
 
-        mergeFile(filePhysicalPath + filename, folder, filename);
+        mergeFile(filePhysicalPath + filename, folder, fileInfo);
         FileInfo file = new FileInfo();
         file.setPath(FileUtils.getFileFullPath(path) + filename);
         file.setPhysicalPath(FileUtils.getFilePhysicalPath(path) + filename);

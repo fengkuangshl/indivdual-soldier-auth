@@ -30,7 +30,7 @@ public interface ChunkFileService extends IService<ChunkFile> {
      */
     boolean checkChunk(String identifier, Long chunkNumber);
 
-    boolean merge(ChunkFile fileInfo);
+    boolean merge(ChunkFile fileInfo) throws Exception ;
 
 
     void delete(ChunkFile chunkFile);

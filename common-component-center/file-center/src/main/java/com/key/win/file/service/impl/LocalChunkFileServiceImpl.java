@@ -84,7 +84,7 @@ public class LocalChunkFileServiceImpl extends AbstractChunkFileService {
     }
 
     @Override
-    protected void mergeFile(String targetFile, String folder, String filename) {
-        FileUtils.merge(targetFile, folder, filename);
+    protected void mergeFile(String targetFile, String folder, ChunkFile chunkFile) throws Exception  {
+        FileUtils.merge(targetFile, folder, chunkFile.getFilename());
     }
 }

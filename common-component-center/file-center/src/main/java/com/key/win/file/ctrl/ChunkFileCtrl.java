@@ -129,7 +129,7 @@ public class ChunkFileCtrl {
     @LogAnnotation(module = "file-center", recordRequestParam = false)
     @ApiOperation(value = "分片上传")
     @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "UPLOAD')")
-    public Result mergeFile(@RequestBody ChunkFile fileInfo) {
+    public Result mergeFile(@RequestBody ChunkFile fileInfo) throws Exception {
         // FileUtils.merge(file, folder, filename);
         boolean merge = chunkFileServiceFactory.getFileService().merge(fileInfo);
         return Result.succeed(merge ? "合并成功" : "合并失败");

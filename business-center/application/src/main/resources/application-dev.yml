@@ -1,9 +1,9 @@
 spring:
   file:
-    root-path: d:/individual-soldier-auth
+    root-path: /individual-soldier-auth
     access-path-prefix: http://127.0.0.1:9902/individual-soldier-auth/
     upload:
-      channel: local
+      channel: ftp
       default:
         path: /default
   rsa:

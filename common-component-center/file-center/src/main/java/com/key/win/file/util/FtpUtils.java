@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class FtpUtils {
@@ -223,7 +225,7 @@ public class FtpUtils {
     // 创建多层目录文件，如果有ftp服务器已存在该文件，则不创建，如果无，则创建
     public boolean createDirecroty(FTPClient ftpClient, String remote) throws IOException {
         boolean success = true;
-        String directory = remote ;
+        String directory = remote;
         // 如果远程目录不存在，则递归创建远程服务器目录
         if (!directory.equalsIgnoreCase(File.separator) && !changeWorkingDirectory(ftpClient, new String(directory))) {
             int start = 0;
@@ -428,5 +430,36 @@ public class FtpUtils {
 
         return false;
     }
+
+    /**
+     * 将指定文件目录下的多个文件复制到另一个指定文件中来
+     *
+     * @param fromFilePath  从哪个文件目录中复制
+     * @param toFilePath    复制到哪个目录
+     * @return true-复制成功，false-复制失败
+     * @throws IOException
+     */
+    public boolean copyFileToPath(String fromFilePath, String toFilePath) throws IOException {
+        FTPClient ftpClient = init();
+        try {
+
+            boolean b = ftpClient.rename(fromFilePath, toFilePath);
+            logger.info("copy文件成功");
+            return b;
+
+        } catch (Exception e) {
+            logger.error("copy文件失败" + e.getMessage(), e);
+        } finally {
+            if (ftpClient.isConnected()) {
+                try {
+                    ftpClient.disconnect();
+                } catch (IOException e) {
+                    logger.error("copy文件,FPT disconnect 失败:{}", e.getMessage(), e);
+                }
+            }
+        }
+        return false;
+    }
+
 
 }
