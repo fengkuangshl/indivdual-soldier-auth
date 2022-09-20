@@ -48,9 +48,9 @@ public class FtpChunkFileServiceImpl extends AbstractChunkFileService {
     }
 
     @Override
-    protected String uploadFileSub(ChunkFile file, InputStream inputStream, boolean chunkOne) throws Exception {
-        String s = ftpUtils.uploadFileSub(file.getPhysicalPath(), file.getFilename(), inputStream, chunkOne);
-        if (chunkOne) {
+    protected String uploadFileSub(ChunkFile file, InputStream inputStream, boolean lastUpload) throws Exception {
+        String s = ftpUtils.uploadFileSub(file.getPhysicalPath(), file.getFilename(), inputStream, false);
+        if (lastUpload) {
             logger.info("最后一次分片结束，进行合成！");
             super.merge(file);
 

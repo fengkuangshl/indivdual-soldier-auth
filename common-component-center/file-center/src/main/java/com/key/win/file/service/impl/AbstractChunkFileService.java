@@ -34,8 +34,6 @@ public abstract class AbstractChunkFileService extends ServiceImpl<ChunkFileDao,
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public static final String REDIS_CHUNK_FILE_COUNT_KEY_PREFIX = IndividualSoldierAuthConstantUtils.REDIS_ROOT_KEY_PREFIX + "chun:file:count:";
-
     protected abstract ChunkFileDao getChunkFileDao();
 
 
@@ -52,7 +50,7 @@ public abstract class AbstractChunkFileService extends ServiceImpl<ChunkFileDao,
 
 
     private void upload(InputStream inputStream, ChunkFile fileInfo) throws Exception {
-        String key = REDIS_CHUNK_FILE_COUNT_KEY_PREFIX + fileInfo.getIdentifier();
+        String key = FilePropertyUtils.REDIS_CHUNK_FILE_COUNT_KEY_PREFIX + fileInfo.getIdentifier();
         Long increment = redisTemplate.opsForValue().increment(key, 1);
         String chunkFileName = fileInfo.getFilename() + "-" + fileInfo.getChunkNumber();
         String filePath = FilePropertyUtils.bizTypeCheck(fileInfo.getBizType());
@@ -76,7 +74,7 @@ public abstract class AbstractChunkFileService extends ServiceImpl<ChunkFileDao,
      */
     protected abstract void uploadFile(MultipartFile file, ChunkFile fileInfo) throws Exception;
 
-    protected abstract String uploadFileSub(ChunkFile file, InputStream inputStream, boolean chunkOne) throws Exception;
+    protected abstract String uploadFileSub(ChunkFile file, InputStream inputStream, boolean lastUpload) throws Exception;
 
     protected abstract void uploadFile(String pathName, String fileName, String originFilename) throws Exception;
 

@@ -8,6 +8,7 @@ import com.key.win.file.config.FileServiceFactory;
 import com.key.win.file.model.ChunkFile;
 import com.key.win.file.model.FileInfo;
 import com.key.win.file.service.ChunkFileService;
+import com.key.win.file.util.FilePropertyUtils;
 import com.key.win.file.vo.ChunkFileResponseVo;
 import com.key.win.log.annotation.LogAnnotation;
 import com.key.win.security.annotation.PreAuthorize;
@@ -16,6 +17,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +38,9 @@ public class ChunkFileCtrl {
 
     @Autowired
     private FileServiceFactory fileServiceFactory;
+
+    @Autowired
+    protected RedisTemplate<String, Object> redisTemplate;
 
 
     @PostMapping("/chunk/file/getFileInfoByPaged")
@@ -105,6 +110,7 @@ public class ChunkFileCtrl {
     public Result checkChunk(@RequestParam Map<String, Object> chunkFile) {
         ChunkFileResponseVo chunkFileCheckResponseVo = new ChunkFileResponseVo();
         String identifier = chunkFile.get("identifier").toString();
+        String key = FilePropertyUtils.REDIS_CHUNK_FILE_COUNT_KEY_PREFIX + identifier;
         FileInfo fileInfoByMd5 = fileServiceFactory.getFileService().getFileInfoByMd5(identifier);
         if (fileInfoByMd5 != null) {
             chunkFileCheckResponseVo.setSkipUpload(true);
@@ -121,6 +127,8 @@ public class ChunkFileCtrl {
             List<Long> collect = chunkFiles.stream().map(ChunkFile::getChunkNumber).collect(Collectors.toList());
             Collections.sort(collect);
             chunkFileCheckResponseVo.setUploaded(collect);
+        }else{
+            redisTemplate.delete(key);
         }
         return Result.succeed(chunkFileCheckResponseVo);
     }

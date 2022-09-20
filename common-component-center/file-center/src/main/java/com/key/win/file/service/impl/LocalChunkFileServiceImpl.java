@@ -48,9 +48,9 @@ public class LocalChunkFileServiceImpl extends AbstractChunkFileService {
     }
 
     @Override
-    protected String uploadFileSub(ChunkFile file, InputStream inputStream, boolean chunkOne) throws Exception {
+    protected String uploadFileSub(ChunkFile file, InputStream inputStream, boolean lastUpload) throws Exception {
         FileUtils.uploadFile(inputStream, file.getPhysicalPath(),file.getChunkFileName() );
-        if (chunkOne) {
+        if (lastUpload) {
             logger.info("最后一次分片结束，进行合成！");
             //FileUtils.merge(FileUtils.getFilePhysicalPath(filePath), FileUtils.getChunkFileFullPath(filePath, fileInfo.getIdentifier()), fileInfo.getFilename());chunkOne
             super.merge(file);

@@ -34,8 +34,6 @@ export default class Home extends Vue {
 <style lang="less" scoped>
 .home {
   background-color: rgb(255, 255, 255);
-  h3 {
-    padding: 10px;
-  }
+  padding: 10px;
 }
 </style>

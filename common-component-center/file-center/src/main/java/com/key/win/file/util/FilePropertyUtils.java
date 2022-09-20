@@ -2,6 +2,7 @@ package com.key.win.file.util;
 
 import com.key.win.basic.exception.BizException;
 import com.key.win.basic.util.AccessPathUtils;
+import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,9 @@ import java.util.regex.Matcher;
 @Component
 public class FilePropertyUtils {
     private static Logger logger = LoggerFactory.getLogger(FilePropertyUtils.class);
+
+    public static final String REDIS_CHUNK_FILE_COUNT_KEY_PREFIX = IndividualSoldierAuthConstantUtils.REDIS_ROOT_KEY_PREFIX + "chun:file:count:";
+
     private static Environment env;
 
     public static Environment getEnv() {
