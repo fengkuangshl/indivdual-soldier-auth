@@ -303,14 +303,19 @@ export default class KWUploader extends Vue {
 
     // 服务端自定义的错误（即http状态码为200，但是是错误的情况），这种错误是Uploader无法拦截的
     if (res.code !== 200) {
-      this.error(res.msg || '上传出错啦！')
+      this.$notify({
+        title: '操作',
+        message: file.name + '上传出错啦！',
+        type: 'error',
+        duration: 2000
+      })
       // 文件状态设为“失败”
       this.statusSet(file.id, 'failed')
       return
     }
 
     // 如果服务端返回了需要合并的参数
-    if (res.needMerge) {
+    if (res.data.needMerge) {
       // 文件状态设为“合并中”
       this.statusSet(file.id, 'merging')
 

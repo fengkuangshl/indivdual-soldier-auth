@@ -8,7 +8,7 @@ import java.util.List;
 
 @ApiModel("断点续传文件上传时检查输出的VO")
 @Data
-public class ChunkFileCheckResponseVo {
+public class ChunkFileResponseVo {
     @ApiModelProperty("resourceId")
     private Long resourceId;
     @ApiModelProperty("上传类型")
@@ -21,5 +21,7 @@ public class ChunkFileCheckResponseVo {
     private String accessPath;
     @ApiModelProperty("已上传的分片信息")
     private List<Long> uploaded;
+    @ApiModelProperty("是否需要合并")
+    private boolean needMerge;
 
 }

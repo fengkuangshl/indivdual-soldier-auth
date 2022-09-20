@@ -1,7 +1,5 @@
 package com.key.win.file.ctrl;
 
-import com.key.win.basic.exception.BizException;
-import com.key.win.basic.util.FileUtils;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
 import com.key.win.basic.web.Result;
@@ -10,25 +8,18 @@ import com.key.win.file.config.FileServiceFactory;
 import com.key.win.file.model.ChunkFile;
 import com.key.win.file.model.FileInfo;
 import com.key.win.file.service.ChunkFileService;
-import com.key.win.file.service.FileInfoService;
-import com.key.win.file.util.Base64Util;
-import com.key.win.file.util.FilePropertyUtils;
-import com.key.win.file.vo.ChunkFileCheckResponseVo;
-import com.key.win.file.vo.FileBase64Vo;
+import com.key.win.file.vo.ChunkFileResponseVo;
 import com.key.win.log.annotation.LogAnnotation;
 import com.key.win.security.annotation.PreAuthorize;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -93,8 +84,18 @@ public class ChunkFileCtrl {
     @ApiOperation(value = "分片上传")
     @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "UPLOAD')")
     public Result uploadChunk(ChunkFile chunkFile) throws Exception {
+        ChunkFileResponseVo chunkFileCheckResponseVo = new ChunkFileResponseVo();
         chunkFileServiceFactory.getFileService().upload(chunkFile);
-        return Result.succeed("操作成功");
+        FileInfo fileInfoByMd5 = fileServiceFactory.getFileService().getFileInfoByMd5(chunkFile.getIdentifier());
+        if (fileInfoByMd5 != null) {
+            chunkFileCheckResponseVo.setSkipUpload(false);
+            chunkFileCheckResponseVo.setAccessPath(fileInfoByMd5.getAccessPath());
+            chunkFileCheckResponseVo.setContentType(fileInfoByMd5.getContentType());
+            chunkFileCheckResponseVo.setTitle(fileInfoByMd5.getName());
+            chunkFileCheckResponseVo.setResourceId(fileInfoByMd5.getId());
+            return Result.succeed(chunkFileCheckResponseVo);
+        }
+        return Result.failed("上传失败");
     }
 
     @GetMapping("/chunk")
@@ -102,7 +103,7 @@ public class ChunkFileCtrl {
     @ApiOperation(value = "分片上传")
     @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "UPLOAD')")
     public Result checkChunk(@RequestParam Map<String, Object> chunkFile) {
-        ChunkFileCheckResponseVo chunkFileCheckResponseVo = new ChunkFileCheckResponseVo();
+        ChunkFileResponseVo chunkFileCheckResponseVo = new ChunkFileResponseVo();
         String identifier = chunkFile.get("identifier").toString();
         FileInfo fileInfoByMd5 = fileServiceFactory.getFileService().getFileInfoByMd5(identifier);
         if (fileInfoByMd5 != null) {
