@@ -18,16 +18,16 @@ public class FtpUtils {
 
     private static Logger logger = LoggerFactory.getLogger(FtpUtils.class);
 
-    @Value("${ftp.host}")
+    @Value("${ftp.host:127.0.0.1}")
     private String host;
 
-    @Value("${ftp.port}")
+    @Value("${ftp.port:21}")
     private int port;
 
-    @Value("${ftp.username}")
+    @Value("${ftp.username:ftpadmin}")
     private String username;
 
-    @Value("${ftp.password}")
+    @Value("${ftp.password:123456}")
     private String password;
 
     /**

@@ -3,7 +3,7 @@ spring:
     root-path: /individual-soldier-auth
     access-path-prefix: http://127.0.0.1:9902/individual-soldier-auth/
     upload:
-      channel: ftp
+      channel: LOCAL
       default:
         path: /default
   rsa:
@@ -68,10 +68,10 @@ spring:
     #        max-wait: 100 # # 等待可用连接的最大时间，单位毫秒，默认值为-1，表示永不超时。如果超过等待时间，则直接抛出JedisConnectionException
     #        min-idle: 2    # 连接池中的最小空闲连接 ，默认值也是0
     #      shutdown-timeout: 100ms
-ftp:
-  #  host: 127.0.0.1
-  host: 192.168.1.41
-  port: 21
-  #  username: administrator
-  username: ftpadmin
-  password: 123456
+#ftp:
+#  #  host: 127.0.0.1
+#  host: 192.168.1.41
+#  port: 21
+#  #  username: administrator
+#  username: ftpadmin
+#  password: 123456
