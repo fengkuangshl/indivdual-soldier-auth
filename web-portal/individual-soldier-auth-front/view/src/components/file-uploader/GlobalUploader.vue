@@ -246,7 +246,7 @@ export default class KWUploader extends Vue {
     // 计算MD5时隐藏”开始“按钮
     this.$nextTick(() => {
       const up = document.querySelector(`.file-${file.id} .uploader-file-resume`) as HTMLElement
-      up.style.display = 'none'
+      up.style.marginTop = '-15px'
     })
 
     loadNext()
@@ -270,6 +270,9 @@ export default class KWUploader extends Vue {
 
           // md5计算完毕
           resolve({ md5, file })
+
+          const up = document.querySelector(`.file-${file.id} .uploader-file-resume`) as HTMLElement
+          up.style.marginTop = '16px'
 
           console.log(`MD5计算完毕：${file.name} \nMD5：${md5} \n分片：${chunks} 大小:${file.size} 用时：${new Date().getTime() - time} ms`)
         }
@@ -354,12 +357,13 @@ export default class KWUploader extends Vue {
     }
   }
 
-  onFileProgress(file: { name: any }, chunk: { startByte: number; endByte: number }): void {
+  onFileProgress(rootFile: IUploaderFile, file: IUploaderFile, chunk: IChunk): void {
     console.log(`上传中 ${file.name}，chunk：${chunk.startByte / 1024 / 1024} ~ ${chunk.endByte / 1024 / 1024}`)
   }
 
-  onFileError(response: any): void {
-    this.error(response)
+  onFileError(rootFile: IUploaderFile, file: IUploaderFile, error: string, chunk: IChunk): void {
+    console.log(chunk.retries)
+    this.error(error)
   }
 
   close(): void {
