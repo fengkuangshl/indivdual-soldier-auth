@@ -67,7 +67,10 @@ export const getMenus = async (to: Route, from: Route, next: NavigationGuardNext
     MenuModule.changeMenu(menus)
     PermissionModule.generateRoutes()
     // router.addRoutes(PermissionModule.getDynamicRoutes)
-    SocketModule.initSocket()
+    if (settings.isEnableWebSocket) {
+      SocketModule.initSocket()
+    }
+
     next({ ...to, replace: true } as RawLocation)
   } else {
     Message.error(msg || '获取当前用户菜单失败！')

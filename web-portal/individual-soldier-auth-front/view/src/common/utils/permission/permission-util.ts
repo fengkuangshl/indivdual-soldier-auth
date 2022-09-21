@@ -183,7 +183,7 @@ const PermissionUtil = {
   },
 
   hasPermission: (code: string): boolean => {
-    if (settings.permissionEnable === false) {
+    if (settings.isEnablePermission === false) {
       return true
     }
     const allPermission = '*::*::*'
@@ -198,7 +198,7 @@ const PermissionUtil = {
   },
 
   hasRole: (code: string): boolean => {
-    if (settings.permissionEnable === false) {
+    if (settings.isEnablePermission === false) {
       return true
     }
     const sysRoles = (UserModule.loginUser as LoginSuccessUserInfo).user.sysRoles

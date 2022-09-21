@@ -9,10 +9,11 @@ interface ISettings {
   menuTypeItem: string
   menuTypeDirectory: string
   defaultAvatar: string
-  permissionEnable: boolean
+  isEnablePermission: boolean
   developmentWsDomain: string
   userAcceptanceTestWsDomain: string
   productionWsDomain: string
+  isEnableWebSocket: boolean
 }
 
 // You can customize below settings :)
@@ -27,10 +28,11 @@ const settings: ISettings = {
   menuTypeItem: '菜单',
   menuTypeDirectory: '目录',
   defaultAvatar: require('./assets/head.png'),
-  permissionEnable: true,
+  isEnablePermission: true,
   developmentWsDomain: 'ws://127.0.0.1:9902/ws/',
   userAcceptanceTestWsDomain: 'ws://127.0.0.1:9902/ws/',
-  productionWsDomain: 'ws://127.0.0.1:9902/ws/'
+  productionWsDomain: 'ws://127.0.0.1:9902/ws/',
+  isEnableWebSocket: true
 }
 
 export default settings
