@@ -1,6 +1,6 @@
 <template>
-  <el-select ref="select" :value="value" placeholder="请选择" size="mini" clearable :disabled="disabled"
-    :filterable="filterable" :filter-method="filterMethod" @clear="clear" @visible-change="visibleChange">
+  <el-select ref="select" :value="value" placeholder="请选择" clearable :disabled="disabled" :filterable="filterable"
+    :filter-method="filterMethod" @clear="clear" @visible-change="visibleChange">
     <el-option ref="option" class="tree-select__option" :value="optionData.id" :label="optionData.name">
       <el-tree ref="tree" class="tree-select__tree" :node-key="nodeKey" :data="data" :props="props"
         :default-expanded-keys="[value]" highlight-current :expand-on-click-node="false"

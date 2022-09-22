@@ -6,5 +6,5 @@ import com.key.win.mybatis.mapper.KeyWinMapper;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface CustomerInfoDao extends KeyWinMapper<CustomerInfo> {
+public interface CustomerInfoDao extends BaseMapper<CustomerInfo> {
 }

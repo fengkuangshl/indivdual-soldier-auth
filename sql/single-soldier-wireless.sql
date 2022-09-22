@@ -431,7 +431,7 @@ CREATE TABLE `DEVICE_CUSTOMER_INFO` (
   `auth_device_code` varchar(8) NOT NULL COMMENT '授权码',
   `expire_device_date` datetime  DEFAULT NULL COMMENT  '客户设备授权到期日',
   `auth_device_Num` int(3) NOT NULL COMMENT '授权设备数',
-  `enabled_verification` bit(1) NOT NULL COMMENT '是否校验日期：1-启用，0-禁用',
+  `is_verify` bit(1) NOT NULL COMMENT '是否校验日期：1-启用，0-禁用',
   `company_name` varchar(50) NOT NULL COMMENT '公司名称',
   `company_address` varchar(255) DEFAULT NULL COMMENT '公司地址',
   `company_phone` varchar(15) DEFAULT NULL COMMENT '公司电话',

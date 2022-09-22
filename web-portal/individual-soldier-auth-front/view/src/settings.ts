@@ -32,7 +32,7 @@ const settings: ISettings = {
   developmentWsDomain: 'ws://127.0.0.1:9902/ws/',
   userAcceptanceTestWsDomain: 'ws://127.0.0.1:9902/ws/',
   productionWsDomain: 'ws://127.0.0.1:9902/ws/',
-  isEnableWebSocket: true
+  isEnableWebSocket: false
 }
 
 export default settings

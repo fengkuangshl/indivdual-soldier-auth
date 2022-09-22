@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.key.win.auth.customer.dao.CustomerInfoDao;
+import com.key.win.auth.customer.dao.CustomerInfoVoDao;
 import com.key.win.auth.customer.model.CustomerInfo;
 import com.key.win.auth.customer.service.CustomerInfoService;
 import com.key.win.auth.customer.vo.CustomerInfoVo;
@@ -17,6 +18,7 @@ import com.key.win.mybatis.page.MybatisPageServiceTemplate;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -27,11 +29,14 @@ public class CustomerInfoServiceImpl extends ServiceImpl<CustomerInfoDao, Custom
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final static String CUSTOMER_SEQUENCE_PREFIX = "CNO";
+    private final static String CUSTOMER_SEQUENCE_PREFIX = "CNO.";
+
+    @Autowired
+    private CustomerInfoVoDao customerInfoVoDao;
 
     @Override
     public PageResult<CustomerInfoVo> findCustomerByPaged(PageRequest<CustomerInfoVo> t) {
-        MybatisPageServiceTemplate<CustomerInfoVo, CustomerInfoVo> query = new MybatisPageServiceTemplate<CustomerInfoVo, CustomerInfoVo>(this.baseMapper) {
+        MybatisPageServiceTemplate<CustomerInfoVo, CustomerInfoVo> query = new MybatisPageServiceTemplate<CustomerInfoVo, CustomerInfoVo>(customerInfoVoDao) {
             @Override
             protected AbstractWrapper constructWrapper(CustomerInfoVo customer) {
                 return buildCustomerInfoLambdaQueryWrapper(customer);
@@ -39,7 +44,7 @@ public class CustomerInfoServiceImpl extends ServiceImpl<CustomerInfoDao, Custom
             //SELECT dci.*, (select count(1) FROM device_auth da where da.auth_Code = dci.auth_Code) as authorized_quantity   from device_customer_info dci
 
             protected String constructNativeSql() {
-                return "SELECT dci.*, (select count(1) FROM device_auth da where da.auth_Code = dci.auth_Code) as authorized_quantity   from device_customer_info dci";
+                return "SELECT dci.*, (select count(1) FROM device_auth da where da.auth_Code = dci.auth_device_code) as authorized_quantity   from device_customer_info dci";
             }
 
         };

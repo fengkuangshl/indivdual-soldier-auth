@@ -58,7 +58,7 @@
         </el-col>
       </el-row>
     </el-card>
-    <el-dialog :title="title" @close="aditDictTreeClosed" :visible.sync="sysDictTreeDialogVisble" width="20%">
+    <el-dialog :title="title" @close="aditDictTreeClosed" :visible.sync="sysDictTreeDialogVisble" width="23%">
       <el-form :model="sysDictTreeForm" :rules="sysDictTreeFormRules" ref="sysDictTreeFormRef" label-width="100px">
         <el-form-item label="父节点" prop="parentId">
           <KWTreeSelect v-model="sysDictTreeForm.parentId" filterable :data="treeData" v-on:input="input"

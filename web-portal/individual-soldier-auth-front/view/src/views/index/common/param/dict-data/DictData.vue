@@ -47,7 +47,7 @@
         </el-table-column>
       </KWTable>
     </el-card>
-    <el-dialog :title="title" @close="aditDictDataClosed" :visible.sync="sysDictDataDialogVisble" width="20%">
+    <el-dialog :title="title" @close="aditDictDataClosed" :visible.sync="sysDictDataDialogVisble" width="23%">
       <el-form :model="sysDictDataForm" :rules="sysDictDataFormRules" ref="sysDictDataFormRef" label-width="100px">
         <el-form-item label="字典键值" prop="value">
           <el-input v-model="sysDictDataForm.value" style="max-width: 220px;" :disabled="sysDictDataValueDisabled">
