@@ -4,7 +4,7 @@ export interface CustomerInfoForm {
   //  授权码
   authDeviceCode: string
   // 客户设备授权到期日
-  expireDeviceDate: Date
+  expireDeviceDate: Date | null | string
   // 授权设备数
   authDeviceNum: number
   // 是否校验日期
@@ -35,9 +35,9 @@ export interface CustomerInfoSeachRequest extends CustomerInfoForm {
   // 查询条件的结束时间
   endDate: string
   // 查询条件的开始数量
-  startNum: number
+  startNum: string
   // 查询条件的结束数量
-  endNum: number
+  endNum: string
 }
 
 export interface CustomerInfoDetail extends CustomerInfoForm, Model.BaseField {}

@@ -9,7 +9,7 @@ export function getScrollContainer(el: Element, vertical: boolean): Window | Ele
     if (isScroll(parent as Element, vertical)) {
       return parent
     }
-    parent = parent.parentNode as ParentNode
+    parent = (parent as Element).parentNode as ParentNode
   }
   return parent
 }

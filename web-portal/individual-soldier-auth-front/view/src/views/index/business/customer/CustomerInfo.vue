@@ -41,7 +41,8 @@
           }
         "></el-table-column>
         <el-table-column prop="expireDeviceDate" label="授权到期日期" sortable="custom">
-          <template slot-scope="scope">{{ scope.row.expireDeviceDate | dateTimeFormat }}</template>
+          <template slot-scope="scope"
+            v-if="scope.row.expireDeviceDate!== null">{{ scope.row.expireDeviceDate | dateFormat }}</template>
         </el-table-column>
         <!-- <el-table-column prop="createDate" label="创建时间" sortable="custom">
           <template slot-scope="scope">{{ scope.row.createDate | dateTimeFormat }}</template>
@@ -64,6 +65,21 @@
             :disabled="customerInfoSequenceDisabled">
           </el-input>
         </el-form-item>
+        <el-form-item label="客户名称" prop="companyName">
+          <el-input v-model="customerInfoForm.companyName" style="max-width: 220px;"></el-input>
+        </el-form-item>
+        <el-form-item label="客户地址" prop="companyAddress">
+          <el-input v-model="customerInfoForm.companyAddress" style="max-width: 220px;"></el-input>
+        </el-form-item>
+        <el-form-item label="客户电话" prop="companyPhone">
+          <el-input v-model="customerInfoForm.companyPhone" style="max-width: 220px;"></el-input>
+        </el-form-item>
+        <el-form-item label="联系人姓名" prop="leadName">
+          <el-input v-model="customerInfoForm.leadName" style="max-width: 220px;"></el-input>
+        </el-form-item>
+        <el-form-item label="联系人手机" prop="leadMobile">
+          <el-input v-model="customerInfoForm.leadMobile" style="max-width: 220px;"></el-input>
+        </el-form-item>
         <el-form-item label="项目号" prop="projectNo">
           <el-input v-model="customerInfoForm.projectNo" style="max-width: 220px;"></el-input>
         </el-form-item>
@@ -77,26 +93,16 @@
           <el-input v-model="customerInfoForm.authDeviceNum" type="number" style="max-width: 220px;"></el-input>
         </el-form-item>
         <el-form-item label="是否校验日期" prop="isDefault">
-          <el-radio-group v-model="customerInfoForm.isVerify">
+          <el-radio-group @change="isVerifChange" v-model="customerInfoForm.isVerify">
             <el-radio label="是"></el-radio>
             <el-radio label="否"></el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="公司名称" prop="companyName">
-          <el-input v-model="customerInfoForm.companyName" style="max-width: 220px;"></el-input>
+        <el-form-item label="授权到期日期">
+          <el-date-picker v-model="expireDeviceDate" type="date" placeholder="授权到期日期" style="max-width: 220px;">
+          </el-date-picker>
         </el-form-item>
-        <el-form-item label="公司地址" prop="companyAddress">
-          <el-input v-model="customerInfoForm.companyAddress" style="max-width: 220px;"></el-input>
-        </el-form-item>
-        <el-form-item label="公司电话" prop="companyPhone">
-          <el-input v-model="customerInfoForm.companyPhone" style="max-width: 220px;"></el-input>
-        </el-form-item>
-        <el-form-item label="负责人姓名" prop="leadName">
-          <el-input v-model="customerInfoForm.leadName" style="max-width: 220px;"></el-input>
-        </el-form-item>
-        <el-form-item label="负责人手机" prop="leadPhone">
-          <el-input v-model="customerInfoForm.leadPhone" style="max-width: 220px;"></el-input>
-        </el-form-item>
+
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="customerInfoDialogVisble = false">取 消</el-button>
@@ -120,15 +126,16 @@ import PermissionPrefixUtils from '@/common/utils/permission/permission-prefix'
   }
 })
 export default class CustomerInfo extends Vue {
+  expireDeviceDate: Date | string = ''
   t: CustomerInfoSeachRequest = {
     authorizedQuantity: 0,
     startDate: '',
     endDate: '',
-    startNum: 0,
-    endNum: 0,
+    startNum: '',
+    endNum: '',
     sequence: '',
     authDeviceCode: '',
-    expireDeviceDate: new Date(),
+    expireDeviceDate: null,
     authDeviceNum: 0,
     isVerify: false,
     companyName: '',
@@ -154,11 +161,32 @@ export default class CustomerInfo extends Vue {
   @Ref('kwTableRef')
   readonly kwTableRef!: KWTable<CustomerInfoForm, CustomerInfo>
 
-  readonly customerInfoFormRules: { authDeviceCode: Array<KWRule.Rule | KWRule.MixinRule>; authDeviceNum: Array<KWRule.Rule | KWRule.NumberRule>; companyName: Array<KWRule.Rule>; leadName: Array<KWRule.Rule> } = {
+  readonly customerInfoFormRules: { companyName: Array<KWRule.Rule>; companyAddress: Array<KWRule.Rule>; companyPhone: Array<KWRule.Rule>; leadName: Array<KWRule.Rule>; leadMobile: Array<KWRule.Rule | KWRule.ValidatorRule>; projectNo: Array<KWRule.Rule>; authDeviceCode: Array<KWRule.Rule | KWRule.MixinRule>; authDeviceNum: Array<KWRule.NumberRule>; expireDeviceDate: Array<KWRule.ValidatorRule> } = {
+    companyName: [FormValidatorRule.requiredRule('请输入客户名称')],
+    companyAddress: [FormValidatorRule.requiredRule('请输入客户地址')],
+    companyPhone: [FormValidatorRule.requiredRule('请输入客户电话')],
+    leadName: [FormValidatorRule.requiredRule('请输入联系人姓名')],
+    leadMobile: [FormValidatorRule.requiredRule('请输入联系人手机'), { validator: FormValidatorRule.checkMobeli, trigger: 'blur' }],
+    projectNo: [FormValidatorRule.requiredRule('请输入项目号')],
     authDeviceCode: [FormValidatorRule.requiredRule('请输入授权码'), FormValidatorRule.mixinRul(4, 10, '授权码值的长度4~10个字符之间')],
-    authDeviceNum: [FormValidatorRule.requiredRule('请输入授权设备数'), FormValidatorRule.numberRule('请输入数字')],
-    companyName: [FormValidatorRule.requiredRule('请输入公司名称')],
-    leadName: [FormValidatorRule.requiredRule('请输入负责人姓名')]
+    authDeviceNum: [FormValidatorRule.numberRule('请输入授权设备台数')],
+    expireDeviceDate: [{ validator: this.checkExpireDeviceDate, trigger: 'blur' }]
+  }
+
+  // 验证设备的授权到期日期
+  checkExpireDeviceDate(rule: KWRule.ValidatorRule, value: string, cb: KWRule.CallbackFunction): void {
+    if (this.customerInfoForm.isVerify === '是' && !value) {
+      cb(new Error('请选择设备到期日期'))
+    }
+    return cb()
+  }
+
+  isVerifChange(): void {
+    if (this.customerInfoForm.isVerify === '是') {
+      this.expireDeviceDate = this.customerInfoForm.expireDeviceDate === null ? '' : this.customerInfoForm.expireDeviceDate
+    } else {
+      this.expireDeviceDate = ''
+    }
   }
 
   // 展示编辑用于的对话框
@@ -167,6 +195,9 @@ export default class CustomerInfo extends Vue {
     this.customerInfoSequenceDisabled = true
     const res = await CustomerInfoGetApi(id)
     this.customerInfoForm = res.data
+    this.expireDeviceDate = this.customerInfoForm.expireDeviceDate === null ? '' : this.customerInfoForm.expireDeviceDate
+    // this.$set(this.customerInfoForm, 'expireDeviceDate', res.data.expireDeviceDate)
+    // this.customerInfoForm.expireDeviceDate = this.customerInfoForm.expireDeviceDate === null ? '' : this.customerInfoForm.expireDeviceDate
     this.customerInfoForm.isVerify = (this.customerInfoForm.isVerify as boolean) ? '是' : '否'
     console.log(res)
     this.customerInfoDialogVisble = true
@@ -183,6 +214,7 @@ export default class CustomerInfo extends Vue {
         return false
       }
       this.customerInfoForm.isVerify = (this.customerInfoForm.isVerify as string) === '是'
+      this.customerInfoForm.expireDeviceDate = this.expireDeviceDate
       const { code, msg } = await CustomerInfoSaveOrUpdateApi(this.customerInfoForm)
       if (code !== 200) {
         this.$message.error(msg || '操作客户信息信息失败!')
@@ -196,14 +228,14 @@ export default class CustomerInfo extends Vue {
 
   addCustomerInfo(): void {
     this.title = '添加客户信息'
-    this.customerInfoSequenceDisabled = false
+    this.customerInfoSequenceDisabled = true
     this.customerInfoDialogVisble = true
     this.$nextTick(() => {
       this.customerInfoFormRef.resetFields()
       this.customerInfoForm = {
         sequence: '',
         authDeviceCode: '',
-        expireDeviceDate: new Date(),
+        expireDeviceDate: null,
         authDeviceNum: 0,
         isVerify: '是',
         companyName: '',

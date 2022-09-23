@@ -19,7 +19,7 @@ public class CustomerInfoVo extends CustomerInfo {
     private String endDate;
 
     @ApiModelProperty("查询条件的开始数量")
-    private Integer startNum;
+    private String startNum;
     @ApiModelProperty("查询条件的结束数量")
-    private Integer endNum;
+    private String endNum;
 }

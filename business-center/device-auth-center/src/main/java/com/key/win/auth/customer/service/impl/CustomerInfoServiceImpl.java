@@ -84,8 +84,8 @@ public class CustomerInfoServiceImpl extends ServiceImpl<CustomerInfoDao, Custom
             if (StringUtils.isNotBlank(customer.getProjectNo())) {
                 lambdaQueryWrapper.eq(CustomerInfo::getProjectNo, customer.getProjectNo());
             }
-            if (customer.getStartNum() != null && customer.getEndNum() != null) {
-                lambdaQueryWrapper.between(CustomerInfo::getAuthDeviceNum, customer.getStartNum(), customer.getEndNum());
+            if (StringUtils.isNotBlank(customer.getStartNum()) && StringUtils.isNotBlank(customer.getEndNum())) {
+                lambdaQueryWrapper.between(CustomerInfo::getAuthDeviceNum, Integer.valueOf(customer.getStartNum()), Integer.valueOf(customer.getEndNum()));
             }
 
             if (StringUtils.isNotBlank(customer.getStartDate()) && StringUtils.isNotBlank(customer.getEndDate())) {
