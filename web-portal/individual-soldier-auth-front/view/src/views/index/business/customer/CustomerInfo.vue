@@ -111,7 +111,7 @@
         <el-form-item label="授权设备数" prop="authDeviceNum">
           <el-input v-model="customerInfoForm.authDeviceNum" type="number" style="max-width: 220px;"></el-input>
         </el-form-item>
-        <el-form-item label="是否校验日期" prop="isDefault">
+        <el-form-item label="是否校验日期" prop="isVerify">
           <el-radio-group @change="isVerifChange" v-model="customerInfoForm.isVerify">
             <el-radio label="是"></el-radio>
             <el-radio label="否"></el-radio>
@@ -218,7 +218,7 @@ export default class CustomerInfo extends Vue {
 
   isVerifChange(): void {
     if (this.customerInfoForm.isVerify === '是') {
-      this.expireDeviceDate = this.customerInfoForm.expireDeviceDate === null ? '' : this.customerInfoForm.expireDeviceDate
+      this.expireDeviceDate = this.customerInfoForm.expireDeviceDate === null ? '' : new Date(this.customerInfoForm.expireDeviceDate)
     } else {
       this.expireDeviceDate = ''
     }
@@ -231,7 +231,7 @@ export default class CustomerInfo extends Vue {
     this.customerInfoAuthDeviceCodeDisabled = true
     const res = await CustomerInfoGetApi(id)
     this.customerInfoForm = res.data
-    this.expireDeviceDate = this.customerInfoForm.expireDeviceDate === null ? '' : this.customerInfoForm.expireDeviceDate
+    this.expireDeviceDate = this.customerInfoForm.expireDeviceDate === null ? '' : new Date(this.customerInfoForm.expireDeviceDate)
     // this.$set(this.customerInfoForm, 'expireDeviceDate', res.data.expireDeviceDate)
     // this.customerInfoForm.expireDeviceDate = this.customerInfoForm.expireDeviceDate === null ? '' : this.customerInfoForm.expireDeviceDate
     this.customerInfoForm.isVerify = (this.customerInfoForm.isVerify as boolean) ? '是' : '否'

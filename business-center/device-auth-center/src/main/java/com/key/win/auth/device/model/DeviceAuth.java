@@ -16,7 +16,7 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 @ApiModel("设备认证")
 public class DeviceAuth extends MybatisID {
-    // andriod APILevel
+    // android APILevel
     @ApiModelProperty("android APILevel")
     @TableField("api_Level")
     private String aPILevel;
@@ -76,5 +76,5 @@ public class DeviceAuth extends MybatisID {
 
     @ApiModelProperty("设备的状态：[true:在线 false:离线]")
     @TableField(exist = false)
-    private boolean isOnLine = false;
+    private Boolean isOnLine = Boolean.FALSE;
 }

@@ -464,7 +464,7 @@ CREATE TABLE `DEVICE_AUTH` (
     `brand` varchar(255) DEFAULT NULL COMMENT '厂商名称',
     `build_Time` varchar(15) DEFAULT NULL COMMENT '公司电话',
     `finger_Print` varchar(255) DEFAULT NULL COMMENT '硬件识别码',
-    `hard_ware` varchar(255) DEFAULT NULL COMMENT '硬件名称',
+    `hardware` varchar(255) DEFAULT NULL COMMENT '硬件名称',
     `mac_Address` varchar(255) DEFAULT NULL COMMENT 'Mac地址',
     `radio` varchar(255) NOT NULL COMMENT '无线电固件版本号',
     `serial_Number` varchar(255) DEFAULT NULL COMMENT 'serialNumber',

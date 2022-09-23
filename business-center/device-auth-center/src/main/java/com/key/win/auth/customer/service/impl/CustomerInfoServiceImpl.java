@@ -44,7 +44,7 @@ public class CustomerInfoServiceImpl extends ServiceImpl<CustomerInfoDao, Custom
             //SELECT dci.*, (select count(1) FROM device_auth da where da.auth_Code = dci.auth_Code) as authorized_quantity   from device_customer_info dci
 
             protected String constructNativeSql() {
-                return "SELECT dci.*, (select count(1) FROM device_auth da where da.auth_Code = dci.auth_device_code) as authorized_quantity   from device_customer_info dci where dci.enable_flag = 1";
+                return "SELECT * From (SELECT dci.*, (select count(1) FROM device_auth da where da.auth_Code = dci.auth_device_code) as authorized_quantity   from device_customer_info dci where dci.enable_flag = 1)  TMP";
             }
 
         };

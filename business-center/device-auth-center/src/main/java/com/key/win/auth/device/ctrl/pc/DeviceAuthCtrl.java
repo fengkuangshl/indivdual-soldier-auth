@@ -45,7 +45,7 @@ public class DeviceAuthCtrl {
                 for (DeviceAuthVo datum : data) {
                     UniqueCodeInfoVo uniqueCodeInfoVo = uniqueCodeInfoVoMap.get(datum.getUniqueCode());
                     if (uniqueCodeInfoVo != null) {
-                        datum.setOnLine(uniqueCodeInfoVo.isOnLine());
+                        datum.setIsOnLine(uniqueCodeInfoVo.isOnLine());
                     }
                 }
             }

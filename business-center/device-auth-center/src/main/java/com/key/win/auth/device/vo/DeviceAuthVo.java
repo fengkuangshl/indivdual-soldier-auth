@@ -14,9 +14,15 @@ public class DeviceAuthVo extends DeviceAuth {
     @ApiModelProperty("客户编号")
     private String sequence;
 
+    @ApiModelProperty("公司名称")
+    private String companyName;
+
     //项目号
     @ApiModelProperty("项目号")
     private String projectNo;
+
+    @ApiModelProperty("项目名称")
+    private String projectName;
 
     // 是否校验日期
     @ApiModelProperty("是否校验日期：true-启用，false-禁用")
@@ -28,9 +34,9 @@ public class DeviceAuthVo extends DeviceAuth {
     private String endDate;
 
     @ApiModelProperty("查询条件的开始数量")
-    private Integer startNum;
+    private String startNum;
     @ApiModelProperty("查询条件的结束数量")
-    private Integer endNum;
+    private String endNum;
 
     //	授权设备数
     @ApiModelProperty("授权设备数")

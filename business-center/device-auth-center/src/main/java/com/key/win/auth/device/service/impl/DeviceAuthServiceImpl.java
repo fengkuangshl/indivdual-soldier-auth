@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.key.win.auth.customer.model.CustomerInfo;
 import com.key.win.auth.customer.service.CustomerInfoService;
 import com.key.win.auth.device.dao.DeviceAuthDao;
+import com.key.win.auth.device.dao.DeviceAuthVoDao;
 import com.key.win.auth.device.model.DeviceAuth;
 import com.key.win.auth.device.service.DeviceAuthService;
 import com.key.win.auth.device.vo.DeviceAuthResponseVo;
@@ -24,6 +25,7 @@ import com.key.win.websocket.utils.MessageSendUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Base64Utils;
 import org.springframework.util.CollectionUtils;
@@ -36,13 +38,16 @@ public class DeviceAuthServiceImpl extends ServiceImpl<DeviceAuthDao, DeviceAuth
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Autowired
     private CustomerInfoService customerInfoService;
-
+    @Autowired
     private SysDataLogService sysDataLogService;
+    @Autowired
+    private DeviceAuthVoDao deviceAuthVoDao;
 
     @Override
     public PageResult<DeviceAuthVo> findDeviceAuthByPaged(PageRequest<DeviceAuthVo> t) {
-        MybatisPageServiceTemplate<DeviceAuthVo, DeviceAuthVo> query = new MybatisPageServiceTemplate<DeviceAuthVo, DeviceAuthVo>(this.baseMapper) {
+        MybatisPageServiceTemplate<DeviceAuthVo, DeviceAuthVo> query = new MybatisPageServiceTemplate<DeviceAuthVo, DeviceAuthVo>(deviceAuthVoDao) {
             @Override
             protected AbstractWrapper constructWrapper(DeviceAuthVo deviceAuth) {
                 return buildDeviceAuthLambdaQueryWrapper(deviceAuth);
@@ -50,7 +55,7 @@ public class DeviceAuthServiceImpl extends ServiceImpl<DeviceAuthDao, DeviceAuth
 
             //select da.*,dci.company_name,dci.project_no,dci.enabled_verification from device_auth da INNER JOIN device_customer_info dci on da.auth_code = dci.auth_device_code
             protected String constructNativeSql() {
-                return "select da.*,dci.company_name,dci.project_no,dci.enabled_verification from device_auth da INNER JOIN device_customer_info dci on da.auth_code = dci.auth_device_code";
+                return "select * from (select da.*,dci.company_name,dci.project_no,dci.is_verify,dci.project_name,dci.sequence from device_auth da INNER JOIN device_customer_info dci on da.auth_code = dci.auth_device_code where da.enable_flag = 1 and  dci.enable_flag = 1 ) tmp";
             }
         };
         return query.doPagingQuery(t);
@@ -98,7 +103,7 @@ public class DeviceAuthServiceImpl extends ServiceImpl<DeviceAuthDao, DeviceAuth
             if (StringUtils.isNotBlank(deviceAuth.getStartDate()) && StringUtils.isNotBlank(deviceAuth.getEndDate())) {
                 lambdaQueryWrapper.between(DeviceAuthVo::getExpireDeviceDate, DateUtils.strToTime(deviceAuth.getStartDate()), DateUtils.strToTime(deviceAuth.getEndDate()));
             }
-            if (deviceAuth.getStartNum() != null && deviceAuth.getEndNum() != null) {
+            if (StringUtils.isNotBlank(deviceAuth.getStartNum()) && StringUtils.isNotBlank(deviceAuth.getEndNum())) {
                 lambdaQueryWrapper.between(DeviceAuthVo::getAuthDeviceNum, deviceAuth.getStartNum(), deviceAuth.getEndNum());
             }
             if (StringUtils.isNotBlank(deviceAuth.getLeadMobile())) {
