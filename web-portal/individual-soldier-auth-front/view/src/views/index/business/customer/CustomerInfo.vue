@@ -22,10 +22,28 @@
       </el-row>
       <KWTable url="customer/findCustomerInfoByPaged" v-hasPermissionQueryPage="customerInfoPermissionPrefix"
         style="width: 100%" ref="kwTableRef">
-        <el-table-column prop="sequence" sortable="custom" label="客户编号"></el-table-column>
-        <el-table-column prop="companyName" sortable="custom" label="客户名称"> </el-table-column>
+        <el-table-column prop="sequence" sortable="custom" label="客户编号">
+          <template slot-scope="scope">
+            <KWCell :gap="15" label="" style="width: 100px">
+              <KWText :value="scope.row.sequence" :row="1" />
+            </KWCell>
+          </template>
+        </el-table-column>
+        <el-table-column prop="companyName" sortable="custom" label="客户名称">
+          <template slot-scope="scope">
+            <KWCell :gap="15" label="" style="width: 100px">
+              <KWText :value="scope.row.companyName" :row="1" />
+            </KWCell>
+          </template>
+        </el-table-column>
         <el-table-column prop="projectNo" sortable="custom" label="项目号"> </el-table-column>
-        <el-table-column prop="projectName" sortable="custom" label="项目名称"> </el-table-column>
+        <el-table-column prop="projectName" sortable="custom" label="项目名称">
+          <template slot-scope="scope">
+            <KWCell :gap="15" label="" style="width: 100px">
+              <KWText :value="scope.row.projectName" :row="1" />
+            </KWCell>
+          </template>
+        </el-table-column>
         <el-table-column prop="leadName" label="联系人" sortable="custom"></el-table-column>
         <el-table-column prop="leadMobile" label="联系电话" sortable="custom"></el-table-column>
         <el-table-column prop="authDeviceCode" label="授权码" sortable="custom"></el-table-column>
@@ -87,7 +105,8 @@
           <el-input v-model="customerInfoForm.projectName" style="max-width: 220px;"></el-input>
         </el-form-item>
         <el-form-item label="授权码" prop="authDeviceCode">
-          <el-input v-model="customerInfoForm.authDeviceCode" style="max-width: 220px;"></el-input>
+          <el-input v-model="customerInfoForm.authDeviceCode" :disabled="customerInfoAuthDeviceCodeDisabled"
+            style="max-width: 220px;"></el-input>
         </el-form-item>
         <el-form-item label="授权设备数" prop="authDeviceNum">
           <el-input v-model="customerInfoForm.authDeviceNum" type="number" style="max-width: 220px;"></el-input>
@@ -98,8 +117,9 @@
             <el-radio label="否"></el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="授权到期日期">
-          <el-date-picker v-model="expireDeviceDate" type="date" placeholder="授权到期日期" style="max-width: 220px;">
+        <el-form-item label="授权到期日期" prop="expireDeviceDate">
+          <el-date-picker v-model="expireDeviceDate" @input="onDatePickerChange" type="date" placeholder="授权到期日期"
+            style="max-width: 220px;">
           </el-date-picker>
         </el-form-item>
 
@@ -120,9 +140,14 @@ import { CustomerInfoGetApi, DeleteCustomerInfoApi, CustomerInfoSaveOrUpdateApi 
 import KWTable from '@/components/table/Table.vue'
 import FormValidatorRule from '@/common/form-validator/form-validator'
 import PermissionPrefixUtils from '@/common/utils/permission/permission-prefix'
+import KWCell from '@/components/cell/Cell.vue'
+import KWText from '@/components/text/Text.vue'
+
 @Component({
   components: {
-    KWTable
+    KWTable,
+    KWCell,
+    KWText
   }
 })
 export default class CustomerInfo extends Vue {
@@ -151,6 +176,7 @@ export default class CustomerInfo extends Vue {
   title = ''
   customerInfoDialogVisble = false
   customerInfoSequenceDisabled = true
+  customerInfoAuthDeviceCodeDisabled = true
   customerInfoForm: CustomerInfoForm = this.t
 
   @Ref('customerInfoFormRef')
@@ -173,10 +199,19 @@ export default class CustomerInfo extends Vue {
     expireDeviceDate: [{ validator: this.checkExpireDeviceDate, trigger: 'blur' }]
   }
 
+  onDatePickerChange(currentDate: Date): void {
+    this.expireDeviceDate = currentDate
+  }
+
   // 验证设备的授权到期日期
   checkExpireDeviceDate(rule: KWRule.ValidatorRule, value: string, cb: KWRule.CallbackFunction): void {
-    if (this.customerInfoForm.isVerify === '是' && !value) {
-      cb(new Error('请选择设备到期日期'))
+    if (this.customerInfoForm.isVerify === '是') {
+      if (!this.expireDeviceDate) {
+        cb(new Error('请选择设备到期日期'))
+      }
+      if (new Date().getTime() >= (this.expireDeviceDate as Date).getTime()) {
+        cb(new Error('设备到期日期必须大于当前日期'))
+      }
     }
     return cb()
   }
@@ -193,6 +228,7 @@ export default class CustomerInfo extends Vue {
   async showEditDialog(id: number): Promise<void> {
     this.title = '编辑客户信息'
     this.customerInfoSequenceDisabled = true
+    this.customerInfoAuthDeviceCodeDisabled = true
     const res = await CustomerInfoGetApi(id)
     this.customerInfoForm = res.data
     this.expireDeviceDate = this.customerInfoForm.expireDeviceDate === null ? '' : this.customerInfoForm.expireDeviceDate
@@ -205,6 +241,7 @@ export default class CustomerInfo extends Vue {
 
   aditCustomerInfoClosed(): void {
     this.customerInfoDialogVisble = false
+    this.expireDeviceDate = ''
     this.customerInfoFormRef.resetFields()
   }
 
@@ -218,6 +255,8 @@ export default class CustomerInfo extends Vue {
       const { code, msg } = await CustomerInfoSaveOrUpdateApi(this.customerInfoForm)
       if (code !== 200) {
         this.$message.error(msg || '操作客户信息信息失败!')
+        this.customerInfoForm.isVerify = (this.customerInfoForm.isVerify as boolean) ? '是' : '否'
+        this.expireDeviceDate = ''
       } else {
         this.customerInfoDialogVisble = false
         this.searchCustomerInfo()
@@ -229,9 +268,11 @@ export default class CustomerInfo extends Vue {
   addCustomerInfo(): void {
     this.title = '添加客户信息'
     this.customerInfoSequenceDisabled = true
+    this.customerInfoAuthDeviceCodeDisabled = false
     this.customerInfoDialogVisble = true
     this.$nextTick(() => {
       this.customerInfoFormRef.resetFields()
+      this.expireDeviceDate = ''
       this.customerInfoForm = {
         sequence: '',
         authDeviceCode: '',

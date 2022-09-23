@@ -439,7 +439,7 @@ CREATE TABLE `DEVICE_CUSTOMER_INFO` (
   `lead_mobile` varchar(255) DEFAULT NULL COMMENT '负责人手机',
   `lead_phone` varchar(255) DEFAULT NULL COMMENT '负责人座机',
   `project_no` varchar(25) NOT NULL COMMENT '项目号',
-  `project_name` varchar(25) DEFAULT NULL COMMENT '项目名称',
+  `project_name` varchar(255) DEFAULT NULL COMMENT '项目名称',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4;
 -- ---------------------------------------------------------

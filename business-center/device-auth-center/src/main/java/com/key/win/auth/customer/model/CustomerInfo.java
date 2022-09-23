@@ -1,5 +1,6 @@
 package com.key.win.auth.customer.model;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.key.win.common.model.basic.MybatisID;
@@ -23,6 +24,7 @@ public class CustomerInfo extends MybatisID {
     private String authDeviceCode;
     //	客户设备授权到期日
     @ApiModelProperty("客户设备授权到期日")
+    @TableField(fill = FieldFill.UPDATE)
     private Date expireDeviceDate;
     //	授权设备数
     @ApiModelProperty("授权设备数")

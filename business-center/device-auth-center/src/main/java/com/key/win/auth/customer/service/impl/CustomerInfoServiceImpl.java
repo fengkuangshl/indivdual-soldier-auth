@@ -44,7 +44,7 @@ public class CustomerInfoServiceImpl extends ServiceImpl<CustomerInfoDao, Custom
             //SELECT dci.*, (select count(1) FROM device_auth da where da.auth_Code = dci.auth_Code) as authorized_quantity   from device_customer_info dci
 
             protected String constructNativeSql() {
-                return "SELECT dci.*, (select count(1) FROM device_auth da where da.auth_Code = dci.auth_device_code) as authorized_quantity   from device_customer_info dci";
+                return "SELECT dci.*, (select count(1) FROM device_auth da where da.auth_Code = dci.auth_device_code) as authorized_quantity   from device_customer_info dci where dci.enable_flag = 1";
             }
 
         };
@@ -122,7 +122,7 @@ public class CustomerInfoServiceImpl extends ServiceImpl<CustomerInfoDao, Custom
                 throw new BizException("客户授权码已存在，不允许使用！!");
             }
         }
-        return super.saveOrUpdate(customer);
+        return super.saveOrUpdate(po);
     }
 
     public CustomerInfo findCustomerByAuthCode(String authCode) {
