@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import Bus from '@/components/file-uploader/config/bus'
+import Bus from '@/common/event-hub/event-hub'
 import KWCell from '@/components/cell/Cell.vue'
 import KWText from '@/components/text/Text.vue'
 

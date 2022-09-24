@@ -19,7 +19,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
 @Component
 public class DeviceAuthUtils {
     private static final Logger logger = LoggerFactory.getLogger(DeviceAuthUtils.class);
@@ -86,7 +89,7 @@ public class DeviceAuthUtils {
     public static void setUniqueCodeToRedis(String androidId, String serialNumber, boolean isOnLine) {
         String uniqueCode = getUniqueCode(androidId, serialNumber);
         UniqueCodeInfoVo uniqueCodeInfoVo = new UniqueCodeInfoVo(androidId, serialNumber, uniqueCode, isOnLine);
-        redisTemplate.opsForValue().set(getRedisUniqueCodeKey(uniqueCode), uniqueCodeInfoVo, uniqueCodeExpires, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(getRedisUniqueCodeKey(uniqueCode), uniqueCodeInfoVo);
     }
 
     public static List<UniqueCodeInfoVo> getOnLineDevices() throws Exception {
@@ -100,8 +103,16 @@ public class DeviceAuthUtils {
         return uniqueCodeInfoVos;
     }
 
+    public static boolean isOnLineByUniqueCode(String uniqueCode) throws Exception {
+        Map<String, UniqueCodeInfoVo> uniqueCodeInfoVoMap = getOnLineDevices().stream().collect(Collectors.toMap(UniqueCodeInfoVo::getUniqueCode, uniqueCodeInfoVo -> uniqueCodeInfoVo));
+        if (uniqueCodeInfoVoMap.get(uniqueCode) != null) {
+            return true;
+        }
+        return false;
+    }
 
-    public static  void deviceOnLineNotifyAction( String androidId, String serialNumber) throws Exception {
+
+    public static void deviceOnLineNotifyAction(String androidId, String serialNumber) throws Exception {
         DeviceAuthUtils.setUniqueCodeForOnLine(androidId, serialNumber);
         String uniqueCode = DeviceAuthUtils.getUniqueCode(androidId, serialNumber);
         for (Authentication authentication : AuthenticationUtil.getOnLineUser()) {
@@ -109,12 +120,21 @@ public class DeviceAuthUtils {
         }
     }
 
-    public static  void deviceOffLineNotifyAction( String androidId, String serialNumber) throws Exception {
+    public static void deviceOffLineNotifyAction(String androidId, String serialNumber) throws Exception {
         DeviceAuthUtils.setUniqueCodeForOnLine(androidId, serialNumber);
         String uniqueCode = DeviceAuthUtils.getUniqueCode(androidId, serialNumber);
         for (Authentication authentication : AuthenticationUtil.getOnLineUser()) {
             MessageSendUtil.sendMessage("deviceOffLineNotifyAction", "", "设备[" + uniqueCode + "]下线！", authentication.getToken());
         }
+    }
+
+    public static void deleteDeviceInfo(String androidId, String serialNumber) {
+        String uniqueCode = DeviceAuthUtils.getUniqueCode(androidId, serialNumber);
+        deleteDeviceInfo(getRedisUniqueCodeKey(uniqueCode));
+    }
+
+    public static void deleteDeviceInfo(String uniqueCode) {
+        redisTemplate.delete(uniqueCode);
     }
 
 }

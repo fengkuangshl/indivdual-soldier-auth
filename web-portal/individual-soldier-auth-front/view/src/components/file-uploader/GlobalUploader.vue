@@ -50,7 +50,7 @@
  *   2. 作为普通组件在单个页面中调用，使用props
  */
 import { ACCEPT_CONFIG } from './config/config'
-import Bus from './config/bus'
+import Bus from '../../common/event-hub/event-hub'
 import SparkMD5 from 'spark-md5'
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { IOption, CheckFile, IFileStatusText, IChunk, IUploaderFile, IUPloader } from './config/file-option'

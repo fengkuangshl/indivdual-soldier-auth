@@ -36,18 +36,11 @@ public class DeviceAuthCtrl {
     @ApiOperation(value = "客户信息分页")
     @LogAnnotation(module = "device-auth", recordRequestParam = false)
     public PageResult<DeviceAuthVo> findDeviceAuthByPaged(@RequestBody PageRequest<DeviceAuthVo> t) throws Exception {
-        List<UniqueCodeInfoVo> onLineDevices = DeviceAuthUtils.getOnLineDevices();
         PageResult<DeviceAuthVo> deviceAuthByPaged = deviceAuthService.findDeviceAuthByPaged(t);
-        if (!CollectionUtils.isEmpty(onLineDevices)) {
-            Map<String, UniqueCodeInfoVo> uniqueCodeInfoVoMap = onLineDevices.stream().collect(Collectors.toMap(UniqueCodeInfoVo::getUniqueCode, uniqueCodeInfoVo -> uniqueCodeInfoVo));
-            List<DeviceAuthVo> data = deviceAuthByPaged.getData();
-            if (!CollectionUtils.isEmpty(data)) {
-                for (DeviceAuthVo datum : data) {
-                    UniqueCodeInfoVo uniqueCodeInfoVo = uniqueCodeInfoVoMap.get(datum.getUniqueCode());
-                    if (uniqueCodeInfoVo != null) {
-                        datum.setIsOnLine(uniqueCodeInfoVo.isOnLine());
-                    }
-                }
+        List<DeviceAuthVo> data = deviceAuthByPaged.getData();
+        if (!CollectionUtils.isEmpty(data)) {
+            for (DeviceAuthVo datum : data) {
+                datum.setIsOnLine(DeviceAuthUtils.isOnLineByUniqueCode(datum.getUniqueCode()));
             }
         }
         return deviceAuthByPaged;
@@ -56,8 +49,10 @@ public class DeviceAuthCtrl {
     @GetMapping("/get/{id}")
     @ApiOperation(value = "获取客户信息")
     @LogAnnotation(module = "device-auth", recordRequestParam = false)
-    public Result get(@PathVariable Long id) {
-        return Result.succeed(deviceAuthService.getById(id));
+    public Result get(@PathVariable Long id) throws Exception {
+        DeviceAuth byId = deviceAuthService.getById(id);
+        byId.setIsOnLine(DeviceAuthUtils.isOnLineByUniqueCode(byId.getUniqueCode()));
+        return Result.succeed(byId);
     }
 
     @DeleteMapping("/delete/{id}")
