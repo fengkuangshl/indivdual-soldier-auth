@@ -21,7 +21,7 @@
         </el-col>
       </el-row>
       <KWTable url="deviceAuth/findDeviceAuthByPaged" v-hasPermissionQueryPage="deviceAuthPermissionPrefix"
-        style="width: 100%" ref="kwTableRef">
+        :callbackFn="callbackFn" style="width: 100%" ref="kwTableRef">
         <el-table-column type="index" width="80" label="序号"></el-table-column>
         <!-- <el-table-column prop="sequence" sortable="custom" label="客户编号">
           <template slot-scope="scope">
@@ -145,12 +145,13 @@
 <script lang="ts">
 import { ElForm } from 'element-ui/types/form'
 import { Component, Vue, Ref } from 'vue-property-decorator'
-import { DeviceAuthDetail, DeviceAuthForm, DeviceAuthSeachRequest } from './interface/device-auth'
+import { DeviceAuthDetail, DeviceAuthForm, DeviceAuthSeachRequest, DeviceStatus } from './interface/device-auth'
 import { DeviceAuthGetApi, DeleteDeviceAuthApi, DeviceAuthSaveOrUpdateApi } from './device-auth-api'
 import KWTable from '@/components/table/Table.vue'
 import PermissionPrefixUtils from '@/common/utils/permission/permission-prefix'
 import KWCell from '@/components/cell/Cell.vue'
 import KWText from '@/components/text/Text.vue'
+import EventHub, { deviceStatusNotification } from '@/common/event-hub/event-hub'
 
 @Component({
   components: {
@@ -196,6 +197,8 @@ export default class DeviceAuth extends Vue {
     expireDeviceDate: '',
     isOnLine: false
   }
+
+  resultDatas: Array<DeviceAuthDetail> = new Array<DeviceAuthDetail>()
 
   title = ''
   deviceAuthDialogVisble = false
@@ -310,6 +313,29 @@ export default class DeviceAuth extends Vue {
 
   searchDeviceAuth(): void {
     this.kwTableRef.loadByCondition(this.t)
+  }
+
+  mounted(): void {
+    if (this.$route.query.uniqueCode != null) {
+      this.t.uniqueCode = this.$route.query.uniqueCode as string
+      this.searchDeviceAuth()
+    }
+    EventHub.$on(deviceStatusNotification, (entity: DeviceStatus): void => {
+      if (entity) {
+        if (this.resultDatas && this.resultDatas.length) {
+          this.resultDatas.forEach(item => {
+            if (item.uniqueCode === entity.uniqueCode) {
+              item.isOnLine = entity.status
+            }
+          })
+        }
+        this.deviceAuthForm.isOnLine = entity.status
+      }
+    })
+  }
+
+  callbackFn(datas: Array<DeviceAuthDetail>): void {
+    this.resultDatas = datas
   }
 }
 </script>

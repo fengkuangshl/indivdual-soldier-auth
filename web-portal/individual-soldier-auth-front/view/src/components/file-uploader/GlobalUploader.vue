@@ -40,17 +40,17 @@
 /**
  *  全局上传插件，两种调用方式
  *   1. 作为全局页面的组件，使用event bus
- *   调用方法：Bus.$emit('openUploader', {params: {}, options: {}})
+ *   调用方法：EventHub.$emit('openUploader', {params: {}, options: {}})
  *               params: 发送给服务器的额外参数；
  *               options：上传选项，目前支持 target、testChunks、mergeFn、accept
  *
- *   监听函数：Bus.$on('fileAdded', fn); 文件选择后的回调
- *           Bus.$on('fileSuccess', fn); 文件上传成功的回调，监听后记得释放
+ *   监听函数：EventHub.$on('fileAdded', fn); 文件选择后的回调
+ *           EventHub.$on('fileSuccess', fn); 文件上传成功的回调，监听后记得释放
  *
  *   2. 作为普通组件在单个页面中调用，使用props
  */
 import { ACCEPT_CONFIG } from './config/config'
-import Bus from '../../common/event-hub/event-hub'
+import EventHub from '../../common/event-hub/event-hub'
 import SparkMD5 from 'spark-md5'
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { IOption, CheckFile, IFileStatusText, IChunk, IUploaderFile, IUPloader } from './config/file-option'
@@ -158,7 +158,7 @@ export default class KWUploader extends Vue {
   }
 
   mounted(): void {
-    Bus.$on(
+    EventHub.$on(
       'openUploader',
       (
         res = {
@@ -214,9 +214,10 @@ export default class KWUploader extends Vue {
 
     // 将额外的参数赋值到每个文件上，以不同文件使用不同params的需求
     // file.params = this.customParams
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Object.keys(this.customParams).forEach(prop => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const f = file as any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       f[prop] = (this.customParams as any)[prop]
     })
 
@@ -229,6 +230,7 @@ export default class KWUploader extends Vue {
    * @param file
    * @returns Promise
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   computeMD5(file: IUploaderFile): Promise<any> {
     const fileReader = new FileReader()
     const time = new Date().getTime()
@@ -252,6 +254,7 @@ export default class KWUploader extends Vue {
     loadNext()
 
     return new Promise((resolve, reject) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       fileReader.onload = (e: any) => {
         spark.append(e.target.result)
 
@@ -301,7 +304,7 @@ export default class KWUploader extends Vue {
     this.statusRemove(res.file.id)
   }
 
-  onFileSuccess(rootFile: IUploaderFile, file: IUploaderFile, response: string, chunk: IChunk): void {
+  onFileSuccess(rootFile: IUploaderFile, file: IUploaderFile, response: string): void {
     const res = JSON.parse(response)
 
     // 服务端自定义的错误（即http状态码为200，但是是错误的情况），这种错误是Uploader无法拦截的
@@ -340,6 +343,7 @@ export default class KWUploader extends Vue {
 
           this.statusRemove(file.id)
         })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .catch((e: any) => {
           console.error('出错啦！', e)
         })
@@ -415,7 +419,7 @@ export default class KWUploader extends Vue {
   }
 
   emit(e: string): void {
-    Bus.$emit(e)
+    EventHub.$emit(e)
     this.$emit(e)
   }
 

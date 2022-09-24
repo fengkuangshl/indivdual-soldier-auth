@@ -1,5 +1,7 @@
 import { WebSocketMessage } from './WebSocketMessage'
 import { Notification } from 'element-ui'
+import Bus, { deviceStatusNotification } from '../../event-hub/event-hub'
+import { DeviceStatus } from '@/views/index/business/device/interface/device-auth'
 
 export interface IAction {
   processMessage(): void
@@ -30,12 +32,28 @@ export class MessageNotifyAction extends WebSocketBaseAction {
 
 export class DeviceOnLineNotifyAction extends MessageNotifyAction {
   processMessage(): void {
-    Notification.success({ title: '设备上线', dangerouslyUseHTMLString: true, message: this.webSocketMessage.message })
+    // 设备[" + uniqueCode + "]上线
+    this.notificationByStatus('上线', true)
+  }
+
+  notificationByStatus(subTile: string, stauts: boolean): void {
+    const msg = this.webSocketMessage.message
+    const josn: DeviceStatus = JSON.parse(msg)
+    josn.status = stauts
+    Bus.$emit(deviceStatusNotification, josn)
+    Notification.success({ title: '设备' + subTile, dangerouslyUseHTMLString: true, message: this.getHtmlBody(subTile) })
+  }
+
+  getHtmlBody(subTile: string): string {
+    const msg = this.webSocketMessage.message
+    const josn = JSON.parse(msg)
+    const htmlBody = '设备[<a href="#/device-auth?uniqueCode=' + josn.uniqueCode + '">' + josn.uniqueCode + '</a>]' + subTile
+    return htmlBody
   }
 }
 
-export class DeviceOffLineNotifyAction extends MessageNotifyAction {
+export class DeviceOffLineNotifyAction extends DeviceOnLineNotifyAction {
   processMessage(): void {
-    Notification.success({ title: '设备下线', dangerouslyUseHTMLString: true, message: this.webSocketMessage.message })
+    super.notificationByStatus('下线', false)
   }
 }

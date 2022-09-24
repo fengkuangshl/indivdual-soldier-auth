@@ -42,3 +42,8 @@ export interface DeviceAuthForm extends CustomerInfoBase {
 export interface DeviceAuthSeachRequest extends DeviceAuthForm, SeachRequestBase {}
 
 export interface DeviceAuthDetail extends DeviceAuthForm, Model.BaseField {}
+
+export interface DeviceStatus {
+  uniqueCode: string
+  status: boolean
+}

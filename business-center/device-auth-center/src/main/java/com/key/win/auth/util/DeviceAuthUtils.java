@@ -116,7 +116,7 @@ public class DeviceAuthUtils {
         DeviceAuthUtils.setUniqueCodeForOnLine(androidId, serialNumber);
         String uniqueCode = DeviceAuthUtils.getUniqueCode(androidId, serialNumber);
         for (Authentication authentication : AuthenticationUtil.getOnLineUser()) {
-            MessageSendUtil.sendMessage("deviceOnLineNotifyAction", "", "设备[" + uniqueCode + "]上线！", authentication.getToken());
+            MessageSendUtil.sendMessage("deviceOnLineNotifyAction", "", "{\"uniqueCode\":\""+uniqueCode+"\"}", authentication.getToken());
         }
     }
 
@@ -124,7 +124,7 @@ public class DeviceAuthUtils {
         DeviceAuthUtils.setUniqueCodeForOnLine(androidId, serialNumber);
         String uniqueCode = DeviceAuthUtils.getUniqueCode(androidId, serialNumber);
         for (Authentication authentication : AuthenticationUtil.getOnLineUser()) {
-            MessageSendUtil.sendMessage("deviceOffLineNotifyAction", "", "设备[" + uniqueCode + "]下线！", authentication.getToken());
+            MessageSendUtil.sendMessage("deviceOffLineNotifyAction", "", "{\"uniqueCode\":\""+uniqueCode+"\"}", authentication.getToken());
         }
     }
 

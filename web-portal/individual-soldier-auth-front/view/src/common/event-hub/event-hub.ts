@@ -1,3 +1,5 @@
 import Vue from 'vue'
 
-export default new Vue()
+const EventHub = new Vue()
+export const deviceStatusNotification = 'deviceStatusNotification'
+export default EventHub
