@@ -146,7 +146,7 @@
 import { ElForm } from 'element-ui/types/form'
 import { Component, Vue, Ref } from 'vue-property-decorator'
 import { DeviceAuthDetail, DeviceAuthForm, DeviceAuthSeachRequest, DeviceStatus } from './interface/device-auth'
-import { DeviceAuthGetApi, DeleteDeviceAuthApi, DeviceAuthSaveOrUpdateApi } from './device-auth-api'
+import { DeviceAuthGetApi, DeleteDeviceAuthApi, DeviceAuthSaveOrUpdateApi, UpdateExpireDeviceDateAndSendAuthInfo } from './device-auth-api'
 import KWTable from '@/components/table/Table.vue'
 import PermissionPrefixUtils from '@/common/utils/permission/permission-prefix'
 import KWCell from '@/components/cell/Cell.vue'
@@ -267,7 +267,7 @@ export default class DeviceAuth extends Vue {
       })
         .then(async () => {
           this.deviceAuthForm.expireDeviceDate = this.expireDeviceDate
-          const { code, msg } = await DeviceAuthSaveOrUpdateApi(this.deviceAuthForm)
+          const { code, msg } = await UpdateExpireDeviceDateAndSendAuthInfo(this.deviceAuthForm)
           if (code !== 200) {
             this.$message.error(msg || '操作客户信息信息失败!')
             this.expireDeviceDate = ''
@@ -279,10 +279,10 @@ export default class DeviceAuth extends Vue {
         })
         .catch(e => {
           console.log(e)
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          })
+          // this.$message({
+          //   type: 'info',
+          //   message: '已取消'
+          // })
         })
     })
   }

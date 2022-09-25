@@ -16,11 +16,17 @@ import com.key.win.auth.vo.UniqueCodeInfoVo;
 import com.key.win.basic.exception.BizException;
 import com.key.win.basic.util.BeanUtils;
 import com.key.win.basic.util.DateUtils;
+import com.key.win.basic.util.JsonUtils;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
 import com.key.win.basic.web.Result;
 import com.key.win.datalog.service.SysDataLogService;
 import com.key.win.mybatis.page.MybatisPageServiceTemplate;
+import com.key.win.rsa.RSAEncryptor;
+import com.key.win.rsa.exception.BizEncryptException;
+import com.key.win.rsa.util.RSAUtils;
+import com.key.win.rsa.util.SignUtils;
+import com.key.win.rsa.web.EncryptModel;
 import com.key.win.websocket.utils.MessageSendUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -213,7 +219,18 @@ public class DeviceAuthServiceImpl extends ServiceImpl<DeviceAuthDao, DeviceAuth
     public void sendAuthInfo(DeviceAuthResponseVo deviceAuthResponseVo, DeviceAuth deviceAuth) {
         UniqueCodeInfoVo uniqueCodeToRedis = DeviceAuthUtils.getUniqueCodeToRedis(deviceAuth.getUniqueCode());
         if (uniqueCodeToRedis != null) {
-            MessageSendUtil.sendMessage(deviceAuthResponseVo, uniqueCodeToRedis.getUniqueCode());
+            EncryptModel out = new EncryptModel();
+            out.setTimestamp(System.currentTimeMillis());
+            try {
+                RSAEncryptor rsaEncryptor = new RSAEncryptor(RSAUtils.privateKeyPath, RSAUtils.publicKeyPath);
+                out.setData(rsaEncryptor.encryptWithBase64(JsonUtils.toJsonNoException(deviceAuthResponseVo)));
+                String rawSign = String.format("data=%s&timestamp=%d", out.getData(), out.getTimestamp());
+                out.setSign(SignUtils.sha(rawSign));
+            } catch (Exception e) {
+                logger.error("参数签名失败:" + e.getMessage(), e);
+                throw new BizEncryptException("参数签名失败!");
+            }
+            MessageSendUtil.sendMessage(out, uniqueCodeToRedis.getUniqueCode());
         } else {
             throw new BizException("设备离线状态,不能下发认证信息！");
         }

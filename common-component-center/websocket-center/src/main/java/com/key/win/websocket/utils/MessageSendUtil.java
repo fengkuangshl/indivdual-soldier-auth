@@ -16,7 +16,7 @@ import java.util.List;
 public class MessageSendUtil {
     private static final Logger logger = LoggerFactory.getLogger(MessageSendUtil.class);
 
-    public static final String WEBSCOKET_BASE_MESSAGE = "WebScoketBaseMessage";
+    public static final String WEBSOCKET_BASE_MESSAGE = "WebSocketBaseMessage";
 
     private static TaskExecutor taskExecutor;
 

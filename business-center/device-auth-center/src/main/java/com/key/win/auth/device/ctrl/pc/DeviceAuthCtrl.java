@@ -73,7 +73,7 @@ public class DeviceAuthCtrl {
     @PostMapping("/updateExpireDeviceDateAndSendAuthInfo")
     @ApiOperation(value = "所有认证设备信息")
     @LogAnnotation(module = "device-auth", recordRequestParam = false)
-    public EncryptResponse updateExpireDeviceDateAndSendAuthInfo(@RequestBody DeviceAuth deviceAuth) {
-        return EncryptResponse.succeed(deviceAuthService.updateExpireDeviceDate(deviceAuth));
+    public Result updateExpireDeviceDateAndSendAuthInfo(@RequestBody DeviceAuth deviceAuth) {
+        return Result.succeed(deviceAuthService.updateExpireDeviceDate(deviceAuth));
     }
 }
