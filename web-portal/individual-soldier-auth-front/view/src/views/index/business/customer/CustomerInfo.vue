@@ -206,8 +206,8 @@ export default class CustomerInfo extends Vue {
   @Ref('customerInfoFormRef')
   readonly customerInfoFormRef!: ElForm
 
-  customerInfoPermissionPrefix = PermissionPrefixUtils.dictData
-  dataLogPermissionPrefix = PermissionPrefixUtils.dictData
+  customerInfoPermissionPrefix = PermissionPrefixUtils.customerInfo
+  dataLogPermissionPrefix = PermissionPrefixUtils.dataLog
 
   @Ref('kwTableRef')
   readonly kwTableRef!: KWTable<CustomerInfoForm, CustomerInfo>

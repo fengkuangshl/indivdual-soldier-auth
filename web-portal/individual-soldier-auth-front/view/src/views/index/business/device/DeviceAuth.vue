@@ -226,12 +226,12 @@ export default class DeviceAuth extends Vue {
   title = ''
   deviceAuthDialogVisble = false
   deviceAuthForm: DeviceAuthForm = this.t
-  dataLogPermissionPrefix = PermissionPrefixUtils.dictData
+  dataLogPermissionPrefix = PermissionPrefixUtils.dataLog
 
   @Ref('deviceAuthFormRef')
   readonly deviceAuthFormRef!: ElForm
 
-  deviceAuthPermissionPrefix = PermissionPrefixUtils.dictData
+  deviceAuthPermissionPrefix = PermissionPrefixUtils.deviceAuth
 
   @Ref('kwTableRef')
   readonly kwTableRef!: KWTable<DeviceAuthForm, DeviceAuth>

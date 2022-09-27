@@ -69,7 +69,7 @@ export default class DataLog extends Vue {
     fkId: ''
   }
 
-  dataLogPermissionPrefix = PermissionPrefixUtils.dictData
+  dataLogPermissionPrefix = PermissionPrefixUtils.dataLog
 
   @Ref('kwTableRef')
   readonly kwTableRef!: KWTable<DataLogSearchRequest, DataLogDetail>
