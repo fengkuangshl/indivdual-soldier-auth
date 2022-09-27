@@ -10,7 +10,7 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入内容" v-model="t.projectNo" v-hasPermissionQueryPage="dataLogPermissionPrefix">
+          <el-input placeholder="请输入内容" v-model="t.searchContent" v-hasPermissionQueryPage="dataLogPermissionPrefix">
             <el-button slot="append" class="search-primary" icon="el-icon-search" @click="searchDataLog">
             </el-button>
           </el-input>
@@ -27,9 +27,9 @@
         <el-table-column prop="createDate" label="创建时间" sortable="custom">
           <template slot-scope="scope">{{ scope.row.createDate | dateTimeFormat }}</template>
         </el-table-column>
-        <el-table-column prop="content" sortable="custom" label="操作内容">
+        <el-table-column prop="content" sortable="custom" label="操作内容" width="1000">
           <template slot-scope="scope">
-            <KWCell :gap="15" label="" style="width: 200px">
+            <KWCell :gap="15" label="" style="width: 700px">
               <KWText :value="scope.row.content" :row="1" />
             </KWCell>
           </template>
@@ -65,7 +65,8 @@ import KWText from '@/components/text/Text.vue'
 export default class DataLog extends Vue {
   expireDeviceDate: Date | string = ''
   t: DataLogSearchRequest = {
-    searchContent: ''
+    searchContent: '',
+    fkId: ''
   }
 
   dataLogPermissionPrefix = PermissionPrefixUtils.dictData

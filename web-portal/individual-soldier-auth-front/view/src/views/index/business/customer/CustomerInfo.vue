@@ -124,8 +124,23 @@
           </el-date-picker>
         </el-form-item>
       </el-form>
-      <el-divider></el-divider>
-
+      <el-divider content-position="left">操作日志</el-divider>
+      <KWTable url="data/log/findDataLogByPaged" v-hasPermissionQueryPage="dataLogPermissionPrefix" style="width: 100%"
+        ref="kwTableDataLogRef">
+        <el-table-column type="index" width="80" label="序号"></el-table-column>
+        <el-table-column prop="createUserName" width="120" sortable="custom" label="操作人员">
+        </el-table-column>
+        <el-table-column prop="createDate" width="170" label="创建时间" sortable="custom">
+          <template slot-scope="scope">{{ scope.row.createDate | dateTimeFormat }}</template>
+        </el-table-column>
+        <el-table-column prop="content" sortable="custom" label="操作内容">
+          <template slot-scope="scope">
+            <KWCell :gap="15" label="" style="width: 400px">
+              <KWText :value="scope.row.content" :row="1" />
+            </KWCell>
+          </template>
+        </el-table-column>
+      </KWTable>
       <span slot="footer" class="dialog-footer">
         <el-button @click="customerInfoDialogVisble = false">取 消</el-button>
         <el-button data="primary" @click="editCustomerInfoInfo">确 定</el-button>
@@ -144,6 +159,7 @@ import FormValidatorRule from '@/common/form-validator/form-validator'
 import PermissionPrefixUtils from '@/common/utils/permission/permission-prefix'
 import KWCell from '@/components/cell/Cell.vue'
 import KWText from '@/components/text/Text.vue'
+import { DataLogDetail, DataLogSearchRequest } from '../../common/data-log/interface/data-log'
 
 @Component({
   components: {
@@ -154,6 +170,10 @@ import KWText from '@/components/text/Text.vue'
 })
 export default class CustomerInfo extends Vue {
   expireDeviceDate: Date | string = ''
+  tDataLog: DataLogSearchRequest = {
+    searchContent: ''
+  }
+
   t: CustomerInfoSearchRequest = {
     authorizedQuantity: 0,
     startDate: '',
@@ -185,9 +205,13 @@ export default class CustomerInfo extends Vue {
   readonly customerInfoFormRef!: ElForm
 
   customerInfoPermissionPrefix = PermissionPrefixUtils.dictData
+  dataLogPermissionPrefix = PermissionPrefixUtils.dictData
 
   @Ref('kwTableRef')
   readonly kwTableRef!: KWTable<CustomerInfoForm, CustomerInfo>
+
+  @Ref('kwTableDataLogRef')
+  readonly kwTableDataLogRef!: KWTable<DataLogSearchRequest, DataLogDetail>
 
   readonly customerInfoFormRules: { companyName: Array<KWRule.Rule>; companyAddress: Array<KWRule.Rule>; companyPhone: Array<KWRule.Rule>; leadName: Array<KWRule.Rule>; leadMobile: Array<KWRule.Rule | KWRule.ValidatorRule>; projectNo: Array<KWRule.Rule>; authDeviceCode: Array<KWRule.Rule | KWRule.MixinRule>; authDeviceNum: Array<KWRule.NumberRule>; expireDeviceDate: Array<KWRule.ValidatorRule> } = {
     companyName: [FormValidatorRule.requiredRule('请输入客户名称')],
@@ -239,6 +263,10 @@ export default class CustomerInfo extends Vue {
     this.customerInfoForm.isVerify = (this.customerInfoForm.isVerify as boolean) ? '是' : '否'
     console.log(res)
     this.customerInfoDialogVisble = true
+    this.$nextTick(() => {
+      this.tDataLog.fkId = 'DEVICE_CUSTOMER_INFO::' + id
+      this.kwTableDataLogRef.loadByCondition(this.tDataLog)
+    })
   }
 
   aditCustomerInfoClosed(): void {

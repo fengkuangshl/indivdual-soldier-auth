@@ -74,7 +74,7 @@ public class SysDataLogServiceImpl extends ServiceImpl<SysDataLogDao, SysDataLog
                 if (StringUtils.isNotBlank(sysDataLog.getSearchContent())) {
                     lambdaQueryWrapper.like(SysDataLog::getContent, sysDataLog.getSearchContent());
                 }
-                if (sysDataLog.getFkId() != null) {
+                if (StringUtils.isNotBlank(sysDataLog.getFkId())) {
                     lambdaQueryWrapper.eq(SysDataLog::getFkId, sysDataLog.getFkId());
                 }
 

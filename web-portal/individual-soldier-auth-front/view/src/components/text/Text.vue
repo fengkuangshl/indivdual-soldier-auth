@@ -155,8 +155,10 @@ export default class KWText extends Vue {
   opacity: 0;
 
   &.active {
-    z-index: 1999;
+    z-index: 99999;
     opacity: 1;
+    word-wrap: break-word;
+    word-break: break-all;
   }
 }
 </style>

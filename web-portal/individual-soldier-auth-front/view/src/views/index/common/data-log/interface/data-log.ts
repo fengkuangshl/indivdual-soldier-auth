@@ -1,5 +1,6 @@
 export interface DataLogSearchRequest {
   searchContent: string
+  fkId: string
 }
 
 export interface DataLog {

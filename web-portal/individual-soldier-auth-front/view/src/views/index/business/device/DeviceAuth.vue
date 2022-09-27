@@ -84,47 +84,65 @@
         </el-table-column>
       </KWTable>
     </el-card>
-    <el-dialog :title="title" @close="aditDeviceAuthClosed" :visible.sync="deviceAuthDialogVisble" width="25%">
-      <el-form :model="deviceAuthForm" ref="deviceAuthFormRef" :rules="deviceAuthFormRules" label-width="120px">
+    <el-dialog :title="title" @close="aditDeviceAuthClosed" :visible.sync="deviceAuthDialogVisble" width="39%">
+      <el-form :model="deviceAuthForm" :inline="true" ref="deviceAuthFormRef" :rules="deviceAuthFormRules"
+        label-width="120px">
         <el-form-item label="客户编号：">
-          {{deviceAuthForm.sequence}}
+          <div class="el-form-item-div">{{deviceAuthForm.sequence}}</div>
         </el-form-item>
         <el-form-item label="客户名称：">
-          {{deviceAuthForm.companyName}}
+          <div class="el-form-item-div">{{deviceAuthForm.companyName}}</div>
         </el-form-item>
         <el-form-item label="项目号：">
-          {{deviceAuthForm.projectNo}}
+          <div class="el-form-item-div">{{deviceAuthForm.projectNo}}</div>
         </el-form-item>
         <el-form-item label="项目名称：">
-          {{deviceAuthForm.projectName}}
+          <div class="el-form-item-div">{{deviceAuthForm.projectName}}</div>
         </el-form-item>
         <el-form-item label="授权码：">
-          {{deviceAuthForm.authCode}}
+          <div class="el-form-item-div">{{deviceAuthForm.authCode}}</div>
         </el-form-item>
         <el-form-item label="AndroidId：">
-          {{deviceAuthForm.androidId}}
+          <div class="el-form-item-div">{{deviceAuthForm.androidId}}</div>
         </el-form-item>
         <el-form-item label="Serial Number：">
-          {{deviceAuthForm.serialNumber}}
+          <div class="el-form-item-div">{{deviceAuthForm.serialNumber}}</div>
         </el-form-item>
         <el-form-item label="设备名称：">
-          {{deviceAuthForm.brand}}
+          <div class="el-form-item-div">{{deviceAuthForm.brand}}</div>
         </el-form-item>
         <el-form-item label="硬件名称：">
-          {{deviceAuthForm.hardware}}
+          <div class="el-form-item-div">{{deviceAuthForm.hardware}}</div>
         </el-form-item>
         <el-form-item label="硬件识别码：">
-          {{deviceAuthForm.fingerPrint}}
+          <div class="el-form-item-div">{{deviceAuthForm.fingerPrint}}</div>
         </el-form-item>
         <el-form-item label="软件版本：">
-          {{deviceAuthForm.softwareVersion}}
+          <div class="el-form-item-div">{{deviceAuthForm.softwareVersion}}</div>
         </el-form-item>
         <el-form-item label="设备状态：">
-          <b style="color:red"> {{deviceAuthForm.isOnLine?'在线':'离线'}}</b>
+          <div class="el-form-item-div"><b style="color:red"> {{deviceAuthForm.isOnLine?'在线':'离线'}}</b></div>
         </el-form-item>
         <el-form-item label="是否校验日期：">
-          {{deviceAuthForm.isVerify?'是':'否'}}
+          <div class="el-form-item-div">{{deviceAuthForm.isVerify?'是':'否'}}</div>
         </el-form-item>
+        <el-divider content-position="left">操作日志</el-divider>
+        <KWTable url="data/log/findDataLogByPaged" v-hasPermissionQueryPage="dataLogPermissionPrefix"
+          style="width: 100%" ref="kwTableDataLogRef">
+          <el-table-column type="index" width="80" label="序号"></el-table-column>
+          <el-table-column prop="createUserName" width="120" sortable="custom" label="操作人员">
+          </el-table-column>
+          <el-table-column prop="createDate" width="170" label="创建时间" sortable="custom">
+            <template slot-scope="scope">{{ scope.row.createDate | dateTimeFormat }}</template>
+          </el-table-column>
+          <el-table-column prop="content" sortable="custom" label="操作内容">
+            <template slot-scope="scope">
+              <KWCell :gap="15" label="" style="width: 400px">
+                <KWText :value="scope.row.content" :row="1" />
+              </KWCell>
+            </template>
+          </el-table-column>
+        </KWTable>
         <el-divider v-if="deviceAuthForm.isVerify"></el-divider>
         <el-form-item label="授权到期日期" v-if="deviceAuthForm.isVerify" prop="expireDeviceDate">
           <el-date-picker v-model="expireDeviceDate" @input="onDatePickerChange" type="date" placeholder="授权到期日期"
@@ -152,7 +170,7 @@ import PermissionPrefixUtils from '@/common/utils/permission/permission-prefix'
 import KWCell from '@/components/cell/Cell.vue'
 import KWText from '@/components/text/Text.vue'
 import EventHub, { deviceStatusNotification } from '@/common/event-hub/event-hub'
-
+import { DataLogDetail, DataLogSearchRequest } from '../../common/data-log/interface/data-log'
 @Component({
   components: {
     KWTable,
@@ -162,6 +180,10 @@ import EventHub, { deviceStatusNotification } from '@/common/event-hub/event-hub
 })
 export default class DeviceAuth extends Vue {
   expireDeviceDate: Date | string = ''
+  tDataLog: DataLogSearchRequest = {
+    searchContent: ''
+  }
+
   t: DeviceAuthSearchRequest = {
     authorizedQuantity: 0,
     startDate: '',
@@ -203,6 +225,7 @@ export default class DeviceAuth extends Vue {
   title = ''
   deviceAuthDialogVisble = false
   deviceAuthForm: DeviceAuthForm = this.t
+  dataLogPermissionPrefix = PermissionPrefixUtils.dictData
 
   @Ref('deviceAuthFormRef')
   readonly deviceAuthFormRef!: ElForm
@@ -211,6 +234,9 @@ export default class DeviceAuth extends Vue {
 
   @Ref('kwTableRef')
   readonly kwTableRef!: KWTable<DeviceAuthForm, DeviceAuth>
+
+  @Ref('kwTableDataLogRef')
+  readonly kwTableDataLogRef!: KWTable<DataLogSearchRequest, DataLogDetail>
 
   onDatePickerChange(currentDate: Date): void {
     this.expireDeviceDate = currentDate
@@ -247,6 +273,10 @@ export default class DeviceAuth extends Vue {
     this.expireDeviceDate = this.deviceAuthForm.expireDeviceDate === null ? '' : new Date(this.deviceAuthForm.expireDeviceDate)
     console.log(res)
     this.deviceAuthDialogVisble = true
+    this.$nextTick(() => {
+      this.tDataLog.fkId = 'DEVICE_AUTH::' + row.id
+      this.kwTableDataLogRef.loadByCondition(this.tDataLog)
+    })
   }
 
   aditDeviceAuthClosed(): void {
@@ -356,5 +386,9 @@ export default class DeviceAuth extends Vue {
   background: #66b1ff !important;
   border-color: #66b1ff !important;
   color: #fff !important;
+}
+.el-form-item-div {
+  max-width: 220px;
+  width: 220px;
 }
 </style>

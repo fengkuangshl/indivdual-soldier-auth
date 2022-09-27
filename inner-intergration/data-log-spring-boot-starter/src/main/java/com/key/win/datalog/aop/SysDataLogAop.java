@@ -113,7 +113,7 @@ public class SysDataLogAop {
                 MybatisID idEntityOld = (MybatisID) oldData.get(i);
                 StringBuilder sb = new StringBuilder();
                 SysDataLog sysDataLog = new SysDataLog();
-                sysDataLog.setFkId(idEntityOld.getId().toString());
+                sysDataLog.setFkId(change.getTableName()+"::"+idEntityOld.getId().toString());
                 sb.append(StrUtil.format("修改表：[{}]", change.getTableName()));
                 sb.append(StrUtil.format("id：[{}]", idEntityOld.getId()));
                 sb.append(StrUtil.LF);
@@ -142,7 +142,7 @@ public class SysDataLogAop {
                 Map<String, String> columnVaue = (Map<String, String>) newDatas.get(i);
                 StringBuilder sb = new StringBuilder();
                 SysDataLog sysDataLog = new SysDataLog();
-                sysDataLog.setFkId(columnVaue.get(IndividualSoldierAuthConstantUtils.MODEL_ID));
+                sysDataLog.setFkId(change.getTableName()+"::"+columnVaue.get(IndividualSoldierAuthConstantUtils.MODEL_ID));
                 sb.append(StrUtil.format("新插入数据：[{}]", change.getTableName()));
                 sb.append(StrUtil.LF);
                 sb.append(JsonUtils.toJsonNoException(columnVaue));
@@ -247,7 +247,7 @@ public class SysDataLogAop {
                         sb.append(StrUtil.LF);
                         sb.append(StrUtil.format("修改表：[{}]", change.getTableName()));
                         sb.append(StrUtil.format("id：[{}]", r.getId()));
-                        newFkId.append(r.getId());
+                        newFkId.append(change.getTableName()+"::"+r.getId());
                     }
                     sb.append(StrUtil.LF);
                     rsb.append(StrUtil.LF);

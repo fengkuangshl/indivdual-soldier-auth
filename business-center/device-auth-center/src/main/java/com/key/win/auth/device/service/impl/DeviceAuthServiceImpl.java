@@ -44,6 +44,8 @@ public class DeviceAuthServiceImpl extends ServiceImpl<DeviceAuthDao, DeviceAuth
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    private final String tableName = "DEVICE_AUTH";
+
     @Autowired
     private CustomerInfoService customerInfoService;
     @Autowired
@@ -138,6 +140,10 @@ public class DeviceAuthServiceImpl extends ServiceImpl<DeviceAuthDao, DeviceAuth
         return null;
     }
 
+    private String getDataLogFkId(Long id) {
+        return tableName +"::"+ id;
+    }
+
     @Override
     public synchronized DeviceAuthResponseVo saveOrUpdateDeviceAuth(DeviceAuth deviceAuth) {
         deviceAuth.setUniqueCode(DeviceAuthUtils.getUniqueCode(deviceAuth.getAndroidId(), deviceAuth.getSerialNumber()));//生成唯一码
@@ -145,7 +151,7 @@ public class DeviceAuthServiceImpl extends ServiceImpl<DeviceAuthDao, DeviceAuth
         if (deviceAuthByUniqueCode != null) {
             BeanUtils.copyPropertiesToPartField(deviceAuth, deviceAuthByUniqueCode);
             if (super.updateById(deviceAuthByUniqueCode)) {
-                sysDataLogService.saveDataLog("接收设备重复提交认证信息，进行覆盖操作", deviceAuthByUniqueCode.getId().toString());
+                sysDataLogService.saveDataLog("接收设备重复提交认证信息，进行覆盖操作", getDataLogFkId(deviceAuthByUniqueCode.getId()));
             }
             return verificationDevice(deviceAuthByUniqueCode, true);
         }
@@ -154,7 +160,7 @@ public class DeviceAuthServiceImpl extends ServiceImpl<DeviceAuthDao, DeviceAuth
             deviceAuth.setExpireDeviceDate(customerByAuthCode.getExpireDeviceDate());
         }
         if (super.save(deviceAuth)) {
-            sysDataLogService.saveDataLog("接收设备提交认证信息，进行保存操作", deviceAuth.getId().toString());
+            sysDataLogService.saveDataLog("接收设备提交认证信息，进行保存操作", getDataLogFkId(deviceAuth.getId()));
         }
         return verificationDevice(deviceAuth, false);
     }
@@ -176,7 +182,7 @@ public class DeviceAuthServiceImpl extends ServiceImpl<DeviceAuthDao, DeviceAuth
                     String encodeStr = Base64Utils.encodeToString((expireDeviceDate.getTime() + "").getBytes());
                     String reverseStr = new StringBuffer(encodeStr).reverse().toString();
                     deviceAuthResponseVo.setAuthInfo(deviceAuth.getUniqueCode() + deviceAuth.getVerifyCode() + "=" + reverseStr + "y");
-                    sysDataLogService.saveDataLog("正常授权下发，需要校验日期[" + DateUtils.dateToStr(expireDeviceDate) + "]", deviceAuth.getId().toString());
+                    sysDataLogService.saveDataLog("正常授权下发，需要校验日期[" + DateUtils.dateToStr(expireDeviceDate) + "]", getDataLogFkId(deviceAuth.getId()));
                 } else {
                     deviceAuthResponseVo.setAuthInfo(deviceAuth.getUniqueCode() + "n");
                     sysDataLogService.saveDataLog("正常授权下发，不需要校验日期", deviceAuth.getId().toString());
@@ -184,7 +190,7 @@ public class DeviceAuthServiceImpl extends ServiceImpl<DeviceAuthDao, DeviceAuth
                 return deviceAuthResponseVo;
             } else {
                 logger.warn("设备数量已经达到授权数量[{}]的上线，不予授权！", customerByAuthCode.getAuthDeviceNum());
-                sysDataLogService.saveDataLog("设备数量已经达到授权数量[" + customerByAuthCode.getAuthDeviceNum() + "]的上线，不予授权！", deviceAuth.getId().toString());
+                sysDataLogService.saveDataLog("设备数量已经达到授权数量[" + customerByAuthCode.getAuthDeviceNum() + "]的上线，不予授权！", getDataLogFkId(deviceAuth.getId()));
                 throw new BizException("设备数量已经达到授权数量[" + customerByAuthCode.getAuthDeviceNum() + "]的上线，不予授权！");
             }
         } else {
@@ -206,7 +212,7 @@ public class DeviceAuthServiceImpl extends ServiceImpl<DeviceAuthDao, DeviceAuth
                     byId.setExpireDeviceDate(deviceAuth.getExpireDeviceDate());
                     boolean b = super.updateById(byId);
                     if (b) {
-                        sysDataLogService.saveDataLog("更新设备授权到期日期：" + DateUtils.dateToStr(deviceAuth.getExpireDeviceDate()) + "]", deviceAuth.getId().toString());
+                        sysDataLogService.saveDataLog("更新设备授权到期日期：" + DateUtils.dateToStr(deviceAuth.getExpireDeviceDate()) + "]", getDataLogFkId(deviceAuth.getId()));
                     }
                 }
                 DeviceAuthResponseVo deviceAuthResponseVo = verificationDevice(byId, true);

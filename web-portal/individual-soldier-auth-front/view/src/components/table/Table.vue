@@ -374,7 +374,7 @@ export default class KWTable<T, RT> extends Vue {
 <style lang="less" scoped>
 .el-pagination {
   margin-top: 15px;
-  float: right;
+  // float: right;
 }
 /* .el-cascader-menu {
   height: 300px;
