@@ -46,6 +46,16 @@ public class AuthenticationUtil {
         return IndividualSoldierAuthConstantUtils.SYSTEM_ANONYMOUS_USER;
     }
 
+    public static void clearContext() {
+        userDetailsHolder.remove();
+    }
+
+    public static Authentication createEmptyContext() {
+        Authentication authentication = new Authentication();
+        setCurrentUser(authentication);
+        return authentication;
+    }
+
     @Value("${spring.global.token.expires:86400}")
     public void setTokenExpires(int expires) {
         AuthenticationUtil.tokenExpires = expires;

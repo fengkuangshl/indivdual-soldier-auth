@@ -1,4 +1,4 @@
-import { CustomerInfoBase, SeachRequestBase } from '../../base/interface/customer-info-base'
+import { CustomerInfoBase, SearchRequestBase } from '../../base/interface/customer-info-base'
 
 export interface CustomerInfoForm extends CustomerInfoBase {
   // 公司地址
@@ -9,6 +9,6 @@ export interface CustomerInfoForm extends CustomerInfoBase {
   leadPhone: string
 }
 
-export interface CustomerInfoSeachRequest extends CustomerInfoForm, SeachRequestBase {}
+export interface CustomerInfoSearchRequest extends CustomerInfoForm, SearchRequestBase {}
 
 export interface CustomerInfoDetail extends CustomerInfoForm, Model.BaseField {}

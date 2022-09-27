@@ -145,8 +145,8 @@
 <script lang="ts">
 import { ElForm } from 'element-ui/types/form'
 import { Component, Vue, Ref } from 'vue-property-decorator'
-import { DeviceAuthDetail, DeviceAuthForm, DeviceAuthSeachRequest, DeviceStatus } from './interface/device-auth'
-import { DeviceAuthGetApi, DeleteDeviceAuthApi, DeviceAuthSaveOrUpdateApi, UpdateExpireDeviceDateAndSendAuthInfo } from './device-auth-api'
+import { DeviceAuthDetail, DeviceAuthForm, DeviceAuthSearchRequest, DeviceStatus } from './interface/device-auth'
+import { DeviceAuthGetApi, DeleteDeviceAuthApi, UpdateExpireDeviceDateAndSendAuthInfo } from './device-auth-api'
 import KWTable from '@/components/table/Table.vue'
 import PermissionPrefixUtils from '@/common/utils/permission/permission-prefix'
 import KWCell from '@/components/cell/Cell.vue'
@@ -162,7 +162,7 @@ import EventHub, { deviceStatusNotification } from '@/common/event-hub/event-hub
 })
 export default class DeviceAuth extends Vue {
   expireDeviceDate: Date | string = ''
-  t: DeviceAuthSeachRequest = {
+  t: DeviceAuthSearchRequest = {
     authorizedQuantity: 0,
     startDate: '',
     endDate: '',
@@ -266,7 +266,12 @@ export default class DeviceAuth extends Vue {
         type: 'warning'
       })
         .then(async () => {
-          this.deviceAuthForm.expireDeviceDate = this.expireDeviceDate
+          if (this.deviceAuthForm.isVerify) {
+            this.deviceAuthForm.expireDeviceDate = this.expireDeviceDate
+          } else {
+            this.deviceAuthForm.expireDeviceDate = null
+          }
+
           const { code, msg } = await UpdateExpireDeviceDateAndSendAuthInfo(this.deviceAuthForm)
           if (code !== 200) {
             this.$message.error(msg || '操作客户信息信息失败!')

@@ -21,7 +21,7 @@ export interface CustomerInfoBase {
   leadMobile: string
 }
 
-export interface SeachRequestBase {
+export interface SearchRequestBase {
   // 已授权数量
   authorizedQuantity: number
   // 查询条件的开始时间

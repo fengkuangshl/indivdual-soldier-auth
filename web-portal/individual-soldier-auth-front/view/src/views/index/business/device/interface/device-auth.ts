@@ -1,4 +1,4 @@
-import { CustomerInfoBase, SeachRequestBase } from '../../base/interface/customer-info-base'
+import { CustomerInfoBase, SearchRequestBase } from '../../base/interface/customer-info-base'
 
 export interface DeviceAuthForm extends CustomerInfoBase {
   // andriod APILevel
@@ -39,7 +39,7 @@ export interface DeviceAuthForm extends CustomerInfoBase {
   isOnLine: boolean
 }
 
-export interface DeviceAuthSeachRequest extends DeviceAuthForm, SeachRequestBase {}
+export interface DeviceAuthSearchRequest extends DeviceAuthForm, SearchRequestBase {}
 
 export interface DeviceAuthDetail extends DeviceAuthForm, Model.BaseField {}
 

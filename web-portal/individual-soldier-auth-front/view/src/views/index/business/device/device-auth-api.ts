@@ -1,7 +1,7 @@
 import request from '@/fetch'
-import { DeviceAuthDetail, DeviceAuthForm, DeviceAuthSeachRequest } from './interface/device-auth'
+import { DeviceAuthDetail, DeviceAuthForm, DeviceAuthSearchRequest } from './interface/device-auth'
 
-export const DeviceAuthPagedApi = (pageRequest: KWRequest.PageRequest<DeviceAuthSeachRequest>): Promise<KWResponse.PageResult<DeviceAuthDetail>> => request.post('deviceAuth/findDeviceAuthByPaged', pageRequest)
+export const DeviceAuthPagedApi = (pageRequest: KWRequest.PageRequest<DeviceAuthSearchRequest>): Promise<KWResponse.PageResult<DeviceAuthDetail>> => request.post('deviceAuth/findDeviceAuthByPaged', pageRequest)
 export const DeviceAuthSaveOrUpdateApi = (deviceAuth: DeviceAuthForm): Promise<KWResponse.Result> => request.post('deviceAuth/saveOrUpdate', deviceAuth)
 export const UpdateExpireDeviceDateAndSendAuthInfo = (deviceAuth: DeviceAuthForm): Promise<KWResponse.Result> => request.post('deviceAuth/updateExpireDeviceDateAndSendAuthInfo', deviceAuth)
 export const DeleteDeviceAuthApi = (id: number): Promise<KWResponse.Result> => request.delete('deviceAuth/delete/' + id)

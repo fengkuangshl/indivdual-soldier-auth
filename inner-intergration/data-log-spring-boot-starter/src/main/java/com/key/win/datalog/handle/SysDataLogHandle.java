@@ -49,7 +49,7 @@ public class SysDataLogHandle extends BaseDataLog {
             logger.info("不需要存库！");
         } else {
             // 存库
-            dataLogService.saveBrachDataLog(data.getSysDataLogs());
+            dataLogService.saveBatchDataLog(data.getSysDataLogs());
             logger.info("存库成功{}条数据日志", sysDataLogs.size());
         }
     }

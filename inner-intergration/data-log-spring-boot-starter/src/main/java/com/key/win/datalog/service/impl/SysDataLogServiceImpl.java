@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
+import com.key.win.common.auth.detail.Authentication;
 import com.key.win.datalog.dao.SysDataLogDao;
 import com.key.win.datalog.model.SysDataLog;
 import com.key.win.datalog.service.SysDataLogService;
@@ -42,7 +43,7 @@ public class SysDataLogServiceImpl extends ServiceImpl<SysDataLogDao, SysDataLog
     @Async
     @DataSource(name = "log")
     @Override
-    public Boolean saveDataLog(String content,String fkId) {
+    public Boolean saveDataLog(String content, String fkId) {
         SysDataLog sysDataLog = new SysDataLog();
         sysDataLog.setFkId(fkId);
         sysDataLog.setContent(content);
@@ -53,7 +54,7 @@ public class SysDataLogServiceImpl extends ServiceImpl<SysDataLogDao, SysDataLog
     @Async
     @DataSource(name = "log")
     @Override
-    public Boolean saveBrachDataLog(List<SysDataLog> sysDataLogs) {
+    public Boolean saveBatchDataLog(List<SysDataLog> sysDataLogs) {
         return this.saveBatch(sysDataLogs);
     }
 

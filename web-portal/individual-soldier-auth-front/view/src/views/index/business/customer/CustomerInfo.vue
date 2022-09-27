@@ -76,8 +76,9 @@
         </el-table-column>
       </KWTable>
     </el-card>
-    <el-dialog :title="title" @close="aditCustomerInfoClosed" :visible.sync="customerInfoDialogVisble" width="23%">
-      <el-form :model="customerInfoForm" :rules="customerInfoFormRules" ref="customerInfoFormRef" label-width="100px">
+    <el-dialog :title="title" @close="aditCustomerInfoClosed" :visible.sync="customerInfoDialogVisble" width="37%">
+      <el-form :model="customerInfoForm" :inline="true" :rules="customerInfoFormRules" ref="customerInfoFormRef"
+        label-width="100px">
         <el-form-item label="客户编号" prop="sequence">
           <el-input v-model="customerInfoForm.sequence" style="max-width: 220px;"
             :disabled="customerInfoSequenceDisabled">
@@ -112,7 +113,7 @@
           <el-input v-model="customerInfoForm.authDeviceNum" type="number" style="max-width: 220px;"></el-input>
         </el-form-item>
         <el-form-item label="是否校验日期" prop="isVerify">
-          <el-radio-group @change="isVerifChange" v-model="customerInfoForm.isVerify">
+          <el-radio-group @change="isVerifChange" v-model="customerInfoForm.isVerify" style="width: 202px;">
             <el-radio label="是"></el-radio>
             <el-radio label="否"></el-radio>
           </el-radio-group>
@@ -122,8 +123,9 @@
             style="max-width: 220px;">
           </el-date-picker>
         </el-form-item>
-
       </el-form>
+      <el-divider></el-divider>
+
       <span slot="footer" class="dialog-footer">
         <el-button @click="customerInfoDialogVisble = false">取 消</el-button>
         <el-button data="primary" @click="editCustomerInfoInfo">确 定</el-button>
@@ -135,7 +137,7 @@
 <script lang="ts">
 import { ElForm } from 'element-ui/types/form'
 import { Component, Vue, Ref } from 'vue-property-decorator'
-import { CustomerInfoForm, CustomerInfoSeachRequest } from './interface/customer'
+import { CustomerInfoForm, CustomerInfoSearchRequest } from './interface/customer'
 import { CustomerInfoGetApi, DeleteCustomerInfoApi, CustomerInfoSaveOrUpdateApi } from './customer-api'
 import KWTable from '@/components/table/Table.vue'
 import FormValidatorRule from '@/common/form-validator/form-validator'
@@ -152,7 +154,7 @@ import KWText from '@/components/text/Text.vue'
 })
 export default class CustomerInfo extends Vue {
   expireDeviceDate: Date | string = ''
-  t: CustomerInfoSeachRequest = {
+  t: CustomerInfoSearchRequest = {
     authorizedQuantity: 0,
     startDate: '',
     endDate: '',

@@ -1,5 +1,6 @@
-package com.key.win.basic.config;
+package com.key.win.common.config;
 
+import com.key.win.common.concurrent.DelegatingSecurityContextExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
@@ -10,6 +11,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 @Configuration
@@ -31,6 +33,7 @@ public class AsyncTaskExecutorConfiguration implements AsyncConfigurer {
         taskExecutor.setKeepAliveSeconds(200);
         //异步方法内部线程名称
         taskExecutor.setThreadNamePrefix("async-");
+
         /**
          * 当线程池的任务缓存队列已满并且线程池中的线程数目达到maximumPoolSize，如果还有任务到来就会采取任务拒绝策略
          * 通常有以下四种策略：
@@ -49,7 +52,7 @@ public class AsyncTaskExecutorConfiguration implements AsyncConfigurer {
      */
     @Override
     public Executor getAsyncExecutor() {
-        return executor();
+        return new DelegatingSecurityContextExecutorService(Executors.newFixedThreadPool(10));
     }
 
     @Override
