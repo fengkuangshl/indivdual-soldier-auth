@@ -25,5 +25,9 @@
             <artifactId>hutool-all</artifactId>
             <version>${hutool.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.key.win</groupId>
+            <artifactId>security-spring-boot-starter</artifactId>
+        </dependency>
     </dependencies>
 </project>

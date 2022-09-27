@@ -11,6 +11,7 @@ import com.key.win.basic.web.PageResult;
 import com.key.win.basic.web.Result;
 import com.key.win.log.annotation.LogAnnotation;
 import com.key.win.rsa.web.EncryptResponse;
+import com.key.win.security.annotation.PreAuthorize;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -29,12 +30,14 @@ import java.util.stream.Collectors;
 public class DeviceAuthCtrl {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final static String AUTHORITY_PREFIX = "business::device::DeviceAuth::";
     @Autowired
     private DeviceAuthService deviceAuthService;
 
     @PostMapping("/findDeviceAuthByPaged")
     @ApiOperation(value = "客户信息分页")
     @LogAnnotation(module = "device-auth", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::PAGED')")
     public PageResult<DeviceAuthVo> findDeviceAuthByPaged(@RequestBody PageRequest<DeviceAuthVo> t) throws Exception {
         PageResult<DeviceAuthVo> deviceAuthByPaged = deviceAuthService.findDeviceAuthByPaged(t);
         List<DeviceAuthVo> data = deviceAuthByPaged.getData();
@@ -49,6 +52,7 @@ public class DeviceAuthCtrl {
     @GetMapping("/get/{id}")
     @ApiOperation(value = "获取客户信息")
     @LogAnnotation(module = "device-auth", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::ID')")
     public Result get(@PathVariable Long id) throws Exception {
         DeviceAuth byId = deviceAuthService.getById(id);
         byId.setIsOnLine(DeviceAuthUtils.isOnLineByUniqueCode(byId.getUniqueCode()));
@@ -58,6 +62,7 @@ public class DeviceAuthCtrl {
     @DeleteMapping("/delete/{id}")
     @ApiOperation(value = "删除")
     @LogAnnotation(module = "device-auth", recordRequestParam = true)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "DELETE')")
     public Result delete(@PathVariable Long id) {
         boolean b = deviceAuthService.removeById(id);
         return Result.result(b);
@@ -66,6 +71,7 @@ public class DeviceAuthCtrl {
     @GetMapping("/getDeviceAuthAll")
     @ApiOperation(value = "所有认证设备信息")
     @LogAnnotation(module = "device-auth", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::LIST')")
     public Result getDeviceAuthAll() {
         return Result.succeed(deviceAuthService.list());
     }
@@ -73,6 +79,7 @@ public class DeviceAuthCtrl {
     @PostMapping("/updateExpireDeviceDateAndSendAuthInfo")
     @ApiOperation(value = "所有认证设备信息")
     @LogAnnotation(module = "device-auth", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "MODIFY')")
     public Result updateExpireDeviceDateAndSendAuthInfo(@RequestBody DeviceAuth deviceAuth) {
         return Result.succeed(deviceAuthService.updateExpireDeviceDate(deviceAuth));
     }

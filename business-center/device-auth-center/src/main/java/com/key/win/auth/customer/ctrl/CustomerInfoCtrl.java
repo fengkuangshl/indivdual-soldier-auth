@@ -9,6 +9,7 @@ import com.key.win.basic.web.PageResult;
 import com.key.win.basic.web.Result;
 import com.key.win.datalog.annotation.DataLog;
 import com.key.win.log.annotation.LogAnnotation;
+import com.key.win.security.annotation.PreAuthorize;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -23,12 +24,14 @@ import org.springframework.web.bind.annotation.*;
 public class CustomerInfoCtrl {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final static String AUTHORITY_PREFIX = "business::customer::CustomerInfo::";
     @Autowired
     private CustomerInfoService customerInfoService;
 
     @PostMapping("/findCustomerInfoByPaged")
     @ApiOperation(value = "客户信息分页")
     @LogAnnotation(module = "device-auth", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::PAGED')")
     public PageResult<CustomerInfoVo> findCustomerInfoByPaged(@RequestBody PageRequest<CustomerInfoVo> t) {
         return customerInfoService.findCustomerByPaged(t);
     }
@@ -36,6 +39,7 @@ public class CustomerInfoCtrl {
     @GetMapping("/get/{id}")
     @ApiOperation(value = "获取客户信息")
     @LogAnnotation(module = "device-auth", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::ID')")
     public Result get(@PathVariable Long id) {
         return Result.succeed(customerInfoService.getById(id));
     }
@@ -44,6 +48,7 @@ public class CustomerInfoCtrl {
     @DeleteMapping("/delete/{id}")
     @ApiOperation(value = "删除")
     @LogAnnotation(module = "device-auth", recordRequestParam = true)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "DELETE')")
     public Result delete(@PathVariable Long id) {
         boolean b = customerInfoService.removeById(id);
         return Result.result(b);
@@ -53,6 +58,7 @@ public class CustomerInfoCtrl {
     @PostMapping("/saveOrUpdate")
     @ApiOperation(value = "新增/更新")
     @LogAnnotation(module = "device-auth", recordRequestParam = true)
+    @PreAuthorize("hasAnyAuthority('" + AUTHORITY_PREFIX + "MODIFY','" + AUTHORITY_PREFIX + "ADD')")
     public Result saveOrUpdate(@RequestBody CustomerInfo customerInfo) {
         if (StringUtils.isBlank(customerInfo.getAuthDeviceCode())) {
             logger.error("授权码为空！");
@@ -80,6 +86,7 @@ public class CustomerInfoCtrl {
     @GetMapping("/getCustomerInfoAll")
     @ApiOperation(value = "所有机构信息")
     @LogAnnotation(module = "device-auth", recordRequestParam = false)
+    @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::LIST')")
     public Result getCustomerInfoAll() {
         return Result.succeed(customerInfoService.list());
     }
