@@ -124,9 +124,9 @@
           </el-date-picker>
         </el-form-item>
       </el-form>
-      <el-divider content-position="left">操作日志</el-divider>
+      <el-divider content-position="left" v-if="isEditCustomerInfoForm">操作日志</el-divider>
       <KWTable url="data/log/findDataLogByPaged" v-hasPermissionQueryPage="dataLogPermissionPrefix" style="width: 100%"
-        ref="kwTableDataLogRef">
+        v-if="isEditCustomerInfoForm" ref="kwTableDataLogRef">
         <el-table-column type="index" width="80" label="序号"></el-table-column>
         <el-table-column prop="createUserName" width="120" sortable="custom" label="操作人员">
         </el-table-column>
@@ -171,7 +171,8 @@ import { DataLogDetail, DataLogSearchRequest } from '../../common/data-log/inter
 export default class CustomerInfo extends Vue {
   expireDeviceDate: Date | string = ''
   tDataLog: DataLogSearchRequest = {
-    searchContent: ''
+    searchContent: '',
+    fkId: ''
   }
 
   t: CustomerInfoSearchRequest = {
@@ -200,6 +201,7 @@ export default class CustomerInfo extends Vue {
   customerInfoSequenceDisabled = true
   customerInfoAuthDeviceCodeDisabled = true
   customerInfoForm: CustomerInfoForm = this.t
+  isEditCustomerInfoForm = false
 
   @Ref('customerInfoFormRef')
   readonly customerInfoFormRef!: ElForm
@@ -253,6 +255,7 @@ export default class CustomerInfo extends Vue {
   // 展示编辑用于的对话框
   async showEditDialog(id: number): Promise<void> {
     this.title = '编辑客户信息'
+    this.isEditCustomerInfoForm = true
     this.customerInfoSequenceDisabled = true
     this.customerInfoAuthDeviceCodeDisabled = true
     const res = await CustomerInfoGetApi(id)
@@ -297,6 +300,7 @@ export default class CustomerInfo extends Vue {
 
   addCustomerInfo(): void {
     this.title = '添加客户信息'
+    this.isEditCustomerInfoForm = false
     this.customerInfoSequenceDisabled = true
     this.customerInfoAuthDeviceCodeDisabled = false
     this.customerInfoDialogVisble = true

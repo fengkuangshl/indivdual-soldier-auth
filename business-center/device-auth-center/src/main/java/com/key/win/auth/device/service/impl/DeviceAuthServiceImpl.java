@@ -212,7 +212,7 @@ public class DeviceAuthServiceImpl extends ServiceImpl<DeviceAuthDao, DeviceAuth
                     byId.setExpireDeviceDate(deviceAuth.getExpireDeviceDate());
                     boolean b = super.updateById(byId);
                     if (b) {
-                        sysDataLogService.saveDataLog("更新设备授权到期日期：" + DateUtils.dateToStr(deviceAuth.getExpireDeviceDate()) + "]", getDataLogFkId(deviceAuth.getId()));
+                        sysDataLogService.saveDataLog("更新设备授权到期日期：[" + DateUtils.dateToStr(deviceAuth.getExpireDeviceDate()) + "]", getDataLogFkId(deviceAuth.getId()));
                     }
                 }
                 DeviceAuthResponseVo deviceAuthResponseVo = verificationDevice(byId, true);

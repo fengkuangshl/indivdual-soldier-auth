@@ -181,7 +181,8 @@ import { DataLogDetail, DataLogSearchRequest } from '../../common/data-log/inter
 export default class DeviceAuth extends Vue {
   expireDeviceDate: Date | string = ''
   tDataLog: DataLogSearchRequest = {
-    searchContent: ''
+    searchContent: '',
+    fkId: ''
   }
 
   t: DeviceAuthSearchRequest = {
