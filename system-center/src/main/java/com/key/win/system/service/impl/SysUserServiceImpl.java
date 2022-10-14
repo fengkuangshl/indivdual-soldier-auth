@@ -147,7 +147,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         SysUser dbUser = list.get(0);
         checkIsEnabled(dbUser);
         Authentication loginUser = new Authentication();
-        setUserExtinfo(userAgent, dbUser, loginUser);
+        setUserExtInfo(userAgent, dbUser, loginUser);
 
         /**
          * 更新refreshtoken
@@ -196,7 +196,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         }
         checkIsEnabled(dbUser);
         Authentication loginUser = new Authentication();
-        setUserExtinfo(userAgent, dbUser, loginUser);
+        setUserExtInfo(userAgent, dbUser, loginUser);
         String refreshToken = UUIDUtils.getGUID();
         return createToken(loginUser, refreshToken);
     }
@@ -213,7 +213,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         return this.getUserToken(guid, refreshToken);
     }
 
-    private void setUserExtinfo(String userAgent, SysUser dbUser, Authentication loginUser) {
+    private void setUserExtInfo(String userAgent, SysUser dbUser, Authentication loginUser) {
         BeanUtils.copyProperties(dbUser, loginUser);
         List<SysGroup> groupByUserId = sysUserGroupDao.findGroupByUserId(dbUser.getId());
         List<SysRole> rolesByUserId = sysUserRoleDao.findRolesByUserId(dbUser.getId());

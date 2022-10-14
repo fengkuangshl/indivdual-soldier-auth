@@ -38,9 +38,6 @@ public class SysMenu extends MybatisID {
     @ApiModelProperty("孩子列表")
     @TableField(exist = false)
     private List<SysMenu> subMenus = new ArrayList<>();
-    @ApiModelProperty("角色Id")
-    @TableField(exist = false)
-    private Long roleId;
     @ApiModelProperty("菜单Id集合")
     @TableField(exist = false)
     private Set<Long> menuIds;
