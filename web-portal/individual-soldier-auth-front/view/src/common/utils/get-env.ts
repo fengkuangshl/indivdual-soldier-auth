@@ -4,7 +4,7 @@ export function getHttpDomain(): string {
 }
 
 export function getWsDomain(): string {
-  const baseURL = process.env.VUE_APP_WEBSOCKET_BASE_URL
+  const baseURL = process.env.VUE_APP_WEBSOCKET_BASE_WS_URL
   return processBaseURL(baseURL)
 }
 

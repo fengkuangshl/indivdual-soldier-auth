@@ -185,7 +185,7 @@ public class DeviceAuthServiceImpl extends ServiceImpl<DeviceAuthDao, DeviceAuth
                     sysDataLogService.saveDataLog("正常授权下发，需要校验日期[" + DateUtils.dateToStr(expireDeviceDate) + "]", getDataLogFkId(deviceAuth.getId()));
                 } else {
                     deviceAuthResponseVo.setAuthInfo(deviceAuth.getUniqueCode() + "n");
-                    sysDataLogService.saveDataLog("正常授权下发，不需要校验日期", deviceAuth.getId().toString());
+                    sysDataLogService.saveDataLog("正常授权下发，不需要校验日期", getDataLogFkId(deviceAuth.getId()));
                 }
                 return deviceAuthResponseVo;
             } else {
@@ -194,7 +194,7 @@ public class DeviceAuthServiceImpl extends ServiceImpl<DeviceAuthDao, DeviceAuth
                 throw new BizException("设备数量已经达到授权数量[" + customerByAuthCode.getAuthDeviceNum() + "]的上线，不予授权！");
             }
         } else {
-            sysDataLogService.saveDataLog("授权码对应的客户信息不存在，不予授权！", deviceAuth.getId().toString());
+            sysDataLogService.saveDataLog("授权码对应的客户信息不存在，不予授权！", getDataLogFkId(deviceAuth.getId()));
             throw new BizException("授权码对应的客户信息不存在，不予授权！");
         }
     }
