@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class DeviceAuthUtils {
     private static final Logger logger = LoggerFactory.getLogger(DeviceAuthUtils.class);
 
-    public static final String REDIS_UNIQUE_CODE_KEY_PREFIX = IndividualSoldierAuthConstantUtils.REDIS_ROOT_KEY_PREFIX + "device::unique_code::";
+    public static final String REDIS_UNIQUE_CODE_KEY_PREFIX = IndividualSoldierAuthConstantUtils.REDIS_ROOT_KEY_PREFIX + "device:unique_code:";
     private static RedisTemplate<String, Object> redisTemplate;
     private static int uniqueCodeExpires;
 
