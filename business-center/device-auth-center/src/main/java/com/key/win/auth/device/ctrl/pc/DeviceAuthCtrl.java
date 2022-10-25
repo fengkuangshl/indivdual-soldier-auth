@@ -61,7 +61,7 @@ public class DeviceAuthCtrl {
 
     @DeleteMapping("/delete/{id}")
     @ApiOperation(value = "删除")
-    @LogAnnotation(module = "device-auth", recordRequestParam = true)
+    @LogAnnotation(module = "device-auth", recordRequestParam = false)
     @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "DELETE')")
     public Result delete(@PathVariable Long id) {
         boolean b = deviceAuthService.removeById(id);

@@ -38,7 +38,7 @@ public class SysGroupCtrl {
 
     @DeleteMapping("/delete/{id}")
     @ApiOperation(value = "删除")
-    @LogAnnotation(module = "system", recordRequestParam = true)
+    @LogAnnotation(module = "system", recordRequestParam = false)
     public Result delete(@PathVariable Long id) {
         boolean b = sysGroupService.deleteById(id);
         return Result.result(b);
@@ -46,7 +46,7 @@ public class SysGroupCtrl {
 
     @PostMapping("/saveOrUpdate")
     @ApiOperation(value = "新增/更新")
-    @LogAnnotation(module = "system", recordRequestParam = true)
+    @LogAnnotation(module = "system", recordRequestParam = false)
     public Result saveOrUpdate(@RequestBody SysGroup sysGroup) {
         if (StringUtils.isBlank(sysGroup.getCode())) {
             logger.error("机构code为空！");

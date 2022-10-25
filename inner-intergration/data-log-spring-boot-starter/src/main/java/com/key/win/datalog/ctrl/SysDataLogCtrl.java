@@ -41,7 +41,7 @@ public class SysDataLogCtrl {
 
     @DeleteMapping("/delete/{id}")
     @ApiOperation(value = "删除")
-    @LogAnnotation(module = "system", recordRequestParam = true)
+    @LogAnnotation(module = "system", recordRequestParam = false)
     @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "DELETE')")
     public Result delete(@PathVariable String id) {
         boolean b = dataLogService.removeById(id);

@@ -53,7 +53,7 @@ public class SysMenuCtrl {
 
     @DeleteMapping("/delete/{id}")
     @ApiOperation(value = "删除")
-    @LogAnnotation(module = "system", recordRequestParam = true)
+    @LogAnnotation(module = "system", recordRequestParam = false)
     @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "DELETE')")
     public Result delete(@PathVariable Long id) {
         boolean b = sysMenuService.deleteById(id);
@@ -62,7 +62,7 @@ public class SysMenuCtrl {
 
     @PostMapping("/saveOrUpdate")
     @ApiOperation(value = "新增/更新")
-    @LogAnnotation(module = "system", recordRequestParam = true)
+    @LogAnnotation(module = "system", recordRequestParam = false)
     @PreAuthorize("hasAnyAuthority('" + AUTHORITY_PREFIX + "MODIFY','" + AUTHORITY_PREFIX + "ADD')")
     public Result saveOrUpdate(@RequestBody SysMenu sysMenu) {
         if (sysMenu.getSort() == null) {

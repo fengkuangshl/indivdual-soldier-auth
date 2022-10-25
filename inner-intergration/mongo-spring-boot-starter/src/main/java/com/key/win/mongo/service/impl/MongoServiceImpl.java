@@ -31,7 +31,7 @@ import java.util.Map;
  * @fields 需要查询的列
  * @id id值
  */
-public abstract class IMongoServiceImpl<T> implements IMongoService<T> {
+public abstract class MongoServiceImpl<T> implements IMongoService<T> {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     protected MongoTemplate mongoTemplate;

@@ -47,7 +47,7 @@ public class CustomerInfoCtrl {
     @DataLog
     @DeleteMapping("/delete/{id}")
     @ApiOperation(value = "删除")
-    @LogAnnotation(module = "device-auth", recordRequestParam = true)
+    @LogAnnotation(module = "device-auth", recordRequestParam = false)
     @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "DELETE')")
     public Result delete(@PathVariable Long id) {
         boolean b = customerInfoService.removeById(id);
@@ -57,7 +57,7 @@ public class CustomerInfoCtrl {
     @DataLog
     @PostMapping("/saveOrUpdate")
     @ApiOperation(value = "新增/更新")
-    @LogAnnotation(module = "device-auth", recordRequestParam = true)
+    @LogAnnotation(module = "device-auth", recordRequestParam = false)
     @PreAuthorize("hasAnyAuthority('" + AUTHORITY_PREFIX + "MODIFY','" + AUTHORITY_PREFIX + "ADD')")
     public Result saveOrUpdate(@RequestBody CustomerInfo customerInfo) {
         if (StringUtils.isBlank(customerInfo.getAuthDeviceCode())) {

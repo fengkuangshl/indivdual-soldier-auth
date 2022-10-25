@@ -28,7 +28,7 @@ public class DeviceEndPoint {
 
     @PostMapping("/auto")
     @ApiOperation(value = "新增/更新")
-    @LogAnnotation(module = "device-auth", recordRequestParam = true)
+    @LogAnnotation(module = "device-auth", recordRequestParam = false)
     public EncryptResponse saveOrUpdate(@RequestBody DeviceAuthRequestVo deviceAuth) {
         if (StringUtils.isBlank(deviceAuth.getAndroidId())) {
             logger.error("AndroidId不存在！");

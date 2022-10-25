@@ -37,7 +37,7 @@ public class SysLogCtrl {
 
     @DeleteMapping("/delete/{id}")
     @ApiOperation(value = "删除")
-    @LogAnnotation(module = "system", recordRequestParam = true)
+    @LogAnnotation(module = "system", recordRequestParam = false)
     public Result delete(@PathVariable String id) {
         boolean b = sysLogService.removeById(id);
         return Result.result(b);

@@ -59,7 +59,7 @@ public class SysRoleMenuPermissionCtrl {
 
     @DeleteMapping("/delete/{id}")
     @ApiOperation(value = "删除")
-    @LogAnnotation(module = "system", recordRequestParam = true)
+    @LogAnnotation(module = "system", recordRequestParam = false)
     @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "DELETE')")
     public Result delete(@PathVariable Long id) {
         boolean b = sysRoleMenuPermissionService.removeById(id);
@@ -68,7 +68,7 @@ public class SysRoleMenuPermissionCtrl {
 
     @PostMapping("/saveOrUpdate")
     @ApiOperation(value = "新增/更新")
-    @LogAnnotation(module = "system", recordRequestParam = true)
+    @LogAnnotation(module = "system", recordRequestParam = false)
     @PreAuthorize("hasAnyAuthority('" + AUTHORITY_PREFIX + "MODIFY','" + AUTHORITY_PREFIX + "ADD')")
     public Result saveOrUpdateSysRoleMenuPermission(@RequestBody SysRoleMenuPermission sysRoleMenuPermission) {
         if (sysRoleMenuPermission.getRoleId() == null) {
@@ -85,7 +85,7 @@ public class SysRoleMenuPermissionCtrl {
 
     @PostMapping("/saveOrUpdateBatch")
     @ApiOperation(value = "批量新增/更新")
-    @LogAnnotation(module = "system", recordRequestParam = true)
+    @LogAnnotation(module = "system", recordRequestParam = false)
     @PreAuthorize("hasAnyAuthority('" + AUTHORITY_PREFIX + "MODIFY','" + AUTHORITY_PREFIX + "ADD')")
     public Result saveOrUpdateSysRoleMenuPermissionForBatch(@RequestBody List<SysRoleMenuPermission> sysMenuPermissions) {
         if (org.springframework.util.CollectionUtils.isEmpty(sysMenuPermissions)) {

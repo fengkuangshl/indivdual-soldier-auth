@@ -66,7 +66,7 @@ public class SysUserCtrl {
 
     @PostMapping("/register")
     @ApiOperation(value = "用户注册")
-    @LogAnnotation(module = "system", recordRequestParam = true)
+    @LogAnnotation(module = "system", recordRequestParam = false)
     @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "ADD')")
     public Result saveSysUser(@RequestBody SysUser sysUser) {
         if (StringUtils.isBlank(sysUser.getUserName())) {
@@ -83,7 +83,7 @@ public class SysUserCtrl {
 
     @PostMapping("/updateSysUser")
     @ApiOperation(value = "用户更新")
-    @LogAnnotation(module = "system", recordRequestParam = true)
+    @LogAnnotation(module = "system", recordRequestParam = false)
     @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "MODIFY')")
     public Result updateSysUser(@RequestBody SysUser sysUser) {
         boolean b = sysUserService.updateSysUser(sysUser);
@@ -92,7 +92,7 @@ public class SysUserCtrl {
 
     @GetMapping("/get/{id}")
     @ApiOperation(value = "获取用户")
-    @LogAnnotation(module = "system", recordRequestParam = true)
+    @LogAnnotation(module = "system", recordRequestParam = false)
     @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "QUERY::ID')")
     public Result get(@PathVariable Long id) {
         SysUser byId = sysUserService.getById(id);
@@ -110,7 +110,7 @@ public class SysUserCtrl {
 
     @DeleteMapping("/delete/{id}")
     @ApiOperation(value = "删除")
-    @LogAnnotation(module = "system", recordRequestParam = true)
+    @LogAnnotation(module = "system", recordRequestParam = false)
     @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "DELETE')")
     public Result delete(@PathVariable Long id) {
         boolean b = sysUserService.deleteById(id);
@@ -119,7 +119,7 @@ public class SysUserCtrl {
 
     @PostMapping("/login")
     @ApiOperation(value = "登录")
-    @LogAnnotation(module = "system", recordRequestParam = true)
+    @LogAnnotation(module = "system", recordRequestParam = false)
     public Result login(@RequestBody SysUser sysUser, HttpServletRequest request) {
         String userAgent = request.getHeader("user-agent");
         if (sysUser == null) {
@@ -140,7 +140,7 @@ public class SysUserCtrl {
 
     @GetMapping("/refresh/{token}")
     @ApiOperation(value = "refresh")
-    @LogAnnotation(module = "system", recordRequestParam = true)
+    @LogAnnotation(module = "system", recordRequestParam = false)
     public Result refreshToken(@PathVariable String token, HttpServletRequest request) {
         String userAgent = request.getHeader("user-agent");
         try {
@@ -161,7 +161,7 @@ public class SysUserCtrl {
 
     @GetMapping("/logout")
     @ApiOperation(value = "登出当前登录用户")
-    @LogAnnotation(module = "system", recordRequestParam = true)
+    @LogAnnotation(module = "system", recordRequestParam = false)
     public Result logout() {
         Authentication authentication = AuthenticationUtil.getAuthentication();
         if (authentication != null) {
@@ -172,7 +172,7 @@ public class SysUserCtrl {
 
     @GetMapping("/resetPassword/{id}")
     @ApiOperation(value = "重置登录用户密码")
-    @LogAnnotation(module = "system", recordRequestParam = true)
+    @LogAnnotation(module = "system", recordRequestParam = false)
     @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "USER::RESET::PASSWORD')")
     public Result resetPassword(@PathVariable Long id) {
         if (id == null) {
@@ -185,7 +185,7 @@ public class SysUserCtrl {
 
     @PostMapping("/modifyMyPassword")
     @ApiOperation(value = "修改自己的密码")
-    @LogAnnotation(module = "system", recordRequestParam = true)
+    @LogAnnotation(module = "system", recordRequestParam = false)
     public Result modifyMyPassword(@RequestBody SysUser sysUser) {
         Authentication loginApp = AuthenticationUtil.getAuthentication();
         if (sysUser.getId() == null || sysUser.getId() != loginApp.getId()) {
@@ -211,7 +211,7 @@ public class SysUserCtrl {
 
     @PostMapping("/granted")
     @ApiOperation(value = "组分配用户")
-    @LogAnnotation(module = "system", recordRequestParam = true)
+    @LogAnnotation(module = "system", recordRequestParam = false)
     @PreAuthorize("hasAuthority('" + AUTHORITY_PREFIX + "USER::GRANTED::ROLE')")
     public Result setUserToGroup(@RequestBody SysUser sysUser) {
         if (CollectionUtils.isEmpty(sysUser.getUserIds())) {
