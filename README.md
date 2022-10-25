@@ -192,7 +192,7 @@ public Result updateSysUser(@RequestBody SysUser sysUser) {
   4.2、修改：修改表：[DEVICE_CUSTOMER_INFO]id：[18]把字段[authDeviceNum]从[10]改为[100]
   4.3、删除：修改表：[DEVICE_CUSTOMER_INFO]id：[39]记录被删除！
 ```
-8、db-spring-boot-starter组件的使用
++ 8、db-spring-boot-starter组件的使用
 ```
 1、在pom中加入db-spring-boot-starter依赖
 <dependency>
@@ -270,7 +270,7 @@ public class EventLogServiceImpl extends MongoServiceImpl<EventLog> implements E
     ...
 }
 ```
-11、mybatis-plus-spring-boot-starter组件的使用
++ 11、mybatis-plus-spring-boot-starter组件的使用
 ```
 1、在pom中加入mybatis-plus-spring-boot-starter依赖
 <dependency>
@@ -308,7 +308,7 @@ public PageResult<DeviceAuthVo> findDeviceAuthByPaged(PageRequest<DeviceAuthVo> 
 }
 6、请参考https://editor.csdn.net/md/?articleId=122747931
 ```
-12、redis-spring-boot-starter组件的使用
++ 12、redis-spring-boot-starter组件的使用
 ```
 1、在pom中加入redis-spring-boot-starter依赖
 <dependency>
@@ -349,7 +349,7 @@ spring:
 @Autowired
 private static RedisTemplate<String, Object> redisTemplate;
 ```
-13、rsa-spring-boot-starter组件的使用
++ 13、rsa-spring-boot-starter组件的使用
 ```
 1、在pom中加入rsa-spring-boot-starter依赖
 <dependency>
@@ -372,7 +372,7 @@ public class DeviceAuthRequestVo extends DeviceAuth implements IEncryptor {
 
 }
 ```
-14、security-spring-boot-starter组件的使用，主是系统权鉴功能，类似于spring security的@PreAuthorize注解的功能
++ 14、security-spring-boot-starter组件的使用，主是系统权鉴功能，类似于spring security的@PreAuthorize注解的功能
 ```
 1、在pom中加入security-spring-boot-starter依赖
 <dependency>
@@ -389,7 +389,7 @@ public Result updateExpireDeviceDateAndSendAuthInfo(@RequestBody DeviceAuth devi
     return Result.succeed(deviceAuthService.updateExpireDeviceDate(deviceAuth));
 }
 ```
-15、swagger-spring-boot-starter组件的使用
++ 15、swagger-spring-boot-starter组件的使用
 ```
 1、在pom中加入swagger-spring-boot-starter依赖
 <dependency>
@@ -433,7 +433,7 @@ public class Swagger2Config implements WebMvcConfigurer {
     ...
 }
 ```
-16、系统的登录流程梳理
++ 16、系统的登录流程梳理
 ```
 1、页面组装用户名和密码为json格式，并提交至SysUserCtrl的login方法
 2、login方法会对提交提交进行初步的校验
@@ -557,7 +557,7 @@ public Result getCurrentMenus() {
     return Result.succeed(MenuUtils.treeBuilder(authentication.getMenus()));
 }
 ```
-17、系统的登出流程梳理
++ 17、系统的登出流程梳理
 ```
 访问地址:http://x.x.x.x:9902/user/logout
 @GetMapping("/logout")
@@ -571,7 +571,7 @@ public Result logout() {
     return AuthenticationUtil.logout() ? Result.succeed("操作成功") : Result.succeed("操作失败");
 }
 ```
-17、系统拦截请求验证用户，并设置当前登录用户信息本地线程上
++ 18、系统拦截请求验证用户，并设置当前登录用户信息本地线程上
 ```
 1、系统默认会拦截所有请求，如有要旅行的url,请在yml中进行配置
 spring:
@@ -632,7 +632,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 }
 
 ```
-18、CorsConfig跨域处理
++ 19、CorsConfig跨域处理
 ```
 @Configuration
 public class CorsConfig {
@@ -656,7 +656,7 @@ public class CorsConfig {
 
 }
 ```
-18、事务处理，采用全局事务处理，无需要在每个方法添加注解
++ 20、事务处理，采用全局事务处理，无需要在每个方法添加注解
 ```
 1、yml中的配置,主要是设置是否启用，切面及超时间
 spring:
