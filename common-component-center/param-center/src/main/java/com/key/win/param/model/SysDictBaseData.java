@@ -1,5 +1,7 @@
 package com.key.win.param.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.key.win.common.model.basic.MybatisID;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -44,6 +46,7 @@ public class SysDictBaseData extends MybatisID {
      * 字典类型
      */
     @ApiModelProperty("字典类型")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long type;
     @ApiModelProperty("扩展属性1")
     private String attr1;

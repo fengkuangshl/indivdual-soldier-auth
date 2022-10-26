@@ -2,6 +2,8 @@ package com.key.win.common.model.basic;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,6 +19,7 @@ public class MybatisID extends MybatisCommonField {
 
     @ApiModelProperty("Id")
     @TableId(type = IdType.AUTO)
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     public Long getId() {

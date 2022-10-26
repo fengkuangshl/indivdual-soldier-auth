@@ -3,6 +3,8 @@ package com.key.win.common.model.basic;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,9 +27,11 @@ public class MybatisCommonField extends MybatisVersion {
     private Date updateDate = new Date();
     @ApiModelProperty("创建人Id")
     @TableField(fill = FieldFill.INSERT)
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long createUserId;
     @ApiModelProperty("更新人Id")
     @TableField(fill = FieldFill.UPDATE)
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long updateUserId;
     @ApiModelProperty("逻辑删除：1-正常,0-删除")
     @TableLogic(value = "1", delval = "0")

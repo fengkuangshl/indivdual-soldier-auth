@@ -2,6 +2,9 @@ package com.key.win.common.model.system;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.impl.StringArraySerializer;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.key.win.common.model.basic.MybatisID;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -22,15 +25,18 @@ public class SysGroup extends MybatisID {
     @ApiModelProperty("组名称")
     private String name;
     @ApiModelProperty("父节点Id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long parentId;
     @ApiModelProperty("用户Id")
     @TableField(exist = false)
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long userId;
     @ApiModelProperty("用户列表")
     @TableField(exist = false)
     private List<SysUser> sysUsers;
     @ApiModelProperty("用户Id列表")
     @TableField(exist = false)
+    @JsonSerialize(using = StringArraySerializer.class)
     private Set<Long> userIds;
     @ApiModelProperty("孩子节点")
     @TableField(exist = false)

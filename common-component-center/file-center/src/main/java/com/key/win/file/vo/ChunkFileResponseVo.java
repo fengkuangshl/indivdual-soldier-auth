@@ -1,5 +1,7 @@
 package com.key.win.file.vo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -10,6 +12,7 @@ import java.util.List;
 @Data
 public class ChunkFileResponseVo {
     @ApiModelProperty("resourceId")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long resourceId;
     @ApiModelProperty("上传类型")
     private String contentType;

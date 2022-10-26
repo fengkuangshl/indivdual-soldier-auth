@@ -19,11 +19,13 @@ import org.springframework.util.TypeUtils;
 import java.io.IOException;
 import java.lang.reflect.Type;
 
-@RequiredArgsConstructor
+
 public class CustomEncryptHttpMessageConverter extends MappingJackson2HttpMessageConverter {
 
-    private final ObjectMapper objectMapper;
 
+    public  CustomEncryptHttpMessageConverter(ObjectMapper objectMapper){
+        super(objectMapper);
+    }
 
     @Override
     public Object read(Type type, Class<?> contextClass, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {

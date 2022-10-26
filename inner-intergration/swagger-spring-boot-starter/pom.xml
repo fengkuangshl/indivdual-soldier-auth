@@ -26,6 +26,12 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
             <version>${swagger.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>swagger-models</artifactId>
+                    <groupId>io.swagger</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -34,6 +40,17 @@
                 <exclusion>
                     <groupId>org.apache.logging.log4j</groupId>
                     <artifactId>log4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-models</artifactId>
+            <version>1.5.22</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>swagger-annotations</artifactId>
+                    <groupId>io.swagger</groupId>
                 </exclusion>
             </exclusions>
         </dependency>

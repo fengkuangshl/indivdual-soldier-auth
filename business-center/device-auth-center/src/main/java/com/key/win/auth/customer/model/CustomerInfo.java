@@ -24,7 +24,6 @@ public class CustomerInfo extends MybatisID {
     private String authDeviceCode;
     //	客户设备授权到期日
     @ApiModelProperty("客户设备授权到期日")
-    @TableField(fill = FieldFill.UPDATE)
     private Date expireDeviceDate;
     //	授权设备数
     @ApiModelProperty("授权设备数")

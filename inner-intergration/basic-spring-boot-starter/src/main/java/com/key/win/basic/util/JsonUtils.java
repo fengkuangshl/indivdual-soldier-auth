@@ -10,6 +10,8 @@ import com.fasterxml.jackson.databind.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -21,33 +23,39 @@ import java.util.TimeZone;
  *
  * @author Administrator
  */
+@Component
 public class JsonUtils {
 
     private static Logger logger = LoggerFactory.getLogger(JsonUtils.class);
 
-    private static final ObjectMapper objectMapper;
+    private static ObjectMapper objectMapper;
 
     static {
-        objectMapper = new ObjectMapper();
-        // 去掉默认的时间戳格式
-        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        // 设置为中国上海时区
-        objectMapper.setTimeZone(TimeZone.getTimeZone("GMT+8"));
-        objectMapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
-        // 空值不序列化
-        objectMapper.setSerializationInclusion(Include.NON_NULL);
-        // 反序列化时，属性不存在的兼容处理
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // 反序列化时，属性不存在的兼容处理
-        // 序列化时，日期的统一格式
-        objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
-        // 禁止使用int代表Enum的order()来反序列化Enum
-        objectMapper.configure(DeserializationFeature.FAIL_ON_NUMBERS_FOR_ENUMS, true);
-        objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
-        //objectMapper.configure(DeserializationFeature.USE_JAVA_ARRAY_FOR_JSON_ARRAY, true);
-        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        // 单引号处理
-        objectMapper.configure(com.fasterxml.jackson.core.JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-        //objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.OBJECT_AND_NON_CONCRETE);
+//        objectMapper = new ObjectMapper();
+//        // 去掉默认的时间戳格式
+//        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+//        // 设置为中国上海时区
+//        objectMapper.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+//        objectMapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
+//        // 空值不序列化
+//        objectMapper.setSerializationInclusion(Include.NON_NULL);
+//        // 反序列化时，属性不存在的兼容处理
+//        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // 反序列化时，属性不存在的兼容处理
+//        // 序列化时，日期的统一格式
+//        objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+//        // 禁止使用int代表Enum的order()来反序列化Enum
+//        objectMapper.configure(DeserializationFeature.FAIL_ON_NUMBERS_FOR_ENUMS, true);
+//        objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+//        //objectMapper.configure(DeserializationFeature.USE_JAVA_ARRAY_FOR_JSON_ARRAY, true);
+//        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+//        // 单引号处理
+//        objectMapper.configure(com.fasterxml.jackson.core.JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+//        //objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.OBJECT_AND_NON_CONCRETE);
+    }
+
+    @Autowired
+    public void setObjectMapper(ObjectMapper objectMapper) {
+        JsonUtils.objectMapper = objectMapper;
     }
 
     public static <T> T toObjectNoException(String json, Class<T> clazz) {
