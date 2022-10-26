@@ -16,7 +16,7 @@ export interface UserSearchRequest {
 }
 
 export interface UserForm extends UserSearchRequest {
-  roleIds: Array<number>
+  roleIds: Array<string>
   sex: Sex | string | Model.EnumEntity
   phone: string
   userName: string

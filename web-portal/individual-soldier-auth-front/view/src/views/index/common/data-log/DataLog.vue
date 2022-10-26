@@ -74,7 +74,7 @@ export default class DataLog extends Vue {
   @Ref('kwTableRef')
   readonly kwTableRef!: KWTable<DataLogSearchRequest, DataLogDetail>
 
-  deleteDataLog(id: number): void {
+  deleteDataLog(id: string): void {
     this.$confirm('确定要删除, 是否继续?', '提示', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',

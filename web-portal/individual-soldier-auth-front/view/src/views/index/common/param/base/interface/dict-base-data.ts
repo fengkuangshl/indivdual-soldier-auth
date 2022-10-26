@@ -6,7 +6,7 @@ export interface SysDictBaseData extends Enabled {
   label?: string // 为什么加问号呢？为了炒蛋的TreeData的label属性保持一致
   value: string
   remark: string
-  type: number
+  type: string
   attr1: string
   attr2: string
   attr3: string

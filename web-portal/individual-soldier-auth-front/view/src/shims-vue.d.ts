@@ -19,7 +19,7 @@ declare module '*.vue' {
     }
     namespace Model {
       interface Id {
-        id: number
+        id: string
       }
       interface Version extends Id {
         version: number
@@ -40,7 +40,7 @@ declare module '*.vue' {
         code: string
       }
       interface ParentId {
-        parentId: number
+        parentId: string
       }
       interface EnumEntity {
         code: string

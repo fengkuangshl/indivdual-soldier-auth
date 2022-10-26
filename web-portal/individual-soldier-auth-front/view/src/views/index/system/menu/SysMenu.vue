@@ -117,7 +117,7 @@ export default class Menu extends Vue {
   menuDialogVisble = false
   isPagination = false
   treeProps = { children: 'subMenus' }
-  sysMenuForm: MenuForm = { name: '', css: '', isHidden: '', isMenu: '', parentId: -1, path: '', sort: 0, url: '', title: '' }
+  sysMenuForm: MenuForm = { name: '', css: '', isHidden: '', isMenu: '', parentId: '-1', path: '', sort: 0, url: '', title: '' }
   sysMenuOptions: Array<MenuResponse> = []
   @Ref('sysMenuFormRef')
   readonly sysMenuFormRef!: ElForm
@@ -137,7 +137,7 @@ export default class Menu extends Vue {
   }
 
   // 展示编辑用于的对话框
-  async showEditDialog(id: number): Promise<void> {
+  async showEditDialog(id: string): Promise<void> {
     this.title = '编辑菜单'
     this.getOnes()
     const { code, data, msg } = await GetMenuByIdApi(id)
@@ -180,11 +180,11 @@ export default class Menu extends Vue {
     this.getOnes()
     this.$nextTick(() => {
       this.sysMenuFormRef.resetFields()
-      this.sysMenuForm = { name: '', css: '', isHidden: '否', isMenu: '是', parentId: -1, path: '', sort: 0, url: '', title: '' }
+      this.sysMenuForm = { name: '', css: '', isHidden: '否', isMenu: '是', parentId: '-1', path: '', sort: 0, url: '', title: '' }
     })
   }
 
-  deleteMenu(id: number): void {
+  deleteMenu(id: string): void {
     this.$confirm('确定要删除菜单, 是否继续?', '提示', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
@@ -217,7 +217,7 @@ export default class Menu extends Vue {
     if (code === 200) {
       this.sysMenuOptions = []
       const rootMenus: MenuResponse = {
-        id: -1,
+        id: '-1',
         createDate: 0,
         updateDate: 0,
         createUserId: '',
@@ -226,7 +226,7 @@ export default class Menu extends Vue {
         createUserName: '',
         updateUserName: '',
         version: 0,
-        parentId: -1,
+        parentId: '-1',
         name: '顶级目录',
         url: 'javascript:;',
         path: '',
@@ -271,11 +271,11 @@ export default class Menu extends Vue {
   menuTreeAssemble(datas: Array<MenuResponse>): Array<MenuResponse> {
     console.log(datas)
     const menus: Array<MenuResponse> = new Array<MenuResponse>()
-    const subMenuMap: Map<number, Array<MenuResponse>> = new Map<number, Array<MenuResponse>>()
+    const subMenuMap: Map<string, Array<MenuResponse>> = new Map<string, Array<MenuResponse>>()
     for (const key in datas) {
       if (Object.prototype.hasOwnProperty.call(datas, key)) {
         const element = datas[key]
-        if (element.parentId === -1) {
+        if (element.parentId === '-1') {
           menus.push(element)
         } else {
           let subMenus: Array<MenuResponse> = subMenuMap.get(element.parentId) as Array<MenuResponse>

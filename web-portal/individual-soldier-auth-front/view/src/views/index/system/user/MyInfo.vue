@@ -43,7 +43,7 @@ import { UserModule } from '@/store/user-store'
 
 @Component
 export default class MyInfo extends Vue {
-  userForm: UserForm = { nickName: '', phone: '', sex: Sex.男, userName: '', roleIds: new Array<number>(), type: Type.普通 }
+  userForm: UserForm = { nickName: '', phone: '', sex: Sex.男, userName: '', roleIds: new Array<string>(), type: Type.普通 }
   @Ref('userFormRef')
   readonly userFormRef!: ElForm
 

@@ -127,7 +127,7 @@ import PermissionUtil from '@/common/utils/permission/permission-util'
 export default class DictTree extends Vue {
   treeData: Array<SysDictTree> = [
     {
-      id: -1,
+      id: '-1',
       cascadeCode: '',
       subDictTree: [],
       parentId: -100,
@@ -176,7 +176,7 @@ export default class DictTree extends Vue {
 
   title = ''
   navigationTitle = '字典数据管理'
-  dictTypeId = -1
+  dictTypeId = '-1'
   sysDictTreeDialogVisble = false
   sysDictTreeValueDisabled = true
   sysDictTreeForm: SysDictTreeForm = {
@@ -232,7 +232,7 @@ export default class DictTree extends Vue {
   }
 
   // 展示编辑用于的对话框
-  async showEditDialog(id: number): Promise<void> {
+  async showEditDialog(id: string): Promise<void> {
     this.title = '编辑数据字典'
     this.sysDictTreeValueDisabled = true
     const res = await SysDictTreeGetApi(id)
@@ -282,7 +282,7 @@ export default class DictTree extends Vue {
         label: '',
         value: '',
         remark: '',
-        type: 0,
+        type: '0',
         attr1: '',
         attr2: '',
         attr3: '',
@@ -332,7 +332,7 @@ export default class DictTree extends Vue {
     this.sysDictTreeForm.parentId = val
   }
 
-  deleteSysDictTree(id: number): void {
+  deleteSysDictTree(id: string): void {
     this.$confirm('确定要删除, 是否继续?', '提示', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
@@ -362,7 +362,7 @@ export default class DictTree extends Vue {
 
   mounted(): void {
     if (this.$route.query.id != null) {
-      this.sysDictTreeForm.type = Number.parseInt(this.$route.query.id as string)
+      this.sysDictTreeForm.type = this.$route.query.id as string
       this.dictTypeId = this.sysDictTreeForm.type
       this.t.type = this.sysDictTreeForm.type
     }

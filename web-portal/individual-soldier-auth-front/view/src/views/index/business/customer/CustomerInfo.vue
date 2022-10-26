@@ -160,7 +160,6 @@ import PermissionPrefixUtils from '@/common/utils/permission/permission-prefix'
 import KWCell from '@/components/cell/Cell.vue'
 import KWText from '@/components/text/Text.vue'
 import { DataLogDetail, DataLogSearchRequest } from '../../common/data-log/interface/data-log'
-
 @Component({
   components: {
     KWTable,
@@ -253,7 +252,7 @@ export default class CustomerInfo extends Vue {
   }
 
   // 展示编辑用于的对话框
-  async showEditDialog(id: number): Promise<void> {
+  async showEditDialog(id: string): Promise<void> {
     this.title = '编辑客户信息'
     this.isEditCustomerInfoForm = true
     this.customerInfoSequenceDisabled = true
@@ -325,7 +324,7 @@ export default class CustomerInfo extends Vue {
     })
   }
 
-  deleteCustomerInfo(id: number): void {
+  deleteCustomerInfo(id: string): void {
     this.$confirm('确定要删除, 是否继续?', '提示', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',

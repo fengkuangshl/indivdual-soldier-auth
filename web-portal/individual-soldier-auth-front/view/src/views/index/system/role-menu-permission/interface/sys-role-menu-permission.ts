@@ -1,8 +1,8 @@
 export interface RoleMenuPermissionForm extends Model.Id {
-  roleId: number
-  menuId: number
-  permissionId: number
-  menuPermissionId: number
+  roleId: string
+  menuId: string
+  permissionId: string
+  menuPermissionId: string
   checked: boolean
 }
 

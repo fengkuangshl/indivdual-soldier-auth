@@ -135,7 +135,7 @@ export default class Permission extends Vue {
     })
   }
 
-  deletePermission(id: number): void {
+  deletePermission(id: string): void {
     this.$confirm('确定要重置密码, 是否继续?', '提示', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',

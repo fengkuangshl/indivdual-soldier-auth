@@ -118,7 +118,7 @@ export default class DictData extends Vue {
     label: '',
     value: '',
     remark: '',
-    type: -1,
+    type: '-1',
     attr1: '',
     attr2: '',
     attr3: '',
@@ -129,7 +129,7 @@ export default class DictData extends Vue {
 
   title = ''
   navigationTitle = '字典数据管理'
-  dictTypeId = -1
+  dictTypeId = '-1'
   sysDictDataDialogVisble = false
   sysDictDataValueDisabled = true
   sysDictDataForm: SysDictDataForm = this.t
@@ -162,7 +162,7 @@ export default class DictData extends Vue {
   }
 
   // 展示编辑用于的对话框
-  async showEditDialog(id: number): Promise<void> {
+  async showEditDialog(id: string): Promise<void> {
     this.title = '编辑数据字典'
     this.sysDictDataValueDisabled = true
     const res = await SysDictDataGetApi(id)
@@ -209,7 +209,7 @@ export default class DictData extends Vue {
         label: '',
         value: '',
         remark: '',
-        type: 0,
+        type: '0',
         attr1: '',
         attr2: '',
         attr3: '',
@@ -220,7 +220,7 @@ export default class DictData extends Vue {
     })
   }
 
-  deleteSysDictData(id: number): void {
+  deleteSysDictData(id: string): void {
     this.$confirm('确定要删除, 是否继续?', '提示', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
@@ -250,7 +250,7 @@ export default class DictData extends Vue {
 
   mounted(): void {
     if (this.$route.query.id != null) {
-      this.sysDictDataForm.type = Number.parseInt(this.$route.query.id as string)
+      this.sysDictDataForm.type = this.$route.query.id as string
       this.dictTypeId = this.sysDictDataForm.type
     }
     if (this.$route.query.name != null) {

@@ -11,8 +11,8 @@ export enum IsMenu {
 
 export type Name = Model.Name
 export interface RoleIdAndMenuIds {
-  menuIds: Array<number> | null
-  roleId: number | null
+  menuIds: Array<string> | null
+  roleId: string | null
 }
 export interface MenuForm extends Name, Model.ParentId {
   css: string
@@ -27,7 +27,7 @@ export interface MenuResponse extends Model.BaseField, Name, RoleIdAndMenuIds, M
   subMenus: Array<MenuResponse> | null
 }
 export interface Id extends Name {
-  id: number
+  id: string
 }
 
 export interface IMenuTree extends Name, TreeData {
@@ -36,6 +36,6 @@ export interface IMenuTree extends Name, TreeData {
 
 export interface MenuRole extends Id {
   checked: boolean
-  pId: number
+  pId: string
   open: boolean
 }

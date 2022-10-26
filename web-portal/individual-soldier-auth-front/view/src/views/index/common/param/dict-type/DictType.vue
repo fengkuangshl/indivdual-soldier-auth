@@ -144,7 +144,7 @@ export default class DictType extends Vue {
   }
 
   // 展示编辑用于的对话框
-  async showEditDialog(id: number): Promise<void> {
+  async showEditDialog(id: string): Promise<void> {
     this.title = '编辑数据字典'
     this.sysDictTypeCodeDisabled = true
     const res = await SysDictTypeGetApi(id)
@@ -205,7 +205,7 @@ export default class DictType extends Vue {
     })
   }
 
-  deleteSysDictType(id: number): void {
+  deleteSysDictType(id: string): void {
     this.$confirm('确定要删除, 是否继续?', '提示', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',

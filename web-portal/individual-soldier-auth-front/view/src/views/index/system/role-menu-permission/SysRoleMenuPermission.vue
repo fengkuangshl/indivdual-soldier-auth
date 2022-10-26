@@ -60,13 +60,13 @@ export default class RoleMenuPermission extends Vue {
   tableOriginalDatas: Array<SysRoleMenuPermissionTableDataType> = new Array<SysRoleMenuPermissionTableDataType>()
   tableTiles: Array<RoleMenuPermissionDetail> = new Array<RoleMenuPermissionDetail>()
   roleMenuPermissionVisble = true
-  roleId = -1
+  roleId = '-1'
   title = '权限管理'
   roleMenuPermissionPrefix = PermissionPrefixUtils.roleMenuPermission
 
   created(): void {
     if (this.$route.query.id != null) {
-      this.roleId = Number.parseInt(this.$route.query.id as string)
+      this.roleId = this.$route.query.id as string
     }
     if (this.$route.query.roleName != null) {
       this.title = (this.$route.query.roleName as string) + '角色授权管理'
@@ -176,7 +176,7 @@ export default class RoleMenuPermission extends Vue {
     }
   }
 
-  onChane(checked: boolean, item: SysRoleMenuPermissionTableDataType, permissionId: number): void {
+  onChane(checked: boolean, item: SysRoleMenuPermissionTableDataType, permissionId: string): void {
     this.setRowCheckBox(checked, item, permissionId)
     if (item.children && (item.children as Array<SysRoleMenuPermissionTableDataType>).length > 0) {
       const SysRoleMenuPermissions = item.children as Array<SysRoleMenuPermissionTableDataType>
@@ -196,7 +196,7 @@ export default class RoleMenuPermission extends Vue {
     this.checkTableBodyChange()
   }
 
-  setRowCheckBox(checked: boolean, item: SysRoleMenuPermissionTableDataType, permissionId: number): void {
+  setRowCheckBox(checked: boolean, item: SysRoleMenuPermissionTableDataType, permissionId: string): void {
     if (!permissionId) {
       this.tableTiles.forEach(title => {
         const entity = item[title.propertyName] as RoleMenuPermissionDetail
