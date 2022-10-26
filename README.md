@@ -778,3 +778,22 @@ public class TxAdviceConfig {
 
 }
 ```
++ 21、websocket的使用
+```
+1、在pom中加入websocket-spring-boot-starter依赖
+<dependency>
+    <groupId>com.key.win</groupId>
+    <artifactId>websocket-spring-boot-starter</artifactId>
+</dependency>
+2、yml中的配置,spring.web.socket.exporter.enable值为ture是启用websocket,而spring.web.socket.exporter.cluster的值为true时是webscoke集群方式，采用redis的发布订阅方式
+spring:
+  web:
+    socket:
+      exporter:
+        enable: true
+      cluster: true
+      path: /ws/{token}
+3、websocket的使用,请求地址为: ws://x.x.x.x:9902/ws/{token}
+  3.1、websocket client端一般都是通过http发起请请求，地址http://x.x.x.x:9902/ws/**,入口类：Controller:WebSocketCtrl
+  3.2、websocket server端会直接将消息推送至websocket的client端，MessageSendUtil.java和WebSocketUtil是两个推送的工具类
+```
