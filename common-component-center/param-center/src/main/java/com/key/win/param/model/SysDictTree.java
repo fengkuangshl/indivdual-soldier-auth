@@ -2,6 +2,8 @@ package com.key.win.param.model;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -17,6 +19,7 @@ import java.util.List;
 public class SysDictTree extends SysDictBaseData {
 
     @ApiModelProperty("父节点Id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long parentId;
 
     @ApiModelProperty("级联")
