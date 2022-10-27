@@ -132,7 +132,7 @@ public enum SexEnum {
 ````
 + 5、系统的标准输出
 ```
-1、分页返回对象PageResult<T>
+5.1、分页返回对象PageResult<T>
 @PostMapping("/findSysUserByPaged")
 @ApiOperation(value = "User分页")
 @LogAnnotation(module = "system", recordRequestParam = false)
@@ -140,7 +140,7 @@ public enum SexEnum {
 public PageResult<SysUser> findSysUserByPaged(@RequestBody PageRequest<SysUser> pageRequest) {
     return sysUserService.findSysUserByPaged(pageRequest);
 }
-2、其它均返回Result<T>
+5.2、其它均返回Result<T>
 @PostMapping("/updateSysUser")
 @ApiOperation(value = "用户更新")
 @LogAnnotation(module = "system", recordRequestParam = false)
@@ -152,23 +152,23 @@ public Result updateSysUser(@RequestBody SysUser sysUser) {
 ```
 + 6、系统登录用户的使用
 ```
-1、用户登录后，通过token把用户数据存储redis中,可通过AuthenticationUtil工具类获取当前登录的用户信息
-2、AuthenticationUtil.getAuthentication()获取当前登录的用户信息
-3、AuthenticationUtil.setCurrentUser(Authentication sysUser)设计用户信息到ThreadLocal中
-4、AuthenticationUtil.getUserId()获取当前登录用户的Id
-5、AuthenticationUtil.getUserName()获取当前登录用户的用户名
-6、AuthenticationUtil.getToken()获取当前登录用户的token
+6.1、用户登录后，通过token把用户数据存储redis中,可通过AuthenticationUtil工具类获取当前登录的用户信息
+6.2、AuthenticationUtil.getAuthentication()获取当前登录的用户信息
+6.3、AuthenticationUtil.setCurrentUser(Authentication sysUser)设计用户信息到ThreadLocal中
+6.4、AuthenticationUtil.getUserId()获取当前登录用户的Id
+6.5、AuthenticationUtil.getUserName()获取当前登录用户的用户名
+6.6、AuthenticationUtil.getToken()获取当前登录用户的token
 ```
 + 7、data-log-spring-boot-starter组件的使用,记录系统中增删改的数据变化日志记录
 ```
-1、在pom中加入data-log-spring-boot-starter依赖
+7.1、在pom中加入data-log-spring-boot-starter依赖
 <dependency>
     <groupId>com.key.win</groupId>
     <artifactId>data-log-spring-boot-starter</artifactId>
 </dependency>
-2、开启@EnableDataLog(不需要关注,因为在DataLogConfig类中已经开启)
-3、具体使用方法
-  3.1、在方法前添加注解
+7.2、开启@EnableDataLog(不需要关注,因为在DataLogConfig类中已经开启)
+7.3、具体使用方法
+  7.3.1、在方法前添加注解
     @DataLog
     @DeleteMapping("/delete/{id}")
     @ApiOperation(value = "删除")
@@ -178,7 +178,7 @@ public Result updateSysUser(@RequestBody SysUser sysUser) {
         boolean b = customerInfoService.removeById(id);
         return Result.result(b);
     }
-  3.2、手动调用
+  7.3.2、手动调用
     @Autowired
     private SysDataLogService sysDataLogService;
     @Override
@@ -187,19 +187,19 @@ public Result updateSysUser(@RequestBody SysUser sysUser) {
          sysDataLogService.saveDataLog("接收设备重复提交认证信息，进行覆盖操作", getDataLogFkId(deviceAuthByUniqueCode.getId()));   
         ...业务处理...
     }
-4、审计结果如下：
-  4.1、新增：新插入数据：[DEVICE_CUSTOMER_INFO]{"sequence":"CNO.606160180316098562","authDeviceCode":"9999","expireDeviceDate":"2022-09-3000:00:00.0","authDeviceNum":"999","isVerify":"1","companyName":"999","companyAddress":"999","companyPhone":"999","leadName":"999","leadMobile":"13599999999","leadPhone":"","projectNo":"999","projectName":"999","createDate":"2022-09-2714:37:06.436","updateDate":"2022-09-2714:37:06.436","createUserId":"19","enableFlag":"1","createUserName":"admin","version":"0","id":"21"}
-  4.2、修改：修改表：[DEVICE_CUSTOMER_INFO]id：[18]把字段[authDeviceNum]从[10]改为[100]
-  4.3、删除：修改表：[DEVICE_CUSTOMER_INFO]id：[39]记录被删除！
+7.4、审计结果如下：
+  7.4.1、新增：新插入数据：[DEVICE_CUSTOMER_INFO]{"sequence":"CNO.606160180316098562","authDeviceCode":"9999","expireDeviceDate":"2022-09-3000:00:00.0","authDeviceNum":"999","isVerify":"1","companyName":"999","companyAddress":"999","companyPhone":"999","leadName":"999","leadMobile":"13599999999","leadPhone":"","projectNo":"999","projectName":"999","createDate":"2022-09-2714:37:06.436","updateDate":"2022-09-2714:37:06.436","createUserId":"19","enableFlag":"1","createUserName":"admin","version":"0","id":"21"}
+  7.4.2、修改：修改表：[DEVICE_CUSTOMER_INFO]id：[18]把字段[authDeviceNum]从[10]改为[100]
+  7.4.3、删除：修改表：[DEVICE_CUSTOMER_INFO]id：[39]记录被删除！
 ```
 + 8、db-spring-boot-starter组件的使用
 ```
-1、在pom中加入db-spring-boot-starter依赖
+8.1、在pom中加入db-spring-boot-starter依赖
 <dependency>
     <groupId>com.key.win</groupId>
     <artifactId>db-spring-boot-starter</artifactId>
 </dependency>
-2、非多数据的使用
+8.2、非多数据的使用
 spring: 
     datasource:
         username: root
@@ -207,8 +207,8 @@ spring:
         url: jdbc:mysql://127.0.0.1:3307/individual-soldier-auth?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
         driver-class-name: com.mysql.cj.jdbc.Driver
         ...
-3、多数据源的使用：请注意spring.datasource.dynamic.enable为true开启
-    3.1、首先完成多数据源的yml配置(请参考application-ds.yml的配置)
+8.3、多数据源的使用：请注意spring.datasource.dynamic.enable为true开启
+    8.3.1、首先完成多数据源的yml配置(请参考application-ds.yml的配置)
     spring: 
         datasource:
             dynamic:
@@ -227,17 +227,17 @@ spring:
                 password: key-win123
                 driver-class-name:  com.mysql.cj.jdbc.Driver
             ...
-    3.2、在目标方法或类上完成@DataSource(name = "log")注解的配置，标明此方法或类使用数据log数据源
-    3.3、如果还想配置更多的数据源，请参考mybatis-plus中的DS组件
+    8.3.2、在目标方法或类上完成@DataSource(name = "log")注解的配置，标明此方法或类使用数据log数据源
+    8.3.3、如果还想配置更多的数据源，请参考mybatis-plus中的DS组件
 ```
 9、log-spring-boot-starter组件的使用，记录系统的输入输出参数
 ```
-1、在pom中加入db-spring-boot-starter依赖
+9.1、在pom中加入db-spring-boot-starter依赖
 <dependency>
     <groupId>com.key.win</groupId>
     <artifactId>db-spring-boot-starter</artifactId>
 </dependency>
-2、只需要在目标方法上加@LogAnnotation(module = "system", recordRequestParam = false)
+9.2、只需要在目标方法上加@LogAnnotation(module = "system", recordRequestParam = false)
 @DeleteMapping("/delete/{id}")
 @ApiOperation(value = "删除")
 @LogAnnotation(module = "system", recordRequestParam = false)
@@ -246,25 +246,25 @@ public Result delete(@PathVariable Long id) {
     boolean b = sysUserService.deleteById(id);
     return Result.result(b);
 }
-3、需要注意的是，如果recordRequestParam的值为true时，会将此流水记录保存至数据库的sys_log表中
+9.3、需要注意的是，如果recordRequestParam的值为true时，会将此流水记录保存至数据库的sys_log表中
 ```
 10、mongo-spring-boot-starter组件的使用
 ```
-1、在pom中加入mongo-spring-boot-starter依赖
+10.1、在pom中加入mongo-spring-boot-starter依赖
 <dependency>
     <groupId>com.key.win</groupId>
     <artifactId>mongo-spring-boot-starter</artifactId>
 </dependency>
-2、数据源配置
+10.2、数据源配置
 spring:
   data:
     mongodb:
       uri: mongodb://127.0.0.1:27017/ssw
-3、XxxService继承IMongoService<T>接口
+10.3、XxxService继承IMongoService<T>接口
 public interface EventLogService extends IMongoService<EventLog> {
     ...
 }
-4、XxxServiceImp实现类继承MongoServiceImpl<T>抽像类,实现XxxService接口,实现可调用父类的方法进行增删改查操作
+10.4、XxxServiceImp实现类继承MongoServiceImpl<T>抽像类,实现XxxService接口,实现可调用父类的方法进行增删改查操作
 @Service
 public class EventLogServiceImpl extends MongoServiceImpl<EventLog> implements EventLogService {
     ...
@@ -272,25 +272,25 @@ public class EventLogServiceImpl extends MongoServiceImpl<EventLog> implements E
 ```
 + 11、mybatis-plus-spring-boot-starter组件的使用
 ```
-1、在pom中加入mybatis-plus-spring-boot-starter依赖
+11.1、在pom中加入mybatis-plus-spring-boot-starter依赖
 <dependency>
     <groupId>com.key.win</groupId>
     <artifactId>mybatis-plus-spring-boot-starter</artifactId>
 </dependency>
-2、XxxDao继承BaseMapper<T>或KeyWinMapper<T>
+11.2、XxxDao继承BaseMapper<T>或KeyWinMapper<T>
 @Mapper
 public interface DeviceAuthVoDao extends KeyWinMapper<DeviceAuthVo> {
 }
-3、XxxService继承IService<T>接口
+11.3、XxxService继承IService<T>接口
   public interface DeviceAuthService extends IService<DeviceAuth> {
     ...  
   }
-4、XxxServiceImp实现类继承ServiceImpl<XxxDao, T>抽像类,实现XxxService接口,实现可调用父类的方法进行增删改查操作
+11.4、XxxServiceImp实现类继承ServiceImpl<XxxDao, T>抽像类,实现XxxService接口,实现可调用父类的方法进行增删改查操作
 @Service
 public class DeviceAuthServiceImpl extends ServiceImpl<DeviceAuthDao, DeviceAuth> implements DeviceAuthService {
     ...
 }
-5、分页查询的实现，传入参数的类型是PageRequest<T>,返回参数的类型PageResult<T>,只需要创建一MybatisPageServiceTemplate<T,RT>对象，转入baseMapper,重写constructWrapper方法就可以
+11.5、分页查询的实现，传入参数的类型是PageRequest<T>,返回参数的类型PageResult<T>,只需要创建一MybatisPageServiceTemplate<T,RT>对象，转入baseMapper,重写constructWrapper方法就可以
 @Override
 public PageResult<DeviceAuthVo> findDeviceAuthByPaged(PageRequest<DeviceAuthVo> t) {
     MybatisPageServiceTemplate<DeviceAuthVo, DeviceAuthVo> query = new MybatisPageServiceTemplate<DeviceAuthVo, DeviceAuthVo>(deviceAuthVoDao) {
@@ -306,16 +306,16 @@ public PageResult<DeviceAuthVo> findDeviceAuthByPaged(PageRequest<DeviceAuthVo> 
     };
     return query.doPagingQuery(t);
 }
-6、请参考https://editor.csdn.net/md/?articleId=122747931
+11.6、请参考https://editor.csdn.net/md/?articleId=122747931
 ```
 + 12、redis-spring-boot-starter组件的使用
 ```
-1、在pom中加入redis-spring-boot-starter依赖
+12.1、在pom中加入redis-spring-boot-starter依赖
 <dependency>
     <groupId>com.key.win</groupId>
     <artifactId>redis-spring-boot-starter</artifactId>
 </dependency>
-2、单节点的配置
+12.2、单节点的配置
 spring:
   redis:
     ################### redis 单机版 start ##########################
@@ -330,7 +330,7 @@ spring:
         max-wait: 100 # # 等待可用连接的最大时间，单位毫秒，默认值为-1，表示永不超时。如果超过等待时间，则直接抛出JedisConnectionException
         min-idle: 2    # 连接池中的最小空闲连接 ，默认值也是0
       shutdown-timeout: 100ms
-3、集群节点的配置
+12.3、集群节点的配置
 spring:
   redis:
     cluster:
@@ -345,19 +345,19 @@ spring:
         max-wait: 100 # # 等待可用连接的最大时间，单位毫秒，默认值为-1，表示永不超时。如果超过等待时间，则直接抛出JedisConnectionException
         min-idle: 2    # 连接池中的最小空闲连接 ，默认值也是0
       shutdown-timeout: 100ms
-4、使用
+12.4、使用
 @Autowired
 private static RedisTemplate<String, Object> redisTemplate;
 ```
 + 13、rsa-spring-boot-starter组件的使用
 ```
-1、在pom中加入rsa-spring-boot-starter依赖
+13.1、在pom中加入rsa-spring-boot-starter依赖
 <dependency>
     <groupId>com.key.win</groupId>
     <artifactId>rsa-spring-boot-starter</artifactId>
 </dependency>
-2、生成非对称加密的证书，请参考rsa-spring-boot-starter模块中的rsa-encryptor文件中的README.md文件
-3、输出加密：只需要返回对象是EncryptResponse，就可以自动加密
+13.2、生成非对称加密的证书，请参考rsa-spring-boot-starter模块中的rsa-encryptor文件中的README.md文件
+13.3、输出加密：只需要返回对象是EncryptResponse，就可以自动加密
 @PostMapping("/auto")
 @ApiOperation(value = "新增/更新")
 @LogAnnotation(module = "device-auth", recordRequestParam = false)
@@ -365,7 +365,7 @@ public EncryptResponse saveOrUpdate(@RequestBody DeviceAuthRequestVo deviceAuth)
      DeviceAuthResponseVo deviceAuthResponseVo = deviceAuthService.saveOrUpdateDeviceAuth((DeviceAuth) deviceAuth);
      return EncryptResponse.succeed(deviceAuthResponseVo);
 }
-4、请求解密，只需要在对就的实体类中继承IEncryptor，就会自动解密转换成实体对象
+13.4、请求解密，只需要在对就的实体类中继承IEncryptor，就会自动解密转换成实体对象
 @Data
 @ApiModel("设备端提交设备信息Vo")
 public class DeviceAuthRequestVo extends DeviceAuth implements IEncryptor {
@@ -374,13 +374,13 @@ public class DeviceAuthRequestVo extends DeviceAuth implements IEncryptor {
 ```
 + 14、security-spring-boot-starter组件的使用，主是系统权鉴功能，类似于spring security的@PreAuthorize注解的功能
 ```
-1、在pom中加入security-spring-boot-starter依赖
+14.1、在pom中加入security-spring-boot-starter依赖
 <dependency>
     <groupId>com.key.win</groupId>
     <artifactId>security-spring-boot-starter</artifactId>
 </dependency>
-2、通过spring.global.method.security.enable为true来开启鉴权功能
-3、鉴权使用，@PreAuthorize("hasAuthority('具体的权限code')")
+14.2、通过spring.global.method.security.enable为true来开启鉴权功能
+14.3、鉴权使用，@PreAuthorize("hasAuthority('具体的权限code')")
 @PostMapping("/updateExpireDeviceDateAndSendAuthInfo")
 @ApiOperation(value = "所有认证设备信息")
 @LogAnnotation(module = "device-auth", recordRequestParam = false)
@@ -391,19 +391,19 @@ public Result updateExpireDeviceDateAndSendAuthInfo(@RequestBody DeviceAuth devi
 ```
 + 15、swagger-spring-boot-starter组件的使用
 ```
-1、在pom中加入swagger-spring-boot-starter依赖
+15.1、在pom中加入swagger-spring-boot-starter依赖
 <dependency>
     <groupId>com.key.win</groupId>
     <artifactId>swagger-spring-boot-starter</artifactId>
 </dependency>
-2、在Controller上的使用,@Api("XxxApi")
+15.2、在Controller上的使用,@Api("XxxApi")
 @RestController
 @RequestMapping("/deviceAuth/*")
 @Api("客户相关的api")
 public class DeviceAuthCtrl {
     ...
 }
-3、在方法上的使用, @ApiOperation(value = "xxx")
+15.3、在方法上的使用, @ApiOperation(value = "xxx")
 @PostMapping("/findDeviceAuthByPaged")
 @ApiOperation(value = "客户信息分页")
 @LogAnnotation(module = "device-auth", recordRequestParam = false)
@@ -418,14 +418,14 @@ public PageResult<DeviceAuthVo> findDeviceAuthByPaged(@RequestBody PageRequest<D
     }
     return deviceAuthByPaged;
 }
-4、在实体上的使用，@ApiModel("xxx")
+15.4、在实体上的使用，@ApiModel("xxx")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ApiModel("客户实体Vo")
 public class DeviceAuthVo extends DeviceAuth {
     ...
 }
-5、请注意swagger的开启，只在dev、uat、ds环境在会生成swagger-api
+15.5、请注意swagger的开启，只在dev、uat、ds环境在会生成swagger-api
 @Configuration
 @EnableSwagger2
 @Profile({"dev", "uat", "ds"})
@@ -435,8 +435,8 @@ public class Swagger2Config implements WebMvcConfigurer {
 ```
 + 16、系统的登录流程梳理
 ```
-1、页面组装用户名和密码为json格式，并提交至SysUserCtrl的login方法
-2、login方法会对提交提交进行初步的校验
+16.1、页面组装用户名和密码为json格式，并提交至SysUserCtrl的login方法
+16.2、login方法会对提交提交进行初步的校验
 @PostMapping("/login")
 @ApiOperation(value = "登录")
 @LogAnnotation(module = "system", recordRequestParam = false)
@@ -457,12 +457,12 @@ public Result login(@RequestBody SysUser sysUser, HttpServletRequest request) {
     Map<String, Object> token = sysUserService.login(sysUser, userAgent);
     return Result.succeed(token, "登录成功！");
 }
-3、调用sysUserService.login方法进行登录验证：
-    3.1、根据用户名在数据库查找当前用户信息
-    3.2、判断当前用户是否存在
-    3.3、当前当前用户是否出现多个
-    3.4、校验密码
-    3.5、检查帐号状态
+16.3、调用sysUserService.login方法进行登录验证：
+    16.3.1、根据用户名在数据库查找当前用户信息
+    16.3.2、判断当前用户是否存在
+    16.3.3、当前当前用户是否出现多个
+    16.3.4、校验密码
+    16.3.5、检查帐号状态
     List<SysUser> list = this.findSysUserByUserName(sysUser.getUserName());
     if (list == null || list.size() == 0) {
         logger.error("{}用户不存在！", sysUser.getUserName());
@@ -480,9 +480,9 @@ public Result login(@RequestBody SysUser sysUser, HttpServletRequest request) {
         throw new BadCredentialsException("用户名或密码有误！");
     }
     checkIsEnabled(dbUser);
-4、创建登录用户Authentication
+16.4、创建登录用户Authentication
 Authentication loginUser = new Authentication();
-5、根据用户类型设置用户鉴权信息，角色、菜单、权限
+16.5、根据用户类型设置用户鉴权信息，角色、菜单、权限
  private void setUserExtInfo(String userAgent, SysUser dbUser, Authentication loginUser) {
     BeanUtils.copyProperties(dbUser, loginUser);
     List<SysGroup> groupByUserId = sysUserGroupDao.findGroupByUserId(dbUser.getId());
@@ -514,7 +514,7 @@ Authentication loginUser = new Authentication();
     });
     setLoginType(loginUser, userAgent);
 }
-6、创建用户认证信息保存redis并返回
+16.6、创建用户认证信息保存redis并返回
 String guid = UUIDUtils.getGUID();
 loginUser.setToken(guid);
 loginUser.setOnLine(true);
@@ -524,7 +524,7 @@ loginUser.setRefreshToken(refreshToken);
 AuthenticationUtil.setAuthenticationToRedis(loginUser);
 AuthenticationUtil.setRefreshTokenToRedis(refreshToken, loginUser);
 return this.getUserToken(guid, refreshToken);
-7、前端获取用户信息的api
+16.7、前端获取用户信息的api
 访问地址:http://x.x.x.x:9902/user/current
 @GetMapping("/current")
 @ApiOperation(value = "获取当前登录用户")
@@ -532,7 +532,7 @@ return this.getUserToken(guid, refreshToken);
 public Result getLoginAppUser() {
     return Result.succeed(AuthenticationUtil.getAuthentication());
 }
-8、token失效刷新api
+16.8、token失效刷新api
 访问地址:http://x.x.x.x:9902/user/refresh/{token}
 @GetMapping("/refresh/{token}")
 @ApiOperation(value = "refresh")
@@ -547,7 +547,7 @@ public Result refreshToken(@PathVariable String token, HttpServletRequest reques
         return Result.failed(401, e.getMessage());
     }
 }
-9、获取当前用户的访问菜单Api
+16.9、获取当前用户的访问菜单Api
 访问地址:http://x.x.x.x:9902/menu/current
 @GetMapping("/current")
 @ApiOperation(value = "获取当前用户授权的Menus")
@@ -573,12 +573,12 @@ public Result logout() {
 ```
 + 18、系统拦截请求验证用户，并设置当前登录用户信息本地线程上
 ```
-1、系统默认会拦截所有请求，如有要旅行的url,请在yml中进行配置
+18.1、系统默认会拦截所有请求，如有要旅行的url,请在yml中进行配置
 spring:
   web:
     request:
       white: /user/login,/user/refresh/**,/user/register,/swagger-ui.html/**,/swagger-resources/**,/v2/**,/webjars/**,/csrf,/favicon.ico,/error,/,/individual-soldier-auth/**,/api/auth/**
-2、拦截验证用户
+18.2、拦截验证用户
 public class LoginInterceptor implements HandlerInterceptor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -658,7 +658,7 @@ public class CorsConfig {
 ```
 + 20、事务处理，采用全局事务处理，无需要在每个方法添加注解
 ```
-1、yml中的配置,主要是设置是否启用，切面及超时间
+20.1、yml中的配置,主要是设置是否启用，切面及超时间
 spring:
   tx:
     manager:
@@ -668,7 +668,7 @@ spring:
         expression: execution (* com.key.win..service.impl.*Impl.*(..))
       method:
         timeout: -1
-2、配置类
+20.2、配置类
 /**
  * AOP事务处理
  * <p>
@@ -780,12 +780,12 @@ public class TxAdviceConfig {
 ```
 + 21、websocket的使用
 ```
-1、在pom中加入websocket-spring-boot-starter依赖
+21.1、在pom中加入websocket-spring-boot-starter依赖
 <dependency>
     <groupId>com.key.win</groupId>
     <artifactId>websocket-spring-boot-starter</artifactId>
 </dependency>
-2、yml中的配置,spring.web.socket.exporter.enable值为ture是启用websocket,而spring.web.socket.exporter.cluster的值为true时是webscoke集群方式，采用redis的发布订阅方式
+21.2、yml中的配置,spring.web.socket.exporter.enable值为ture是启用websocket,而spring.web.socket.exporter.cluster的值为true时是webscoke集群方式，采用redis的发布订阅方式
 spring:
   web:
     socket:
@@ -793,14 +793,14 @@ spring:
         enable: true
       cluster: true
       path: /ws/{token}
-3、websocket的使用,请求地址为: ws://x.x.x.x:9902/ws/{token}
-  3.1、websocket client端一般都是通过http发起请请求，地址http://x.x.x.x:9902/ws/**,入口类：Controller:WebSocketCtrl
-  3.2、websocket server端会直接将消息推送至websocket的client端，MessageSendUtil.java和WebSocketUtil是两个推送的工具类
+21.3、websocket的使用,请求地址为: ws://x.x.x.x:9902/ws/{token}
+  21.3.1、websocket client端一般都是通过http发起请请求，地址http://x.x.x.x:9902/ws/**,入口类：Controller:WebSocketCtrl
+  21.3.2、websocket server端会直接将消息推送至websocket的client端，MessageSendUtil.java和WebSocketUtil是两个推送的工具类
 ```
 ##前端系统功能或模块的使用说明
 + 1、前端的路径在项目中的web-portal文件夹下的individual-soldier-auth-front下的view文件中，目前有三个环境变量，既dev、uat、prod。主要配置了build文件之后的输入目录信息，环境变量、及访问的api，在dev环境中采用的代理模式，主要解决在dev环境中，因为没有登录而造成的跨域问题。修改后端的请求路径，请在这三个文件中修改
 ```
-1、.env.development
+1.1、.env.development
 //生成地址
 outputDir = "production"
 VUE_APP_MODE = 'production'
@@ -808,7 +808,7 @@ NODE_ENV = 'prod'
 VUE_APP_HTTP_BASE_URL = '/api'
 VUE_APP_WEBSOCKET_BASE_WS_URL='ws://127.0.0.1:9902/ws/'
 VUE_APP_TEXT = '生产环境'
-1.1、代理配置:vue.config.js
+1.1.1、代理配置:vue.config.js
 module.exports = {
   outputDir: 'build/' + (process.env.outputDir ? process.env.outputDir : 'dist'),
   devServer: {
@@ -825,7 +825,7 @@ module.exports = {
     }
   }
 }
-2、.env.uat
+1.2、.env.uat
 //生成地址
 outputDir = "uat"
 VUE_APP_MODE = 'uat'
@@ -833,7 +833,7 @@ NODE_ENV = 'uat'
 VUE_APP_HTTP_BASE_URL = 'http://127.0.0.1:9002'
 VUE_APP_WEBSOCKET_BASE_WS_URL='ws://127.0.0.1:9002/ws/'
 VUE_APP_TEXT = 'uat环境'
-3、.env.production
+1.3、.env.production
 //生成地址
 outputDir = "production"
 VUE_APP_MODE = 'production'
@@ -845,18 +845,18 @@ VUE_APP_TEXT = '生产环境'
 ```
 + 2、fetch.ts文件是所有访问后端的http请求的拦截器，主要定义的请求的头的处理，对token的处理，正常返回值和异常情况的处理
 ````
-1、创建Axios实例，获取访问后端的api及超时时间
+2.1、创建Axios实例，获取访问后端的api及超时时间
 const instance: AxiosInstance = axios.create({
   baseURL: getHttpDomain(),
   timeout: 3000
 })
-1.1、在getHttpDomain方法中对访问环境变量的api进行获取
+2.1.1、在getHttpDomain方法中对访问环境变量的api进行获取
 get-env.ts
 export function getHttpDomain(): string {
   const baseURL = process.env.VUE_APP_HTTP_BASE_URL
   return processBaseURL(baseURL)
 }
-2、请求头的处理
+2.2、请求头的处理
 instance.interceptors.request.use(
   (config: AxiosRequestConfig): AxiosRequestConfig => {
     config.headers = config.headers || {}
@@ -874,7 +874,7 @@ instance.interceptors.request.use(
     return errorHandle(err)
   }
 )
-3、返回值的处理，这主要分为正常的返回值处理和异常情况下的处理:正常情况的下的处理直接转为KWResponse.Result | KWResponse.PageResult | void，而异常情况处理就要分很多情况
+2.3、返回值的处理，这主要分为正常的返回值处理和异常情况下的处理:正常情况的下的处理直接转为KWResponse.Result | KWResponse.PageResult | void，而异常情况处理就要分很多情况
 instance.interceptors.response.use(
   (result: AxiosResponse): KWResponse.Result | KWResponse.PageResult | void => {
     return result.data as KWResponse.Result | KWResponse.PageResult | void
@@ -883,7 +883,7 @@ instance.interceptors.response.use(
     return errorHandle(err)
   }
 )
-4、异常情况的处理
+2.4、异常情况的处理
 function errorHandle(err: AxiosError): Promise<unknown> {
   if (err.code === 'ECONNABORTED' && err.message.indexOf('timeout') !== -1) {
     return onTimeoutError(err)
@@ -930,7 +930,7 @@ function errorHandle(err: AxiosError): Promise<unknown> {
   Message.error((err.response.data as string) || message)
   return Promise.reject(err)
 }
-5、token失效后根据refreshToken来刷新token,当token失效后会返回http状态码为401，这个时候就执行了onAuthenticationError(err)方法进行token刷新动作，如成功刷新后，再次请求目标api，如刷新失败后，清空相关token，跳转至登录页面
+2.5、token失效后根据refreshToken来刷新token,当token失效后会返回http状态码为401，这个时候就执行了onAuthenticationError(err)方法进行token刷新动作，如成功刷新后，再次请求目标api，如刷新失败后，清空相关token，跳转至登录页面
 async function onAuthenticationError(error: AxiosError) {
   local.clear(settings.activePath)
   const { code, data }: KWResponse.Result<LoginResponse> = await getNewToken()
@@ -955,7 +955,7 @@ async function getNewToken(): Promise<KWResponse.Result<LoginResponse>> {
 ````
 + 3、shims-vue.d.ts文件说明，此文件中定义系统的全局公共模型，主要分：KWResponse、Model、KWRequest、KWRule几部分。
 ```
-1、系统中的标准model基类，在Model命令空间下，需要说明的是id在后端是long类型，但由于后端long类型长度过大，前端接后会导致精度丢失的问题，因为前端将使用string来接收这个字段返回的值(返回这也需要后端的配合，在该字段的输出json时需以字符串输出)
+3.1、系统中的标准model基类，在Model命令空间下，需要说明的是id在后端是long类型，但由于后端long类型长度过大，前端接后会导致精度丢失的问题，因为前端将使用string来接收这个字段返回的值(返回这也需要后端的配合，在该字段的输出json时需以字符串输出)
 namespace Model {
   interface Id {
     id: string
@@ -987,7 +987,7 @@ namespace Model {
     text: string
   }
 }
-2、KWRequest标准的分页请求需要模型，T代表具体的实体模型
+3.2、KWRequest标准的分页请求需要模型，T代表具体的实体模型
 namespace KWRequest {
   type OrderDir = 'ASC' | 'DESC'
   type MethodType = 'POST' | 'GET'
@@ -999,7 +999,7 @@ namespace KWRequest {
     t?: T
   }
 }
-3、KWResponse 标准的返回值模型，非分页统一返回Result<T>，分页统一返回PageResult<T>，T代表具体的实体模型
+3.3、KWResponse 标准的返回值模型，非分页统一返回Result<T>，分页统一返回PageResult<T>，T代表具体的实体模型
 namespace KWResponse {
   interface BaseResult {
     code: number
@@ -1016,7 +1016,7 @@ namespace KWResponse {
     totalPage: number
   }
 }
-4、KWRule Form验证模型，定义了最常见的验证规则
+3.4、KWRule Form验证模型，定义了最常见的验证规则
 namespace KWRule {
   interface CallbackFunction {
     (error?: Error): void
@@ -1119,7 +1119,7 @@ router.afterEach((to: Route) => {
 ```
 + 6、登录流程解析
 ```
-1、用户登录Login.vue,前端用户名密码不为空后，封装json后，调用user/login进行登录，登录成功后返回token信息对象，跳转至index.vue
+6.1、用户登录Login.vue,前端用户名密码不为空后，封装json后，调用user/login进行登录，登录成功后返回token信息对象，跳转至index.vue
 login(): void {
     this.loginFormRef.validate(async valid => {
       if (!valid) {
@@ -1138,8 +1138,8 @@ login(): void {
       }
     })
 }
-2、根据路由跳转至index.vue过程中，进入请求拦截器中(上面第5部分)
-2.1、获取用户信息
+6.2、根据路由跳转至index.vue过程中，进入请求拦截器中(上面第5部分)
+6.2.1、通过user/getLoginApp的api获取用户信息
 export const getUserInfo = async (to: Route, from: Route, next: NavigationGuardNext): Promise<void> => {
   const { code, data, msg }: KWResponse.Result<LoginSuccessUserInfo> = await UserInfoApi()
   console.log(data)
@@ -1150,37 +1150,8 @@ export const getUserInfo = async (to: Route, from: Route, next: NavigationGuardN
     Message.error(msg || '获取用户失败！')
   }
 }
-2.2、保存登录用户信息到UserModule的Vuex中
-export interface IUserState {
-  user: LoginSuccessUserInfo | null
-}
-
-@Module({ dynamic: true, store, name: 'user' })
-class UserStore extends VuexModule implements IUserState {
-  public user: LoginSuccessUserInfo | null = null
-
-  get loginUser(): LoginSuccessUserInfo | null {
-    return this.user
-  }
-
-  @Mutation
-  public SET_USERINFO(user: LoginSuccessUserInfo | null): void {
-    this.user = user
-  }
-
-  @Action({ commit: 'SET_USERINFO' })
-  public changeUser(user: LoginSuccessUserInfo): LoginSuccessUserInfo {
-    return user
-    // this.CHANGE_USER(user)
-  }
-
-  @Action({ commit: 'SET_USERINFO' })
-  public clearUser(): null {
-    return null
-  }
-}
-export const UserModule = getModule(UserStore)
-2.3、获取菜单信息
+6.2.2、保存登录用户信息到UserModule的Vuex中
+6.2.3、通过menu/current的api获取菜单信息
 export const getMenus = async (to: Route, from: Route, next: NavigationGuardNext): Promise<void> => {
   const { code, data, msg }: KWResponse.Result<Array<MenuResponse>> = await CurrentMenuApi()
   if (code === 200) {
@@ -1199,38 +1170,8 @@ export const getMenus = async (to: Route, from: Route, next: NavigationGuardNext
     Message.error(msg || '获取当前用户菜单失败！')
   }
 }
-2.4、把菜单信息存储到中MenuModule的vuex中
-export interface IMenuState {
-  menus: Array<MenuResponse>
-}
-
-@Module({ dynamic: true, store, name: 'menu' })
-class MenuStore extends VuexModule implements IMenuState {
-  public menus: Array<MenuResponse> = []
-
-  get getMenus() {
-    return this.menus
-  }
-
-  @Mutation
-  public CHANGE_MENU(menus: Array<MenuResponse>): void {
-    this.menus = menus
-  }
-
-  @Action
-  public changeMenu(menus: Array<MenuResponse>): void {
-    console.log('action:' + menus)
-    this.context.commit('CHANGE_MENU', menus)
-  }
-
-  @Action({ commit: 'CHANGE_MENU' })
-  public clearMenu(): Array<MenuResponse> {
-    return new Array<MenuResponse>()
-  }
-}
-
-export const MenuModule = getModule(MenuStore)
-2.5、PermissionModule的generateRoutes方法通过进行动态路由解析组装，并把路由信息动态加载到router中，进行实际路由
+6.2.4、把菜单信息存储到中MenuModule的vuex中
+6.2.5、PermissionModule的generateRoutes方法通过进行动态路由解析组装，并把路由信息动态加载到router中，进行实际路由
 export interface IPermissionState {
   routes: Array<RouteConfig>
   dynamicRoutes: Array<RouteConfig>
@@ -1366,7 +1307,7 @@ export const loadViewsd = (view: string) => {
 }
 
 export const PermissionModule = getModule(PermissionStore)
-2.6、通过上面的路由信息看到，路由到index之后，其实跳转到home路由，进入到Home.vue页面
+6.3、通过上面的路由信息看到，路由到index之后，其实跳转到home路由，进入到Home.vue页面
 index.vue
 <template>
   <div class="index">
@@ -1395,889 +1336,248 @@ index.vue
     <KWUploader></KWUploader>
   </div>
 </template>
-2.6.1、LeftMenu组件，进行菜单渲染
-<template>
-  <el-aside :width="collapseMenuState ? '64px' : '200px'" style="overflow:hidden">
-    <div  v-if="collapseMenuState == false" style="padding: 10px 20px 10px 20px;" >
-      <img src="../../assets/keywin.png" alt="" />
-    </div>
-    <div  v-if="collapseMenuState == true" style="padding: 10px 20px 10px 10px;">
-      <img src="../../assets/logo.png" alt="" />
-    </div>
-    <el-menu background-color="#333744" text-color="#fff" active-text-color="#409EFF" unique-opened :collapse="collapseMenuState" :collapse-transition="false" router :default-active="activePath">
-      <!-- 一级菜单 -->
-      <template v-for="item in menusList">
-        <el-submenu v-if="item.isHidden === false && item.isMenu === 1" :index="item.id+''" :key="item.id">
-          <!-- 一级菜单模板区 -->
-          <template slot="title">
-            <i :class="item.css"></i>
-            <span>{{ item.name }}</span>
-          </template>
-          <!--二级菜单-->
-          <template v-for="subItem in item.subMenus">
-            <el-menu-item v-if="subItem.isHidden === false && subItem.isMenu === 1" :index="subItem.url" :key="subItem.id" @click="saveActivePath(subItem.url)">
-              <!-- 二级菜单模板区 -->
-              <template slot="title">
-                <i :class="subItem.css"></i>
-                <span>{{ subItem.name }}</span>
-              </template>
-            </el-menu-item>
-          </template>
-        </el-submenu>
+6.3.1、LeftMenu组件，进行菜单渲染
+6.3.2、HeaderNav组件，进行主页面头部渲染
+6.3.3、PageTabs组件，进行页面多页签渲染
+6.3.4、KWUploader组件，进行上传页面渲染
+6.4、Home.vue页面渲染
+```
++ 7、添加一个的业务功能
+    + 7.1、在views/index/business下业务文件
+    + 7.2、在业务文件下新建interface，此文件夹一般存在对应的后端返回的模型的interfaces
+    + 7.3、xxx-api.ts文件，些文件对应访问后端的api
+    + 7.4、Xxx.vue文件，对应页面文件
++ 8、权限的使用:系统的权限是细粒度权限，已经设计到button或link上
+```
+8.1、系统的权限存储在UserModule中的loginUser对象中的permissions属性中，是一个数组集合
+const permissions = (UserModule.loginUser as LoginSuccessUserInfo).permissions
+8.2、权限工具类，提供基于权限code的验证或基于角色code的验证和一些公共的验证权限方法
+hasPermission: (code: string): boolean => {...}
+hasRole: (code: string): boolean => {...}
+hasAnyRole(roles: Array<string>): boolean {...}
+hasRoles(roles: Array<string>): boolean {...}
+hasAnyPermission(codes: Array<string>): boolean {...}
+hasPermissions(codes: Array<string>): boolean {...}
+hasPermissionForDelete: (permissionPrefix: string): boolean => {...}
+hasPermissionForUpdate: (permissionPrefix: string): boolean => {...}
+hasPermissionForAdd: (permissionPrefix: string): boolean => {...}
+hasPermissionForEnabled: (permissionPrefix: string): boolean => {...}
+hasPermissionForGetId: (permissionPrefix: string): boolean => {...}
+hasPermissionForQueryList: (permissionPrefix: string): boolean => {...}
+hasPermissionForQueryPaged: (permissionPrefix: string): boolean => {...}
+hasPermissionForExport: (permissionPrefix: string): boolean => {...}
+hasPermissionForImport: (permissionPrefix: string): boolean => {...}
+hasPermissionForDownload: (permissionPrefix: string): boolean => {...}
+hasPermissionForUpload: (permissionPrefix: string): boolean => {...}
+8.3、为方便权限验证封装了一些指标
+const hasPermissionAdd: DirectiveOptions = {...}
+const hasPermissionDelete: DirectiveOptions = {...}
+const hasPermission: DirectiveOptions = {...}
+const hasPermissionDownload: DirectiveOptions = {...}
+const hasPermissionEnabled: DirectiveOptions = {...}
+const hasPermissionExport: DirectiveOptions = {...}
+const hasPermissionGetId: DirectiveOptions = {...}
+const hasPermissionImport: DirectiveOptions = {...}
+const hasPermissionQueryList: DirectiveOptions = {...}
+const hasPermissionQueryPage: DirectiveOptions = {...}
+const hasPermissionUpdate: DirectiveOptions = {...}
+const hasPermissionUpload: DirectiveOptions = {...}
+8.4、v-xxx指令的权限验证
+8.4.1、查询权限、添加用户权限
+<el-input placeholder="请输入内容" v-model="t.nickName" v-hasPermissionQueryPage="userPermission">
+    <el-button slot="append" class="search-primary" icon="el-icon-search" @click="searchUser"></el-button>
+</el-input>
+<el-button type="primary" @click="addUser" v-hasPermissionAdd="userPermission">添加用户</el-button>
+8.4.2、userPermission权限基于是一个工具类，把所有业务对应的权限前缀定义到PermissionPrefixUtils中，方便后续应用
+userPermission = PermissionPrefixUtils.user
+const PermissionPrefixUtils = {
+  user: 'system::user::SysUser::',
+  role: 'system::sys-role::SysRole::',
+  roleMenuPermission: 'system::role-menu-permission::SysRoleMenuPermission::',
+  permission: 'system::permission::SysPermission::',
+  menuPermission: 'system::menu-permission::SysMenuPermission::',
+  menu: 'system::menu::SysMenu::',
+  dictType: 'common::param::dict-type::DictType::',
+  dictTree: 'common::param::dict-tree::DictTree::',
+  dictData: 'common::param::dict-data::DictData::',
+  fileInfo: 'common::file::FileInfo::',
+  dataLog: 'common::data-log::DataLog::',
+  customerInfo: 'business::customer::CustomerInfo::',
+  deviceAuth: 'business::device::DeviceAuth::'
+}
+
+export default PermissionPrefixUtils
+8.5、调用方法手动验证
+8.5.1、状态权限验证html片段
+<el-tooltip effect="dark" content="字典数据管理" v-if="hasPermission(scope.row)" placement="top" :enterable="false">
+    ...
+</el-tooltip>
+8.5.2、hasPermission验证
+hasPermission(data: SysDictType): boolean {
+    if ((data.type as Model.EnumEntity).stringValue === Type.列表) {
+      return PermissionUtil.hasPermission(PermissionCodeUtils.dictTypeGrantDictTypeGotoDictData)
+    } else {
+      return PermissionUtil.hasPermission(PermissionCodeUtils.dictTypeGrantDictTypeGotoDictTree)
+    }
+}
+
+hasPermissionEnabled(): boolean {
+    return PermissionUtil.hasPermissionForEnabled(this.dicTypePermissionPrefix)
+}
+```
++ 9、v-viewer指令的使用，在img的父元素中添加v-viewer
+```
+<div v-viewer>
+    <img src="@/assets/404.gif" title="点击预览" width="300px" height="200px">&nbsp;&nbsp;&nbsp;&nbsp;
+    <img src="@/assets/head.png" title="点击预览" width="200px" height="200px">&nbsp;&nbsp;&nbsp;&nbsp;
+    <img src="@/assets/keywin.png" width="300px" title="点击预览" height="200px">&nbsp;&nbsp;&nbsp;&nbsp;
+    <img src="@/assets/logo.png" title="点击预览" width="200px" height="200px">
+</div>
+```
++ 10、table组件的使用
+```
+10.1、导入分页组件，定义KWTable<T, RT>，注意泛型，T为输出对象，RT为输出对象
+    import KWTable from '@/components/table/Table.vue'
+    @Ref('kwTableRef')
+    readonly kwTableRef!: KWTable<UserSearchRequest, UserInfo>
+10.2、编写table模板，需要注意的是请在table模板中指定url
+    <KWTable url="user/findSysUserByPaged" style="width: 100%" ref="kwTableRef">
+    <el-table-column type="index" width="80" label="序号"></el-table-column>
+    <el-table-column prop="userName" sortable="custom" label="帐号"> </el-table-column>
+    <el-table-column prop="nickName" sortable="custom" label="昵称"> </el-table-column>
+    <el-table-column prop="phone" sortable="custom" label="手机"> </el-table-column>
+    <el-table-column
+      prop="sex"
+      label="性别"
+      sortable="custom"
+      :formatter="
+        row => {
+          return row.sex.text
+        }
+      "
+    >
+    </el-table-column>
+    <el-table-column prop="createDate" label="创建时间" sortable="custom">
+      <template slot-scope="scope">{{ scope.row.createDate | dateTimeFormat }}</template>
+    </el-table-column>
+    <el-table-column prop="isEnabled" label="状态" sortable="custom">
+      <template v-slot="scope">
+        <el-switch v-model="scope.row.enabled" active-color="#13ce66" inactive-color="#ff4949" @change="userStatuChanged(scope.row, scope.row.enabled)"> </el-switch>
       </template>
-    </el-menu>
-  </el-aside>
-</template>
-
-<script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
-import { MenuResponse } from '@/views/index/system/menu/interface/sys-menu'
-import { local } from '@/store'
-import { MenuCollapseModule } from '@/store/menu-collapse-store'
-import settings from '@/settings'
-
-@Component({
-  components: {}
-})
-export default class LeftMenu extends Vue {
-  activePath = ''
-  @Prop({ default: [] })
-  readonly menusList!: Array<MenuResponse> | []
-
-  created(): void {
-    this.activePath = local.getStr(settings.activePath)
-  }
-
-  saveActivePath(activePath: string): void {
-    local.save(settings.activePath, activePath)
-    this.activePath = activePath
-  }
-
-  get collapseMenuState(): boolean {
-    return MenuCollapseModule.getCollapseMenuState
-  }
-}
-</script>
-2.6.2、HeaderNav组件，进行主页面头部渲染
-<template>
-  <div class="el-header-div">
-    <div>
-      <!-- <div class="toggle-button" @click="toggleCollpase">|||</div> -->
-      <i :class="collapseMenuIcon" @click="toggleCollpase"></i>
-      <span>后台管理系统</span>
-    </div>
-    <div>
-      <el-tooltip class="fullscreen" :content="tipFullScrollContent" effect="dark" placement="bottom" fullscreen>
-        <i :class="fullScrollClass" @click="fullScroll" />
-      </el-tooltip>
-      <el-tooltip content="站内消息" effect="dark" placement="bottom">
-      </el-tooltip>
-      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
-        <!-- src="@/assets/404-images/404-cloud.png" -->
-        <div class="avatar-wrapper">
-          <img v-src="headImgUrl" class="user-avatar" />
-          <div>
-            <span>{{ nickName }}</span>
-            <i class="el-icon-caret-bottom" />
-          </div>
-        </div>
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item @click.native="userInfoCenter">个人信息</el-dropdown-item>
-          <el-dropdown-item @click.native="showEditDialog">修改密码</el-dropdown-item>
-          <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">退出系统</span>
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
-    </div>
-    <el-dialog title="修改密码" @close="aditUserPasswordClosed" :visible.sync="userPasswordDialogVisble" width="20%">
-      <el-form :model="userForm" :rules="userFormRules" ref="userFormRef" label-width="100px">
-        <el-form-item label="原 密 码" prop="password">
-          <el-input v-model="userForm.password" type="password" style="max-width: 220px;"></el-input>
-        </el-form-item>
-        <el-form-item label="新 密 码" prop="newPassword">
-          <el-input v-model="userForm.newPassword" style="max-width: 220px;"></el-input>
-        </el-form-item>
-        <el-form-item label="确认密码" prop="rePassword">
-          <el-input v-model="userForm.rePassword" style="max-width: 220px;"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="userPasswordDialogVisble = false">取 消</el-button>
-        <el-button type="primary" @click="editUserPassword">确 定</el-button>
-      </span>
-    </el-dialog>
-  </div>
-</template>
-
-<script lang="ts">
-import { ElForm } from 'element-ui/types/form'
-import { UserModule } from '@/store/user-store'
-import { MenuCollapseModule } from '@/store/menu-collapse-store'
-import { Component, Vue, Ref } from 'vue-property-decorator'
-import { LoginSuccessUserInfo, ModifyPassword } from '@/views/index/system/user/interface/sys-user'
-import { UpdatePasswordApi, LogoutApi } from '@/views/index/system/user/user-api'
-import { local } from '@/store'
-import settings from '@/settings'
-import { MenuModule } from '@/store/menu-store'
-import { PermissionModule } from '@/store/permission-store'
-@Component
-export default class HeaderNav extends Vue {
-  fullScrollClass = 'iconfont icon-quanping_o'
-  tipFullScrollContent = '全屏浏览'
-  collapseMenuIcon = 'el-icon-s-fold'
-  userPasswordDialogVisble = false
-  userForm: ModifyPassword = { id: 0, password: '', newPassword: '', rePassword: '' }
-  @Ref('userFormRef')
-  readonly userFormRef!: ElForm
-
-  validatePassword(rule: KWRule.ValidatorRule, value: string, cb: KWRule.CallbackFunction): void {
-    if (value === '') {
-      cb(new Error('请输入密码'))
-    } else {
-      console.log(this)
-      if (this.userForm.rePassword !== '') {
-        console.log(this.userFormRef.validateField)
-        this.userFormRef.validateField('rePassword')
-      }
-      cb()
-    }
-  }
-
-  // <!--二次验证密码-->
-  validateRePassword(rule: KWRule.ValidatorRule, value: string, cb: KWRule.CallbackFunction): void {
-    if (value === '') {
-      cb(new Error('请再次输入密码'))
-    } else if (value !== this.userForm.newPassword) {
-      cb(new Error('两次输入密码不一致!'))
-    } else {
-      cb()
-    }
-  }
-
-  readonly userFormRules: { password: Array<KWRule.Rule>; newPassword: Array<KWRule.Rule | KWRule.MixinRule | KWRule.ValidatorRule>; rePassword: Array<KWRule.Rule | KWRule.MixinRule | KWRule.ValidatorRule> } = {
-    password: [{ required: true, message: '请输入原密码', trigger: 'blur' }],
-    newPassword: [
-      { required: true, message: '请输入新密码', trigger: 'blur' },
-      { min: 6, max: 15, message: '密码的长度6~15个字符之间', trigger: 'blur' },
-      { validator: this.validatePassword, trigger: 'blur' }
-    ],
-    rePassword: [
-      { required: true, message: '请再次输入密码', trigger: 'blur' },
-      { min: 6, max: 15, message: '密码的长度6~15个字符之间', trigger: 'blur' },
-      { validator: this.validateRePassword, trigger: 'blur' }
-    ]
-  }
-
-  get nickName(): string {
-    const user = (UserModule.loginUser as LoginSuccessUserInfo).user
-    console.log(user && user.nickName)
-    if (user !== null) {
-      return user.nickName
-    }
-    return ''
-  }
-
-  get headImgUrl(): string | null {
-    return (UserModule.loginUser as LoginSuccessUserInfo).user.headImgUrl as string
-  }
-
-  mounted(): void {
-    this.$nextTick(() => {
-      document.addEventListener('fullscreenchange', () => {
-        this.isFullscreen()
-      })
-    })
-  }
-
-  destroyed(): void {
-    this.$nextTick(() => {
-      document.addEventListener('fullscreenchange', () => {
-        this.isFullscreen()
-      })
-    })
-  }
-
-  toggleCollpase(): void {
-    const isCollapseMenu = MenuCollapseModule.isCollapseMenu
-    if (isCollapseMenu) {
-      this.collapseMenuIcon = 'el-icon-s-fold'
-    } else {
-      this.collapseMenuIcon = 'el-icon-s-unfold'
-    }
-    MenuCollapseModule.changeCollapseMenu(!isCollapseMenu)
-    console.log('MenuCollapseModule.getCollapseMenuState:', MenuCollapseModule.getCollapseMenuState)
-  }
-
-  userInfoCenter(): void {
-    this.$router.push('/myinfo')
-    console.log('userInfoCenter')
-  }
-
-  async logout(): Promise<void> {
-    const { code, msg } = await LogoutApi()
-    if (code !== 200) {
-      this.$message.error(msg || '用户登出失败!')
-    } else {
-      local.clear(settings.accessToken)
-      local.clear(settings.refreshToken)
-      MenuModule.changeMenu([])
-      UserModule.clearUser()
-      PermissionModule.clearRoutes()
-      location.reload()
-    }
-  }
-
-  dropdownClick(): void {
-    console.log('dropdownClick')
-  }
-
-  // 判断是否全屏
-  public isFullscreen(): boolean {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const doc: any = document
-    if (doc.fullscreenElement) {
-      this.fullScrollClass = 'iconfont icon-quanping_o'
-      this.tipFullScrollContent = '退出全屏'
-      return true
-    } else {
-      this.fullScrollClass = 'iconfont icon-quxiaoquanping_o'
-      this.tipFullScrollContent = '全屏浏览'
-      return false
-    }
-  }
-
-  // 点击按钮全屏事件
-  public fullScroll(): void {
-    if (this.isFullscreen()) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const doc: any = document
-      // 是全屏就退出全屏
-      if (doc.exitFullscreen) {
-        doc.exitFullscreen()
-      } else if (doc.mozCancelFullScreen) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const docAny = doc as any
-        docAny.mozCancelFullScreen()
-      } else if (doc.webkitCancelFullScreen) {
-        doc.webkitCancelFullScreen()
-      }
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const doc: any = document.documentElement
-      // 否则将页面全屏
-      if (doc.requestFullscreen) {
-        doc.requestFullscreen()
-      } else if (doc.mozRequestFullScreen) {
-        // FireFox
-        doc.mozRequestFullScreen()
-      } else if (doc.webkitRequestFullScreen) {
-        // Chrome等
-        doc.webkitRequestFullScreen()
-      } else if (doc.msRequestFullscreen) {
-        // IE11
-        doc.msRequestFullscreen()
-      }
-    }
-  }
-
-  // 展示编辑用于的对话框
-  showEditDialog(): void {
-    this.userPasswordDialogVisble = true
-  }
-
-  aditUserPasswordClosed(): void {
-    this.userPasswordDialogVisble = false
-    this.userFormRef.resetFields()
-  }
-
-  editUserPassword(): void {
-    console.log(this)
-    this.userFormRef.validate(async valid => {
-      if (!valid) {
-        return false
-      }
-      this.modifyPassword()
-    })
-  }
-
-  modifyPassword(): void {
-    this.$confirm('确定要修改密码, 是否继续?', '提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    })
-      .then(async () => {
-        this.userForm.id = (UserModule.loginUser as LoginSuccessUserInfo).user.id
-        const { code, msg } = await UpdatePasswordApi(this.userForm)
-        if (code !== 200) {
-          this.$message.error(msg || '用户密码修改失败!')
-        } else {
-          this.userPasswordDialogVisble = false
-          this.$message.success('用户密码修改成功!')
-        }
-      })
-      .catch(e => {
-        console.log(e)
-        this.$message({
-          type: 'info',
-          message: '已取消密码修改'
-        })
-      })
-  }
-}
-</script>
-2.6.2、PageTabs组件，进行页面多页签渲染
-<template>
-  <div class="index">
-    <el-container class="index-container">
-      <LeftMenu :menusList="menus"></LeftMenu>
-      <el-container>
-        <el-header>
-          <HeaderNav></HeaderNav>
-        </el-header>
-        <PageTabs :keep-alive-component-instance="keepAliveComponentInstance" />
-        <el-main>
-          <div ref="keepAliveContainer" style="padding-top:20px;background-color: #fff;">
-            <keep-alive>
-              <router-view :key="$route.fullPath" />
-            </keep-alive>
-          </div>
-        </el-main>
-        <el-footer>
-          <div class="footer">
-            Copyright © {{ new Date().getFullYear() }} key-win All rights reserved.
-            <span class="pull-right">Version 2.0</span>
-          </div>
-        </el-footer>
-      </el-container>
-    </el-container>
-    <KWUploader></KWUploader>
-  </div>
-</template>
-
-<script lang="ts">
-import { Component, Vue, Ref } from 'vue-property-decorator'
-import HeaderNav from '@/components/header/HeaderNav.vue'
-import LeftMenu from '@/components/left/LeftMenu.vue'
-import PageTabs from '@/components/page-tabs/PageTabs.vue'
-import { MenuResponse } from '@/views/index/system/menu/interface/sys-menu'
-// import * as qs from 'qs'
-import { MenuModule } from '@/store/menu-store'
-import KWUploader from '@/components/file-uploader/GlobalUploader.vue'
-@Component({
-  components: {
-    HeaderNav,
-    LeftMenu,
-    PageTabs,
-    KWUploader
-  }
-})
-export default class Index extends Vue {
-  menus: Array<MenuResponse> | [] = []
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  keepAliveComponentInstance: any = null
-
-  @Ref('pageTabs')
-  readonly pageTabs!: PageTabs
-
-  created(): void {
-    this.menus = MenuModule.getMenus
-  }
-
-  mounted(): void {
-    if (this.$refs.keepAliveContainer) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      this.keepAliveComponentInstance = (this.$refs.keepAliveContainer as any).childNodes[0].__vue__ // 获取keep-alive的控件实例对象
-    }
-  }
-}
-</script>
-2.6.3、KWUploader组件，进行上传页面渲染
-<template>
-  <div id="global-uploader" :class="{'global-uploader-single': !global}">
-    <!-- 上传 -->
-    <uploader ref="uploader" :options="initOptions" :fileStatusText="fileStatusText" :autoStart="false"
-      @file-added="onFileAdded" @file-success="onFileSuccess" @file-progress="onFileProgress" @file-error="onFileError"
-      class="uploader-app">
-      <uploader-unsupport></uploader-unsupport>
-
-      <uploader-btn id="global-uploader-btn" ref="uploadBtn">选择文件</uploader-btn>
-
-      <uploader-list v-show="panelShow">
-        <div class="file-panel" slot-scope="props" :class="{ collapse: collapse }">
-          <div class="file-title">
-            <div class="title">文件列表</div>
-            <div class="operate">
-              <el-button @click="collapse = !collapse" type="text" :title="collapse ? '展开' : '折叠'">
-                <i class="iconfont" :class="collapse ? 'el-icon-full-screen' : 'el-icon-minus'"></i>
-              </el-button>
-              <el-button @click="close" type="text" title="关闭">
-                <i class="el-icon-close"></i>
-              </el-button>
-            </div>
-          </div>
-
-          <ul class="file-list">
-            <li class="file-item" :class="`file-${file.id}`" v-for="file in props.fileList" :key="file.id">
-              <uploader-file :class="'file_' + file.id" ref="files" :file="file" :list="true"></uploader-file>
-            </li>
-            <div class="no-file" v-if="!props.fileList.length">
-              <i class="iconfont icon-empty-file"></i> 暂无待上传文件
-            </div>
-          </ul>
-        </div>
-      </uploader-list>
-    </uploader>
-  </div>
-</template>
-
-<script lang="ts">
-/**
- *  全局上传插件，两种调用方式
- *   1. 作为全局页面的组件，使用event bus
- *   调用方法：EventHub.$emit('openUploader', {params: {}, options: {}})
- *               params: 发送给服务器的额外参数；
- *               options：上传选项，目前支持 target、testChunks、mergeFn、accept
- *
- *   监听函数：EventHub.$on('fileAdded', fn); 文件选择后的回调
- *           EventHub.$on('fileSuccess', fn); 文件上传成功的回调，监听后记得释放
- *
- *   2. 作为普通组件在单个页面中调用，使用props
- */
-import { ACCEPT_CONFIG } from './config/config'
-import EventHub from '../../common/event-hub/event-hub'
-import SparkMD5 from 'spark-md5'
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
-import { IOption, CheckFile, IFileStatusText, IChunk, IUploaderFile, IUPloader } from './config/file-option'
-import { getHttpDomain } from '@/common/utils/get-env'
-import { FileInfoBase } from '@/views/index/common/file/interface/file'
-@Component
-export default class KWUploader extends Vue {
-  initOptions = {
-    target: getHttpDomain() + 'chunk',
-    headers: {
-      Authorization: 'Bearer ' + localStorage.getItem('access_token')
-    },
-    chunkSize: '2048000',
-    fileParameterName: 'file',
-    maxChunkRetries: 3,
-    // 是否开启服务器分片校验
-    testChunks: true,
-    // 服务器分片校验函数，秒传及断点续传基础
-    checkChunkUploadedByResponse: function (chunk: IChunk, message: string): boolean {
-      let skip = false
-
-      try {
-        const objMessage = JSON.parse(message)
-        if (objMessage.code === 200) {
-          if (objMessage.data.skipUpload) {
-            skip = true
-          } else {
-            skip = (objMessage.data.uploaded || []).indexOf(chunk.offset + 1) >= 0
-          }
-        }
-      } catch (e) {}
-
-      return skip
-    },
-    query: function (params: CheckFile): CheckFile {
-      return {
-        ...params
-      }
-    }
-  }
-
-  panelShow = false // 选择文件后，展示上传panel
-  collapse = false
-  customParams: CheckFile = {
-    identifier: '',
-    chunkNumber: 0,
-    chunkSize: 0,
-    currentChunkSize: 0,
-    totalSize: 0,
-    totalChunks: 0,
-    filename: '',
-    relativePath: '',
-    bizType: '',
-    name: ''
-  }
-
-  mergeFn = (param: FileInfoBase): Promise<KWResponse.Result<string>> => {
-    console.info(param)
-    // return new Promise({ code: 200, msg: '', data: '' })
-    return Promise.resolve({ code: 200, msg: '', data: '' })
-  }
-
-  fileStatusText: IFileStatusText = {
-    success: '上传成功',
-    error: '上传失败',
-    uploading: '上传中',
-    paused: '已暂停',
-    waiting: '等待上传'
-  }
-
-  @Prop({ type: Boolean, default: true })
-  private global!: boolean
-
-  // 发送给服务器的额外参数
-  @Prop({
-    type: Object,
-    default: function () {
-      return {}
-    }
-  })
-  private params!: CheckFile
-
-  @Prop({
-    type: Object,
-    default: function () {
-      return {}
-    }
-  })
-  private options!: IOption
-
-  @Watch('params', { immediate: true })
-  onParams(data: CheckFile): void {
-    if (data) {
-      this.customParams = data
-    }
-  }
-
-  @Watch('options', { immediate: true })
-  onOptions(data: IOption): void {
-    if (data) {
-      setTimeout(() => {
-        this.customizeOptions(data)
-      }, 0)
-    }
-  }
-
-  mounted(): void {
-    EventHub.$on(
-      'openUploader',
-      (
-        res = {
-          params: { identifier: '', chunkNumber: 0, chunkSize: 0, currentChunkSize: 0, totalSize: 0, totalChunks: 0, filename: '', relativePath: '', bizType: '', name: '' },
-          options: {}
-        }
-      ) => {
-        this.customParams = res.params
-
-        this.customizeOptions(res.options)
-
-        if (this.$refs.uploadBtn) {
-          const btn = (this.$refs.uploadBtn as Vue).$el as HTMLElement
-          btn.click()
-        }
-      }
-    )
-  }
-
-  get uploader(): IUPloader {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (this.$refs.uploader as any).uploader
-  }
-
-  // 自定义options
-  customizeOptions(opts: IOption): void {
-    if (opts) {
-      // 自定义上传url
-      if (opts.target) {
-        this.uploader.opts.target = opts.target
-      }
-
-      // 是否可以秒传、断点续传
-      if (opts.testChunks !== undefined) {
-        this.uploader.opts.testChunks = opts.testChunks
-      }
-
-      // merge 的方法，类型为Function，返回Promise
-      this.mergeFn = opts.mergeFn || this.mergeFn
-      // 自定义文件上传类型
-      const input = document.querySelector('#global-uploader-btn input') as Element
-      let accept = ACCEPT_CONFIG.getAll()
-      if (opts.accept) {
-        accept = opts.accept
-      }
-      input.setAttribute('accept', accept.join())
-    }
-  }
-
-  onFileAdded(file: IUploaderFile): void {
-    this.panelShow = true
-    this.emit('fileAdded')
-
-    // 将额外的参数赋值到每个文件上，以不同文件使用不同params的需求
-    // file.params = this.customParams
-    Object.keys(this.customParams).forEach(prop => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const f = file as any
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      f[prop] = (this.customParams as any)[prop]
-    })
-
-    // 计算MD5
-    this.computeMD5(file).then(result => this.startUpload(result))
-  }
-
-  /**
-   * 计算md5值，以实现断点续传及秒传
-   * @param file
-   * @returns Promise
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  computeMD5(file: IUploaderFile): Promise<any> {
-    const fileReader = new FileReader()
-    const time = new Date().getTime()
-    const blobSlice = File.prototype.slice
-    let currentChunk = 0
-    const chunkSize = 10 * 1024 * 1000
-    const chunks = Math.ceil(file.size / chunkSize)
-    const spark = new SparkMD5.ArrayBuffer()
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const that = this
-    // 文件状态设为"计算MD5"
-    this.statusSet(file.id, 'md5')
-    file.pause()
-
-    // 计算MD5时隐藏”开始“按钮
-    this.$nextTick(() => {
-      const up = document.querySelector(`.file-${file.id} .uploader-file-resume`) as HTMLElement
-      up.style.marginTop = '-15px'
-    })
-
-    loadNext()
-
-    return new Promise((resolve, reject) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      fileReader.onload = (e: any) => {
-        spark.append(e.target.result)
-
-        if (currentChunk < chunks) {
-          currentChunk++
-          loadNext()
-
-          // 实时展示MD5的计算进度
-          this.$nextTick(() => {
-            const md5ProgressText = '校验MD5 ' + ((currentChunk / chunks) * 100).toFixed(0) + '%'
-            const f = document.querySelector(`.custom-status-${file.id}`) as HTMLElement
-            f.innerText = md5ProgressText
-          })
-        } else {
-          const md5 = spark.end()
-
-          // md5计算完毕
-          resolve({ md5, file })
-
-          const up = document.querySelector(`.file-${file.id} .uploader-file-resume`) as HTMLElement
-          up.style.marginTop = '16px'
-
-          console.log(`MD5计算完毕：${file.name} \nMD5：${md5} \n分片：${chunks} 大小:${file.size} 用时：${new Date().getTime() - time} ms`)
-        }
-      }
-
-      fileReader.onerror = function () {
-        that.error(`文件${file.name}读取出错，请检查该文件`)
-        file.cancel()
-        // eslint-disable-next-line prefer-promise-reject-errors
-        reject()
-      }
-    })
-
-    function loadNext() {
-      const start = currentChunk * chunkSize
-      const end = start + chunkSize >= file.size ? file.size : start + chunkSize
-
-      fileReader.readAsArrayBuffer(blobSlice.call(file.file, start, end))
-    }
-  }
-
-  // md5计算完毕，开始上传
-  startUpload(res: { md5: string; file: IUploaderFile }): void {
-    res.file.uniqueIdentifier = res.md5
-    res.file.resume()
-    this.statusRemove(res.file.id)
-  }
-
-  onFileSuccess(rootFile: IUploaderFile, file: IUploaderFile, response: string): void {
-    const res = JSON.parse(response)
-
-    // 服务端自定义的错误（即http状态码为200，但是是错误的情况），这种错误是Uploader无法拦截的
-    if (res.code !== 200) {
-      this.$notify({
-        title: '操作',
-        message: file.name + '上传出错啦！',
-        type: 'error',
-        duration: 2000
-      })
-      // 文件状态设为“失败”
-      this.statusSet(file.id, 'failed')
-      return
-    }
-
-    // 如果服务端返回了需要合并的参数
-    if (res.data.needMerge) {
-      // 文件状态设为“合并中”
-      this.statusSet(file.id, 'merging')
-
-      this.mergeFn({
-        name: file.name,
-        md5: file.uniqueIdentifier,
-        contentType: '',
-        size: 0,
-        physicalPath: '',
-        path: '',
-        accessPath: '',
-        physicalPathProcess: '',
-        pathProcess: '',
-        fileSuffix: ''
-      })
-        .then(() => {
-          // 文件合并成功
-          this.emit('fileSuccess')
-
-          this.statusRemove(file.id)
-        })
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .catch((e: any) => {
-          console.error('出错啦！', e)
-        })
-
-      // 不需要合并
-    } else {
-      this.emit('fileSuccess')
-      console.log('上传成功')
-      this.$notify({
-        title: '操作',
-        message: file.name + '上传成功',
-        type: 'success',
-        duration: 2000
-      })
-    }
-  }
-
-  onFileProgress(rootFile: IUploaderFile, file: IUploaderFile, chunk: IChunk): void {
-    console.log(`上传中 ${file.name}，chunk：${chunk.startByte / 1024 / 1024} ~ ${chunk.endByte / 1024 / 1024}`)
-  }
-
-  onFileError(rootFile: IUploaderFile, file: IUploaderFile, error: string, chunk: IChunk): void {
-    console.log(chunk.retries)
-    this.error(error)
-  }
-
-  close(): void {
-    this.uploader.cancel()
-    this.panelShow = false
-  }
-
-  /**
-   * 新增的自定义的状态: 'md5'、'merging'、'transcoding'、'failed'
-   * @param id
-   * @param status
-   */
-  statusSet(id: number, status: string): void {
-    const statusMap: { [key: string]: { text: string; bgc: string } } = {
-      md5: {
-        text: '校验MD5',
-        bgc: '#fff'
-      },
-      merging: {
-        text: '合并中',
-        bgc: '#e2eeff'
-      },
-      transcoding: {
-        text: '转码中',
-        bgc: '#e2eeff'
-      },
-      failed: {
-        text: '上传失败',
-        bgc: '#e2eeff'
-      }
-    }
-
-    this.$nextTick(() => {
-      const statusTag = document.createElement('p')
-      statusTag.className = `custom-status-${id} custom-status`
-      statusTag.innerText = statusMap[status].text
-      statusTag.style.backgroundColor = statusMap[status].bgc
-
-      const statusWrap = document.querySelector(`.file_${id} .uploader-file-status`) as Element
-      statusWrap.appendChild(statusTag)
-    })
-  }
-
-  statusRemove(id: number): void {
-    this.$nextTick(() => {
-      const statusTag = document.querySelector(`.custom-status-${id}`) as Element
-      statusTag.remove()
-    })
-  }
-
-  emit(e: string): void {
-    EventHub.$emit(e)
-    this.$emit(e)
-  }
-
-  error(msg: string): void {
-    this.$notify({
-      title: '错误',
-      message: msg,
-      type: 'error',
-      duration: 2000
-    })
-  }
-}
-</script>
-2.6.4、Home.vue页面渲染
-<template>
-  <div class="home">
-    <h3>
-      {{ message }}
-    </h3>
-    <div style="height: 687px;">
-      <el-divider content-position="left">Tip示例</el-divider>
-      <KWCell :gap="15" label="滕王阁序" style="width: 300px">
-        <KWText value="豫章故郡，洪都新府。星分翼轸，地接衡庐。襟三江而带五湖，控蛮荆而引瓯越。物华天宝，龙光射牛斗之墟；人杰地灵，徐孺下陈蕃之榻。雄州雾列，俊采星驰。" :row="1" />
-      </KWCell>
-      <el-divider content-position="left">上传示例</el-divider>
-      <el-button type="primary" size="medium" @click="upload">上传</el-button>
-      <el-divider content-position="left">viewer示例</el-divider>
-      <div v-viewer>
-        <img src="@/assets/404.gif" title="点击预览" width="300px" height="200px">&nbsp;&nbsp;&nbsp;&nbsp;<img
-          src="@/assets/head.png" title="点击预览" width="200px" height="200px">&nbsp;&nbsp;&nbsp;&nbsp;<img
-          src="@/assets/keywin.png" width="300px" title="点击预览" height="200px">&nbsp;&nbsp;&nbsp;&nbsp;<img
-          src="@/assets/logo.png" title="点击预览" width="200px" height="200px">
-      </div>
-      <el-divider></el-divider>
-    </div>
-  </div>
-</template>
-
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
-import Bus from '@/common/event-hub/event-hub'
+    </el-table-column>
+    <el-table-column label="操作">
+      <template v-slot="scope">
+        <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
+        <el-tooltip effect="dark" content="重置密码" placement="top" :enterable="false">
+          <el-button type="warning" icon="el-icon-setting" size="mini" @click="passwordReset(scope.row.id)"></el-button>
+        </el-tooltip>
+      </template>
+    </el-table-column>
+  </KWTable>
+10.3、如果有查询条件，请定义分页输入对象，然后调用查询方法进行数据加载
+    t: UserSearchRequest = { nickName: '' }
+    this.kwTableRef.loadByCondition(this.t)
+```
++ 11、file-uploader组件的使用
++ 12、Tip组件的使用
+```
+12.1、导入组件
 import KWCell from '@/components/cell/Cell.vue'
 import KWText from '@/components/text/Text.vue'
-
-@Component({
-  components: {
-    KWCell,
-    KWText
-  }
-})
-export default class Home extends Vue {
-  message = 'welcome'
-
-  upload(): void {
-    // 打开文件选择框
-    Bus.$emit('openUploader', {
-      // 给服务端的额外参数
-      params: {
-        bizType: 'default'
-      }
-    })
-  }
-}
-</script>
+12.2、组件使用
+<KWCell :gap="15" label="滕王阁序" style="width: 300px">
+    <KWText value="豫章故郡，洪都新府。星分翼轸，地接衡庐。襟三江而带五湖，控蛮荆而引瓯越。物华天宝，龙光射牛斗之墟；人杰地灵，徐孺下陈蕃之榻。雄州雾列，俊采星驰。" :row="1" />
+</KWCell>
 ```
++ 13、src-directive指令的使用
+```
+<img v-src="headImgUrl" class="user-avatar" />
+get headImgUrl(): string | null {
+    return (UserModule.loginUser as LoginSuccessUserInfo).user.headImgUrl as string
+}
+```
++ 14、form的使用及验证
+```
+14.1、html片段
+<el-form :model="customerInfoForm" :inline="true" :rules="customerInfoFormRules" ref="customerInfoFormRef" label-width="100px">
+    <el-form-item label="客户编号" prop="sequence">
+      <el-input v-model="customerInfoForm.sequence" style="max-width: 220px;"
+        :disabled="customerInfoSequenceDisabled">
+      </el-input>
+    </el-form-item>
+    <el-form-item label="客户名称" prop="companyName">
+      <el-input v-model="customerInfoForm.companyName" style="max-width: 220px;"></el-input>
+    </el-form-item>
+    <el-form-item label="客户地址" prop="companyAddress">
+      <el-input v-model="customerInfoForm.companyAddress" style="max-width: 220px;"></el-input>
+    </el-form-item>
+    <el-form-item label="客户电话" prop="companyPhone">
+      <el-input v-model="customerInfoForm.companyPhone" style="max-width: 220px;"></el-input>
+    </el-form-item>
+    <el-form-item label="联系人姓名" prop="leadName">
+      <el-input v-model="customerInfoForm.leadName" style="max-width: 220px;"></el-input>
+    </el-form-item>
+    <el-form-item label="联系人手机" prop="leadMobile">
+      <el-input v-model="customerInfoForm.leadMobile" style="max-width: 220px;"></el-input>
+    </el-form-item>
+    <el-form-item label="项目号" prop="projectNo">
+      <el-input v-model="customerInfoForm.projectNo" style="max-width: 220px;"></el-input>
+    </el-form-item>
+    <el-form-item label="项目名称" prop="projectName">
+      <el-input v-model="customerInfoForm.projectName" style="max-width: 220px;"></el-input>
+    </el-form-item>
+    <el-form-item label="授权码" prop="authDeviceCode">
+      <el-input v-model="customerInfoForm.authDeviceCode" :disabled="customerInfoAuthDeviceCodeDisabled"
+        style="max-width: 220px;"></el-input>
+    </el-form-item>
+    <el-form-item label="授权设备数" prop="authDeviceNum">
+      <el-input v-model="customerInfoForm.authDeviceNum" type="number" style="max-width: 220px;"></el-input>
+    </el-form-item>
+    <el-form-item label="是否校验日期" prop="isVerify">
+      <el-radio-group @change="isVerifChange" v-model="customerInfoForm.isVerify" style="width: 202px;">
+        <el-radio label="是"></el-radio>
+        <el-radio label="否"></el-radio>
+      </el-radio-group>
+    </el-form-item>
+    <el-form-item label="授权到期日期" prop="expireDeviceDate">
+      <el-date-picker v-model="expireDeviceDate" @input="onDatePickerChange" type="date" placeholder="授权到期日期"
+        style="max-width: 220px;">
+      </el-date-picker>
+    </el-form-item>
+</el-form>
+14.2、form验证
+readonly customerInfoFormRules: { companyName: Array<KWRule.Rule>; companyAddress: Array<KWRule.Rule>; companyPhone: Array<KWRule.Rule>; leadName: Array<KWRule.Rule>; leadMobile: Array<KWRule.Rule | KWRule.ValidatorRule>; projectNo: Array<KWRule.Rule>; authDeviceCode: Array<KWRule.Rule | KWRule.MixinRule>; authDeviceNum: Array<KWRule.NumberRule>; expireDeviceDate: Array<KWRule.ValidatorRule> } = {
+    companyName: [FormValidatorRule.requiredRule('请输入客户名称')],
+    companyAddress: [FormValidatorRule.requiredRule('请输入客户地址')],
+    companyPhone: [FormValidatorRule.requiredRule('请输入客户电话')],
+    leadName: [FormValidatorRule.requiredRule('请输入联系人姓名')],
+    leadMobile: [FormValidatorRule.requiredRule('请输入联系人手机'), { validator: FormValidatorRule.checkMobeli, trigger: 'blur' }],
+    projectNo: [FormValidatorRule.requiredRule('请输入项目号')],
+    authDeviceCode: [FormValidatorRule.requiredRule('请输入授权码'), FormValidatorRule.mixinRul(4, 10, '授权码值的长度4~10个字符之间')],
+    authDeviceNum: [FormValidatorRule.numberRule('请输入授权设备台数')],
+    expireDeviceDate: [{ validator: this.checkExpireDeviceDate, trigger: 'blur' }]
+  }
+// 验证设备的授权到期日期
+checkExpireDeviceDate(rule: KWRule.ValidatorRule, value: string, cb: KWRule.CallbackFunction): void {
+    if (this.customerInfoForm.isVerify === '是') {
+      if (!this.expireDeviceDate) {
+        cb(new Error('请选择设备到期日期'))
+      }
+      if (new Date().getTime() >= (this.expireDeviceDate as Date).getTime()) {
+        cb(new Error('设备到期日期必须大于当前日期'))
+      }
+    }
+    return cb()
+}
+```
++ 15、web-socket的使用
++ 16、Element的组件使用
+    + 16.1 src/plugins/element.js
+    + 16.2 在import中导入对应的组件
+    + 16.3 添加Vue.use(组件)
++ 17、LeftMenu组件说明
++ 18、HeaderNav组件说明
++ 19、PageTabs组件的说明
++ 20、drag-directive指令的使用
++ 21、time-directive指令的使用
++ 22、filter的使用

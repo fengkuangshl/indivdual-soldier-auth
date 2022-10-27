@@ -66,7 +66,7 @@ export default class HeaderNav extends Vue {
   tipFullScrollContent = '全屏浏览'
   collapseMenuIcon = 'el-icon-s-fold'
   userPasswordDialogVisble = false
-  userForm: ModifyPassword = { id: 0, password: '', newPassword: '', rePassword: '' }
+  userForm: ModifyPassword = { id: '0', password: '', newPassword: '', rePassword: '' }
   @Ref('userFormRef')
   readonly userFormRef!: ElForm
 
