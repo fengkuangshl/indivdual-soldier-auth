@@ -1811,8 +1811,258 @@ import HeaderNav from '@/components/header/HeaderNav.vue'
       </div>
   </div>
 ```
-+ 19、PageTabs组件的说明
- + 19.1\
-+ 20、drag-directive指令的使用
++ 19、PageTabs组件的说明，此组件是系统中的多页签的应用，应该中已经应用，不需要二使用
+```
+ 19.1、在index.vue中引入PageTabs组件
+ <PageTabs :keep-alive-component-instance="keepAliveComponentInstance" />
+    <el-main>
+      <div ref="keepAliveContainer" style="padding-top:20px;background-color: #fff;">
+        <keep-alive>
+          <router-view :key="$route.fullPath" />
+        </keep-alive>
+      </div>
+ </el-main>
+ import PageTabs from '@/components/page-tabs/PageTabs.vue'
+ @Component({
+  components: {
+    ...
+    PageTabs,
+    ...
+  }
+ })
+ mounted(): void {
+    if (this.$refs.keepAliveContainer) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      this.keepAliveComponentInstance = (this.$refs.keepAliveContainer as any).childNodes[0].__vue__ // 获取keep-alive的控件实例对象
+    }
+  }
+19.2、PageTabs组件
+<div class="__common-layout-pageTabs">
+    <el-scrollbar>
+      <div class="__tabs">
+        <div class="__tab-item" v-for="item in openedPageRouters" :class="{
+            '__is-active': item.fullPath == $route.fullPath
+          }" :key="item.fullPath" @click="onClick(item)" @contextmenu.prevent="showContextMenu($event, item)">
+          {{ item.meta.title }}
+          <span class="el-icon-close" @click.stop="onClose(item)" @contextmenu.prevent.stop=""
+            :style="openedPageRouters.length <= 1 ? 'width:0;' : ''"></span>
+        </div>
+      </div>
+    </el-scrollbar>
+    <div v-show="contextMenuVisible">
+      <ul :style="{ left: contextMenuLeft + 'px', top: contextMenuTop + 'px' }" class="__contextmenu">
+        <li>
+          <el-button type="text" @click="reload()" size="mini">
+            重新加载
+          </el-button>
+        </li>
+        <li>
+          <el-button type="text" @click="closeOtherLeft" :disabled="false" size="mini">关闭左边</el-button>
+        </li>
+        <li>
+          <el-button type="text" @click="closeOtherRight" :disabled="false" size="mini">关闭右边</el-button>
+        </li>
+        <li>
+          <el-button type="text" @click="closeOther" size="mini">关闭其他</el-button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</template>
+<script lang="ts">
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Route, RouteMeta } from 'vue-router'
+
+@Component
+export default class PageTabs extends Vue {
+  @Prop({ default: {} })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  keepAliveComponentInstance: any
+
+  @Prop({ default: 'blank' })
+  blankRouteName!: string // 空白路由的name值
+
+  contextMenuVisible = false // 右键菜单是否显示
+
+  contextMenuLeft = 0 // 右键菜单显示位置
+  contextMenuTop = 0 // 右键菜单显示位置
+  contextMenuTargetPageRoute: Route | null = null // 右键所指向的菜单路由
+  openedPageRouters: Array<Route> = [] // 已打开的路由页面
+
+  @Watch('$route', { immediate: true })
+  routechange(to: Route, from: Route): void {
+    console.log(to, from)
+    this.openPage(to)
+  }
+
+  mounted(): void {
+    // 添加点击关闭右键菜单
+    window.addEventListener('click', this.closeContextMenu)
+  }
+
+  destroyed(): void {
+    window.removeEventListener('click', this.closeContextMenu)
+  }
+
+  // 隐藏右键菜单
+  closeContextMenu(): void {
+    this.contextMenuVisible = false
+    this.contextMenuTargetPageRoute = null
+  }
+
+  openPage(route: Route): void {
+    if (route.name === this.blankRouteName) {
+      return
+    }
+    const isExist = this.openedPageRouters.some(item => item.fullPath === route.fullPath)
+    if (!isExist) {
+      const openedPageRoute = this.openedPageRouters.find(item => item.path === route.path)
+      // 判断页面是否支持不同参数多开页面功能，如果不支持且已存在path值一样的页面路由，那就替换它
+      if (!(route.meta as RouteMeta).canMultipleOpen && openedPageRoute != null) {
+        this.delRouteCache(openedPageRoute.fullPath)
+        this.openedPageRouters.splice(this.openedPageRouters.indexOf(openedPageRoute), 1, route)
+      } else {
+        this.openedPageRouters.push(route)
+      }
+    }
+  }
+
+  // 点击页面标签卡时
+  onClick(route: Route): void {
+    if (route.fullPath !== this.$route.fullPath) {
+      this.$router.push(route.fullPath)
+    }
+  }
+
+  // 关闭页面标签时
+  onClose(route: Route): void {
+    let index: number = this.openedPageRouters.indexOf(route)
+    this.delPageRoute(route)
+    if (route.fullPath === this.$route.fullPath) {
+      // 删除页面后，跳转到上一页面
+      index = index === 0 ? 0 : index - 1
+      const r: Route = this.openedPageRouters[index]
+      this.$router.replace({ name: r.name as string })
+    }
+  }
+
+  // 右键显示菜单
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
+  showContextMenu(e: any, route: Route): void {
+    this.contextMenuTargetPageRoute = route
+    this.contextMenuLeft = e.layerX
+    this.contextMenuTop = e.layerY
+    this.contextMenuVisible = true
+  }
+
+  // 重载页面
+  reload(): void {
+    const contextMenuTargetPageRoute = this.contextMenuTargetPageRoute as Route
+    this.delRouteCache(contextMenuTargetPageRoute.fullPath)
+    if (contextMenuTargetPageRoute.fullPath === this.$route.fullPath) {
+      this.$router.replace({ name: this.blankRouteName }).then(() => {
+        this.$router.replace({ name: contextMenuTargetPageRoute.name as string })
+      })
+    }
+  }
+
+  // 关闭其他页面
+  closeOther(): void {
+    const contextMenuTargetPageRoute = this.contextMenuTargetPageRoute as Route
+    for (let i = 0; i < this.openedPageRouters.length; i++) {
+      const r = this.openedPageRouters[i]
+      if (r !== this.contextMenuTargetPageRoute) {
+        this.delPageRoute(r)
+        i--
+      }
+    }
+    if (contextMenuTargetPageRoute.fullPath !== this.$route.fullPath) {
+      this.$router.replace({ name: contextMenuTargetPageRoute.name as string })
+    }
+  }
+
+  // 根据路径获取索引
+  getPageRouteIndex(fullPath: string): number {
+    for (let i = 0; i < this.openedPageRouters.length; i++) {
+      if (this.openedPageRouters[i].fullPath === fullPath) {
+        return i
+      }
+    }
+    return -1
+  }
+
+  // 关闭左边页面
+  closeOtherLeft(): void {
+    const contextMenuTargetPageRoute = this.contextMenuTargetPageRoute as Route
+    let index = this.openedPageRouters.indexOf(this.contextMenuTargetPageRoute as Route)
+    const currentIndex = this.getPageRouteIndex(this.$route.fullPath)
+    if (index > currentIndex) {
+      this.$router.replace({ name: contextMenuTargetPageRoute.name as string })
+    }
+    for (let i = 0; i < index; i++) {
+      const r = this.openedPageRouters[i]
+      this.delPageRoute(r)
+      i--
+      index--
+    }
+  }
+
+  // 关闭右边页面
+  closeOtherRight(): void {
+    const contextMenuTargetPageRoute = this.contextMenuTargetPageRoute as Route
+    const index = this.openedPageRouters.indexOf(this.contextMenuTargetPageRoute as Route)
+    const currentIndex = this.getPageRouteIndex(this.$route.fullPath)
+    for (let i = index + 1; i < this.openedPageRouters.length; i++) {
+      const r = this.openedPageRouters[i]
+      this.delPageRoute(r)
+      i--
+    }
+    if (index < currentIndex) {
+      this.$router.replace({ name: contextMenuTargetPageRoute.name as string })
+    }
+  }
+
+  // 删除页面
+  delPageRoute(route: Route): void {
+    const routeIndex = this.openedPageRouters.indexOf(route)
+    if (routeIndex >= 0) {
+      this.openedPageRouters.splice(routeIndex, 1)
+    }
+    this.delRouteCache(route.fullPath)
+  }
+
+  // 删除页面缓存
+  delRouteCache(key: string): void {
+    const cache = this.keepAliveComponentInstance.cache
+    const keys = this.keepAliveComponentInstance.keys
+    for (let i = 0; i < keys.length; i++) {
+      if (keys[i] === key) {
+        keys.splice(i, 1)
+        if (cache[key] != null) {
+          delete cache[key]
+        }
+        break
+      }
+    }
+  }
+}
+```
++ 20、drag-directive指令的使用,直接在目标上添加指令v-drag
+```
+ <div class="v-im" id="v-im" v-drag>
+  </div>
+```
 + 21、time-directive指令的使用
+```
+<span v-time="item.timestamp" />
+```
 + 22、filter的使用
+```
+22.1、定义filter
+Vue.filter('dateTimeFormat', function(dateTime: string | number | Date): string {
+  return dateFormat(dateTime, DateFormatType.DateTime)
+})
+22.2、使用filter
+{{ scope.row.createDate | dateTimeFormat }}
+```
+
