@@ -1477,8 +1477,39 @@ hasPermissionEnabled(): boolean {
 10.3、如果有查询条件，请定义分页输入对象，然后调用查询方法进行数据加载
     t: UserSearchRequest = { nickName: '' }
     this.kwTableRef.loadByCondition(this.t)
+10.4、最后此组件主要是借鉴：https://gitee.com/virens/vue-demo/blob/master/src/components/table/VirTable.vue
 ```
 + 11、file-uploader组件的使用
+```
+全局上传插件，两种调用方式
+ 11.1. 作为全局页面的组件，使用event bus
+ 调用方法：EventHub.$emit('openUploader', {params: {}, options: {}})
+             params: 发送给服务器的额外参数；
+             options：上传选项，目前支持 target、testChunks、mergeFn、accept
+ 监听函数：EventHub.$on('fileAdded', fn); 文件选择后的回调
+         EventHub.$on('fileSuccess', fn); 文件上传成功的回调，监听后记得释放
+ 11.1.1、使用在index.vue中引入
+ import KWUploader from '@/components/file-uploader/GlobalUploader.vue'
+ @Component({
+   components: {
+     ...,
+     KWUploader
+   }
+ })
+ <KWUploader></KWUploader>
+ 11.1.2、在Home.vue调用
+ <el-button type="primary" size="medium" @click="upload">上传</el-button>
+ upload(): void {
+   // 打开文件选择框
+   Bus.$emit('openUploader', {
+   // 给服务端的额外参数
+    params: {
+      bizType: 'default'
+    }
+   })
+ }
+ 2. 作为普通组件在单个页面中调用，使用props
+```
 + 12、Tip组件的使用
 ```
 12.1、导入组件
@@ -1571,13 +1602,217 @@ checkExpireDeviceDate(rule: KWRule.ValidatorRule, value: string, cb: KWRule.Call
 }
 ```
 + 15、web-socket的使用
+```
+15.1、在对应的环境变量中配置VUE_APP_WEBSOCKET_BASE_WS_URL的api的地址：VUE_APP_WEBSOCKET_BASE_WS_URL='ws://127.0.0.1:9902/ws/'
+15.2、在settings中开启isEnableWebSocket:true
+15.2、启动流程:在登录成功后并加载用户信息和权限数据后，开启websocket连接
+    permission.ts
+    if (settings.isEnableWebSocket) {
+      SocketModule.initSocket()
+    }
+15.4、weboscket-client端中所有发出的请求都走http请求，发出请求的入口Controller:WebSocketCtrl,请求地址为:http://x.x.x.x:9902/ws/**,主要有如下的方法：
+    15.4.1、请求地址:http://x.x.x.x:9902/ws/sendByUserName/{userName}/{message}
+        @ApiOperation(value = "给单用户发送信息")
+        @GetMapping("/sendByUserName/{userName}/{message}")
+        @LogAnnotation(module = "websocket-center", recordRequestParam = false)
+        public Result sendByUserName(@PathVariable String userName, @PathVariable String message) {...}
+    15.4.2、请求地址:http://x.x.x.x:9902/ws/sendByToken/{toToken}/{message}
+        @ApiOperation(value = "给单用户发送信息")
+        @GetMapping("/sendByToken/{toToken}/{message}")
+        @LogAnnotation(module = "websocket-center", recordRequestParam = false)
+        public Result sendByToken(@PathVariable String toToken, @PathVariable String message) {...}
+    15.4.3、请求地址:http://x.x.x.x:9902/ws/sendByUserName/msg
+        @ApiOperation(value = "给单用户发送信息")
+        @PostMapping("/sendByUserName/msg")
+        @LogAnnotation(module = "websocket-center", recordRequestParam = false)
+        public Result sendMsgByUserName(@RequestBody WebsocketUserMessage websocketUserMessage) {...}
+    15.4.4、请求地址:http://x.x.x.x:9902/ws/sendByToken/msg
+        @ApiOperation(value = "给单用户发送信息")
+        @PostMapping("/sendByToken/msg")
+        @LogAnnotation(module = "websocket-center", recordRequestParam = false)
+        public Result sendMsgByToken(@RequestBody WebsocketTokenMessage websocketTokenMessage) {...}
+    15.4.5、请求地址:http://x.x.x.x:9902/ws/sendByTokens/msg
+        @ApiOperation(value = "给多用户发送信息")
+        @PostMapping("/sendByTokens/msg")
+        @LogAnnotation(module = "websocket-center", recordRequestParam = false)
+        public Result sendMsgByTokens(@RequestBody WebsocketTokensMessage websocketTokensMessage) {...}
+    15.4.6、请求地址:http://x.x.x.x:9902/ws/send/group/msg
+        @ApiOperation(value = "给用户列表发送信息")
+        @PostMapping("/send/group/msg")
+        @LogAnnotation(module = "websocket-center", recordRequestParam = false)
+        public Result sendGroupMsg(@RequestBody WebsocketGroupMessage websocketGroupMessage) {...}
+15.4、weboscket只接收来至服务端推送的信息,接收推送消息的入口在:web-socket-store.ts中的initSocket()方法。获取WebSocketActionProcess实例对象，并把返回的json信息传入processAction方法进行处理
+15.5、websocket的接收到消息的处理流程
+    15.5.1、IWebSocketBaseMessage是websocket推消息的基类接口:
+    export interface IWebSocketBaseMessage {
+      token: string
+      fromUserName: string
+      message: string
+      action: string
+    }
+    15.5.1.1、其它接口均以继承IWebSocketBaseMessage来替换业务的差异:
+    export interface WebSocketMessage extends IWebSocketBaseMessage {
+      toUserName: string
+    }
+    
+    export interface WebSocketGroupMessage extends IWebSocketBaseMessage {
+      toUserNames: Array<string>
+    }
+    
+    export interface WebSocketGroupIdMessage extends IWebSocketBaseMessage {
+      groupId: string
+    }
+    15.5.2、IAction是所有消息的接口，此接口只定义了两个方法:
+    export interface IAction {
+      processMessage(): void
+      getFullJson(): string
+    }
+    15.5.2.1、消息的处理方法：processMessage(): void
+    15.5.2.2、getFullJson(): string 获取完整的json
+    15.5.2.3、WebSocketBaseAction一个抽象类，实现了IAction是所有消息的方法，它定义的websocket接收的实体对象。
+    export abstract class WebSocketBaseAction implements IAction {
+      webSocketMessage!: WebSocketMessage
+    
+      abstract processMessage(): void
+    
+      getFullJson(): string {
+        return JSON.stringify(this.webSocketMessage)
+      }
+    }
+    15.5.2.4、其它消息处理均继承WebSocketBaseAction，实现抽象方法processMessage处理具体的业务，它定义的websocket接收的实体对象
+    export class MessageNotifyAction extends WebSocketBaseAction {
+      processMessage(): void {
+        Notification.success(this.webSocketMessage.message)
+      }
+    }
+    15.5.3、WebSocketActionProcess是一个单例的类，其主要目的是根据不同的action调用不同的processMessage方法进行业务处理，需要注意是多一个Action类，就需要在initAction方法中把自己注入进去
+    class WebSocketActionProcess {
+      private static _instance: WebSocketActionProcess | null = null
+      private static _items: { [key: string]: IAction } = {}
+      private WebSocketActionProcess() {
+        console.log('private constructor')
+      }
+      // 添加具体的Action到_items中来
+      private static initAction() {
+        WebSocketActionProcess.getInstance().set('webSocketAction', new WebSocketAction())
+        WebSocketActionProcess.getInstance().set('messageNotifyAction', new MessageNotifyAction())
+        WebSocketActionProcess.getInstance().set('deviceOnLineNotifyAction', new DeviceOnLineNotifyAction())
+        WebSocketActionProcess.getInstance().set('deviceOffLineNotifyAction', new DeviceOffLineNotifyAction())
+      }
+    
+      // 获得实例对象
+      public static getInstance(): WebSocketActionProcess {
+        if (!this._instance) {
+          this._instance = new WebSocketActionProcess()
+          this.initAction()
+        }
+        return this._instance
+      }
+    
+      set(key: string, value: IAction): void {
+        WebSocketActionProcess._items[key] = value
+        console.log(`set cache with key: '${key}', value: '${value}'`)
+      }
+    
+      get(key: string): IAction {
+        const value = WebSocketActionProcess._items[key]
+        console.log(`get cache value: '${value}' with key: '${key}'`)
+        return value
+      }
+      // 解析调用具体的processMessage方法 
+      processAction(jsonStr: string): void {
+        const josn = JSON.parse(jsonStr)
+        const action = this.get(josn.action)
+        const webSocketBaseAction = action as WebSocketBaseAction
+        webSocketBaseAction.webSocketMessage = josn
+        action.processMessage()
+      }
+    }
+```
 + 16、Element的组件使用
     + 16.1 src/plugins/element.js
     + 16.2 在import中导入对应的组件
     + 16.3 添加Vue.use(组件)
-+ 17、LeftMenu组件说明
-+ 18、HeaderNav组件说明
++ 17、LeftMenu组件说明，此组件是页面框架的左边菜单区域
+```
+17.1、在index.vue中从MenuModule中获取菜单，并把menus做为参数传为LeftMenu组件中
+import LeftMenu from '@/components/left/LeftMenu.vue'
+@Component({
+  components: {
+    ...
+    LeftMenu,
+    ...
+  }
+})
+this.menus = MenuModule.getMenus
+<LeftMenu :menusList="menus"></LeftMenu>
+17.2、在leftMenu组件进行循环打印渲染
+<el-menu background-color="#333744" text-color="#fff" active-text-color="#409EFF" unique-opened :collapse="collapseMenuState" :collapse-transition="false" router :default-active="activePath">
+  <!-- 一级菜单 -->
+  <template v-for="item in menusList">
+    <el-submenu v-if="item.isHidden === false && item.isMenu === 1" :index="item.id+''" :key="item.id">
+      <!-- 一级菜单模板区 -->
+      <template slot="title">
+        <i :class="item.css"></i>
+        <span>{{ item.name }}</span>
+      </template>
+      <!--二级菜单-->
+      <template v-for="subItem in item.subMenus">
+        <el-menu-item v-if="subItem.isHidden === false && subItem.isMenu === 1" :index="subItem.url" :key="subItem.id" @click="saveActivePath(subItem.url)">
+          <!-- 二级菜单模板区 -->
+          <template slot="title">
+            <i :class="subItem.css"></i>
+            <span>{{ subItem.name }}</span>
+          </template>
+        </el-menu-item>
+      </template>
+    </el-submenu>
+  </template>
+</el-menu>
+// 接收父组件传过来的参数，默认值一个空数组
+export default class LeftMenu extends Vue {
+  ...
+  @Prop({ default: [] })
+  readonly menusList!: Array<MenuResponse> | []
+  ...
+}
+```    
++ 18、HeaderNav组件说明，此组件是页面框架的顶部区域，主要功能是获取用户信息，加载头像及修改用户信息等内容
+```
+18.1、在index.vue中从MenuModule中获取菜单，并把menus做为参数传为LeftMenu组件中
+import HeaderNav from '@/components/header/HeaderNav.vue'
+@Component({
+  components: {
+    ...
+    HeaderNav,
+    ...
+  }
+})
+<HeaderNav></HeaderNav>
+18.2、在HeaderNav组件中获取用户信息并使用
+  get nickName(): string {
+    const user = (UserModule.loginUser as LoginSuccessUserInfo).user
+    console.log(user && user.nickName)
+    if (user !== null) {
+      return user.nickName
+    }
+    return ''
+  }
+
+  get headImgUrl(): string | null {
+    return (UserModule.loginUser as LoginSuccessUserInfo).user.headImgUrl as string
+  }
+
+  <div class="avatar-wrapper">
+      <img v-src="headImgUrl" class="user-avatar" />
+      <div>
+        <span>{{ nickName }}</span>
+        <i class="el-icon-caret-bottom" />
+      </div>
+  </div>
+```
 + 19、PageTabs组件的说明
+ + 19.1\
 + 20、drag-directive指令的使用
 + 21、time-directive指令的使用
 + 22、filter的使用
