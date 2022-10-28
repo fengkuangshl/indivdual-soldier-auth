@@ -232,10 +232,10 @@ spring:
 ```
 9、log-spring-boot-starter组件的使用，记录系统的输入输出参数
 ```
-9.1、在pom中加入db-spring-boot-starter依赖
+9.1、在pom中加入log-spring-boot-starter依赖
 <dependency>
     <groupId>com.key.win</groupId>
-    <artifactId>db-spring-boot-starter</artifactId>
+    <artifactId>log-spring-boot-starter</artifactId>
 </dependency>
 9.2、只需要在目标方法上加@LogAnnotation(module = "system", recordRequestParam = false)
 @DeleteMapping("/delete/{id}")
@@ -1515,6 +1515,12 @@ hasPermissionEnabled(): boolean {
 12.1、导入组件
 import KWCell from '@/components/cell/Cell.vue'
 import KWText from '@/components/text/Text.vue'
+@Component({
+  components: {
+    KWCell,
+    KWText
+  }
+})
 12.2、组件使用
 <KWCell :gap="15" label="滕王阁序" style="width: 300px">
     <KWText value="豫章故郡，洪都新府。星分翼轸，地接衡庐。襟三江而带五湖，控蛮荆而引瓯越。物华天宝，龙光射牛斗之墟；人杰地灵，徐孺下陈蕃之榻。雄州雾列，俊采星驰。" :row="1" />
