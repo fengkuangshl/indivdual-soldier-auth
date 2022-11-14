@@ -44,12 +44,7 @@
                         <pushImageTag>true</pushImageTag>
                         <!-- 重试次数-->
                         <retryPushCount>3</retryPushCount>
-                        <resources>
-                            <resource>
-                                <targetPath>/</targetPath>
-                                <directory>${project.build.directory}</directory>
-                            </resource>
-                        </resources>
+                        <noCache>true</noCache>
                     </configuration>
                 </plugin>
             </plugins>

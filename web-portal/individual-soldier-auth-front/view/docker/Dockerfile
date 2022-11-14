@@ -3,4 +3,3 @@ FROM nginx:1.19.2
 COPY dist/  /usr/share/nginx/html/auth_front
 COPY nginx.conf /etc/nginx/nginx.conf
 RUN sh -c 'chmod -R 777 /usr/share/nginx/html/auth_front'
-
