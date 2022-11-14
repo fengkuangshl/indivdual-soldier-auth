@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="auth-front" default="mvn-clean">
+
+    <loadproperties srcFile="../../../build.properties" encoding="UTF-8"/>
+    <import file="../../../build-base.xml"/>
+
+    <target name="deploy-auth-front-docker" depends="os-mvn-init">
+        <delete dir="${basedir}/build"/>
+        <delete dir="${basedir}/docker/dist"/>
+        <exec executable="cmd.exe">
+            <arg line="/c npm run build:docker"/>
+        </exec>
+        <copy todir="${basedir}/docker">
+            <fileset dir="${basedir}/build"/>
+        </copy>
+        <mvn>
+            <arg value="-X"/>
+            <!--<arg value="-U" />-->
+            <arg value="docker:build"/>
+            <arg value="-DpushImage"/>
+        </mvn>
+
+        <!--<sleep seconds="45" />
+        <get src="${project.health.url}" maxtime="2" ignoreerrors="false" retries="25" dest="${basedir}/target/${jar-deploy-get}.txt" skipexisting="false" verbose="true" />-->
+        <!-- exec executable="sh" outputproperty="v_code">
+            <arg value="-c" />
+            <arg value="svnversion | sed -e 's/^[^:]*://;s/[A-Za-z]//'" />
+        </exec -->
+        <!-- echo>Revision (app): ${v_code}</echo -->
+        <!-- replaceregexp file="AndroidManifest.xml" match='android:versionCode="0"' replace='android:versionCode="${v_code}"' / -->
+    </target>
+
+</project>
