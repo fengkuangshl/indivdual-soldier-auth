@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="individual-soldier-auth" default="mvn-clean">
+
+    <loadproperties srcFile="../../build.properties" encoding="UTF-8"/>
+    <import file="../../build-base.xml"/>
+    <property name="project.jar.filename" value="${ant.project.name}.jar"/>
+    <property name="project.filePath" value="${ant.project.name}" />
+    <property name="docker.java.jdk.filePath" value="../../jdk-8u261-linux-x64.rpm" />
+
+
+    <target name="mvn-package-test-deploy" depends="mvn-package-dev">
+        <property name="project.active" value="test" />
+        <antcall target="mvn-deploy-restart">
+            <param name="ip" value="192.168.1.29"/>
+            <param name="user" value="root"/>
+            <param name="password" value="Keywin1604"/>
+            <param name="project.health.url" value="http://192.168.1.29:9500/doc.html"/>
+            <param name="jar-deploy-get" value="192.168.1.29"/>
+        </antcall>
+    </target>
+    <target name="mvn-package-sztest-deploy" depends="mvn-package-uat">
+        <property name="project.active" value="sztest" />
+        <antcall target="mvn-deploy-restart">
+            <param name="ip" value="192.168.1.29"/>
+            <param name="user" value="root"/>
+            <param name="password" value="Keywin1604"/>
+            <param name="project.health.url" value="http://192.168.1.29:9500/doc.html"/>
+            <param name="jar-deploy-get" value="192.168.1.29"/>
+        </antcall>
+    </target>
+    <target name="mvn-package-uat-deploy" depends="mvn-package-uat">
+        <property name="project.active" value="uat" />
+        <antcall target="mvn-deploy-restart">
+            <param name="ip" value="172.16.79.43"/>
+            <param name="user" value="openlab"/>
+            <param name="password" value="CQMYG@#14dss"/>
+            <param name="project.health.url" value="http://172.16.79.43:9500/doc.html"/>
+            <param name="jar-deploy-get" value="172.16.79.43"/>
+        </antcall>
+    </target>
+
+    <target name="mvn-package-szbs-deploy" depends="mvn-package-prod">
+        <property name="project.active" value="szbs" />
+        <antcall target="mvn-deploy-restart">
+            <param name="ip" value="10.200.26.158"/>
+            <param name="user" value="root"/>
+            <param name="password" value="ADMIN@szncc"/>
+            <param name="project.health.url" value="http://10.200.26.158:9500/doc.html"/>
+            <param name="jar-deploy-get" value="10.200.26.158"/>
+        </antcall>
+        <antcall target="mvn-deploy-restart">
+            <param name="ip" value="10.200.26.2"/>
+            <param name="user" value="root"/>
+            <param name="password" value="ADMIN@szncc"/>
+            <param name="project.health.url" value="http://10.200.26.2:9500/doc.html"/>
+            <param name="jar-deploy-get" value="10.200.26.2"/>
+        </antcall>
+    </target>
+
+    <!--苏州现场环境  集群部署-->
+    <target name="mvn-package-gbase-deploy" depends="mvn-package-prod">
+        <property name="project.active" value="gbase" />
+        <antcall target="mvn-deploy-restart">
+            <param name="ip" value="10.200.26.62"/>
+            <param name="user" value="root"/>
+            <param name="password" value="ADMIN@szncc"/>
+            <param name="project.health.url" value="http://10.200.26.62:9500/doc.html"/>
+            <param name="jar-deploy-get" value="10.200.26.62"/>
+        </antcall>
+        <antcall target="mvn-deploy-restart">
+            <param name="ip" value="10.200.26.155"/>
+            <param name="user" value="root"/>
+            <param name="password" value="ADMIN@szncc"/>
+            <param name="project.health.url" value="http://10.200.26.155:9500/doc.html"/>
+            <param name="jar-deploy-get" value="10.200.26.155"/>
+        </antcall>
+    </target>
+</project>

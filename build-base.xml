@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="bulid.base" >
+
+	<property environment="env" />
+	<property name="project.root" value="${basedir}" />
+	<!-- Ant-contrib是使用Ant编写脚本最重要的补充,支持复杂的逻辑功能                      -->
+	<!-- antcontrib支持property重设 -->
+	<!-- Ant-contrib( http://ant-contrib.sourceforge.net/) 为 Ant 提供了与通常所使用的编程语言功能相同的 <if> 、 <for>、<switch>等逻辑判断任务，支持对字符串的排序<sortlist>任务，甚至还支持常见的数学运算，如加、减、乘、除、求余等功能。 -->
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<scriptdef name="propertyreset" language="javascript" description="Allows to assign @{property} new value">
+		<attribute name="name" />
+		<attribute name="value" />
+		project.setProperty(attributes.get("name"), attributes.get("value"));
+	</scriptdef>
+
+	<property name="project.name" value="${ant.project.name}" />
+	<property name="project.revision" value="1.0" />
+	<property name="SYS_EXEC_PATH" value="${env.Path}" />
+	<!-- 相关属性操作系统 -->
+	<!-- property name="window.sdk.dir" value="D:/dev-env/Java/jdk1.8.0_131" / -->
+	<!-- property name="other.sdk.dir" value="${env.JAVA_HOME}" / -->
+	<!--condition property="JAVA_HOME" value="${window.sdk.dir}" else="${other.sdk.dir}">
+        <os family="windows" />
+    </condition-->
+	<!-- property name="JAVA_HOME" value="${env.JAVA_HOME}" / -->
+	<!-- property name="MAVEN_HOME" value="${env.MAVEN_HOME}" / -->
+	<property name="MAVEN_CMD" value="mvn" />
+	<property name="MAVEN.EXECUTABLE" value="sh" />
+	<property name="MAVEN.LINE1" value="-c" />
+	<property name="JAVA_HOME" value="${ANT_JAVA_HOME}" />
+	<property name="MAVEN_HOME" value="${ANT_MAVEN_HOME}" />
+
+	<!--  判断操作系统   -->
+	<!-- set the operating system test properties -->
+	<condition property="isMac">
+		<os family="mac" />
+	</condition>
+	<condition property="isWindows">
+		<os family="windows" />
+	</condition>
+	<condition property="isUnix">
+		<os family="unix" />
+	</condition>
+
+	<!-- target重置属性 define the operating system specific targets -->
+	<target name="doMac" if="isMac">
+		<echo message="Came into the Mac target" />
+		<propertyreset name="MAVEN_CMD" value="mvn" />
+		<propertyreset name="MAVEN.EXECUTABLE" value="/bin/sh" />
+		<propertyreset name="MAVEN.LINE1" value="${MAVEN_HOME}/bin/${MAVEN_CMD}" />
+		<propertyreset name="MAVEN.LINE2" value="-c" />
+		<propertyreset name="MAVEN.LINE_MAX_PERM_SIZE" value="" />
+		<propertyreset name="MAVEN.LINE_Xms" value="" />
+		<propertyreset name="MAVEN.LINE_Xmx" value="" />
+		<propertyreset name="MAVEN.LINE_FILE_ENCODING" value="" />
+	</target>
+	<target name="doWindows" if="isWindows">
+		<echo message="Came into the Windows target" />
+		<propertyreset name="MAVEN_CMD" value="mvn.cmd" />
+		<propertyreset name="MAVEN.EXECUTABLE" value="cmd.exe" />
+		<propertyreset name="MAVEN.LINE1" value="/c" />
+		<propertyreset name="MAVEN.LINE2" value="${MAVEN_HOME}/bin/${MAVEN_CMD}" />
+		<propertyreset name="MAVEN.LINE_MAX_PERM_SIZE" value="-XX:MaxPermSize=128M" />
+		<propertyreset name="MAVEN.LINE_Xms" value="-Xms128m" />
+		<propertyreset name="MAVEN.LINE_Xmx" value="-Xmx512m" />
+		<propertyreset name="MAVEN.LINE_FILE_ENCODING" value="-Dfile.encoding=UTF-8" />
+	</target>
+	<target name="doUnix" if="isUnix">
+		<echo message="Came into the Unix target" />
+		<propertyreset name="MAVEN_CMD" value="mvn" />
+		<propertyreset name="MAVEN.EXECUTABLE" value="/bin/sh" />
+		<propertyreset name="MAVEN.LINE1" value="${MAVEN_HOME}/bin/${MAVEN_CMD}" />
+		<propertyreset name="MAVEN.LINE2" value="-c" />
+		<propertyreset name="MAVEN.LINE_MAX_PERM_SIZE" value="" />
+		<propertyreset name="MAVEN.LINE_Xms" value="" />
+		<propertyreset name="MAVEN.LINE_Xmx" value="" />
+		<propertyreset name="MAVEN.LINE_FILE_ENCODING" value="" />
+	</target>
+
+	<!-- initialize properties -->
+	<target name="os-mvn-init" depends="doMac, doWindows, doUnix">
+		<echo message="-------------------操作系统的名称:           ${os.name}" />
+		<echo message="-------------------JAVA_HOME:              ${JAVA_HOME}" />
+		<echo message="-------------------MAVEN_HOME:             ${MAVEN_HOME}" />
+		<tstamp>
+			<format property="NOW" pattern="yyyy-MM-dd HH:mm:ss" locale="cn" />
+		</tstamp>
+		<echo message="Started on ${TODAY} at ${TSTAMP}" level="warn" />
+		<echo message="******************Ant’s built-in properties******************" level="warn" />
+		<echo message="操作系统的名称:           ${os.name}" />
+		<echo message="项目引用的根路径:         ${basedir}" />
+		<echo message="Ant工具的根目录位置:      ${ant.home}" />
+		<echo message="构件文件的绝对路径:       ${ant.file}" />
+		<echo message="ant的版本信息:           ${ant.version}" />
+		<echo message="ant检测到的JVM版本:      ${ant.java.version}" />
+		<echo message="当前执行的项目名称及信息:  ${ant.project.name}" />
+		<echo message="Java的版本信息:          ${java.version}" />
+		<echo message="Java的根目录位置:        ${java.home}" />
+		<echo message="Java类库的文件的位置:     ${java.class.path}" />
+		<echo message="换行符:                  ${line.separator}" />
+		<echo message="用户的home目录:          ${user.home}" />
+		<echo message="******************System properties******************" level="warn" />
+		<echo message="Java installation directory:                        ${java.home}" />
+		<echo message="Java class format version number:                   ${java.class.version}" />
+		<echo message="Java class path:                                    ${java.class.path}" />
+		<echo message="List of paths to search when loading libraries:     ${java.library.path}" />
+		<echo message="Path of extension directory or directories:         ${java.ext.dirs}" />
+		<echo message="File separator ('/' on UNIX):                       ${file.separator}" />
+		<echo message="Path separator (':' on UNIX):                       ${path.separator}" />
+		<echo message="Line separator ('\n' on UNIX):                      ${line.separator}" />
+		<echo message="User's account name:                                ${user.name}" />
+		<echo message="******************Local ant properties******************" level="warn" />
+		<echo message="project.name:           ${project.name}" level="warn" />
+		<echo message="project.root:           ${project.root}" level="warn" />
+		<echo message="SYS_EXEC_PATH:          ${SYS_EXEC_PATH}" level="warn" />
+		<!--macro for maven -->
+		<property name="maven.executable" value="${MAVEN.EXECUTABLE}" />
+		<property name="maven.line1" value="${MAVEN.LINE1}" />
+		<property name="maven.line2" value="${MAVEN.LINE2}" />
+		<property name="maven.line3" value="" />		<!-- - -offline  -->
+		<property name="maven.line4" value="-Dtest=false" />
+		<echo message="maven.executable.before.env: ${env.Path}" />
+		<echo message="maven.executable: ${maven.executable}" />
+		<echo message="maven.line.system.param1:${MAVEN.LINE_MAX_PERM_SIZE}" />
+		<echo message="maven.line.system.param2:${MAVEN.LINE_Xms}" />
+		<echo message="maven.line.system.param3:${MAVEN.LINE_Xmx}" />
+		<echo message="maven.line.system.param4:${MAVEN.LINE_FILE_ENCODING}" />
+		<echo message="maven.line1: ${maven.line1}" />
+		<echo message="maven.line2: ${maven.line2}" />
+		<echo message="maven.line3: ${maven.line3}" />
+		<echo message="maven.line4: ${maven.line4}" />
+		<presetdef name="mvn">
+			<!-- 通过Shell调用 executable{windows:cmd.exe Linux:/bin/sh}，Windows必须加 /c，Unix则是加 –c -->
+			<!-- http://ant.apache.org/manual/Tasks/exec.html newenvironment="true" JDK需要在eclipse的ant中配置 -->
+			<exec failonerror="true" executable="${maven.executable}">
+				<!-- key的取值是系统环境变量里的，虽然系统环境变量不分大小写，但是这里要区分后面设置的值用分号或是冒号分隔。ANT自动转换成系统相关的表示。 -->
+				<env key="JAVA_HOME" path="${JAVA_HOME}" />
+				<env key="CLASSPATH" path="${JAVA_HOME}/lib/tools.jar" />
+				<env key="M2_HOME" path="${MAVEN_HOME}" />
+				<!-- env key="MAVEN_OPTS" path="-Dfile.encoding=UTF-8" / -->
+				<env key="Path" path="${env.Path}:${JAVA_HOME}/bin:${M2_HOME}/bin:${GRADLE_HOME}/bin:" />
+				<env key="MAVEN_TERMINATE_CMD" value="off" />
+				<!-- arg line 中把每个空格分隔的字符串作为参数传给调用程序 -->
+				<arg line="${MAVEN.LINE_MAX_PERM_SIZE}" />
+				<arg line="${MAVEN.LINE_Xms}" />
+				<arg line="${MAVEN.LINE_Xmx}" />
+				<!-- 单个参数 -->
+				<arg line="${MAVEN.LINE_FILE_ENCODING}" />
+				<arg line="${maven.line1}" />
+				<arg line="${maven.line2}" />
+				<arg line="${maven.line3}" />
+				<arg line="${maven.line4}" />
+			</exec>
+		</presetdef>
+<!--		<delete dir="${basedir}/src/main/webapps/WEB-INF/classes/" />-->
+<!--		<delete includeEmptyDirs="true">-->
+<!--			&lt;!&ndash;fileset dir="${basedir}/src/main/webapps/WEB-INF/lib" includes="**/*" defaultexcludes="no"/ &ndash;&gt;-->
+<!--			<fileset dir="${basedir}/target/" includes="**/*" defaultexcludes="no" />-->
+<!--		</delete>-->
+<!--		<mkdir dir="${basedir}/target" />-->
+	</target>
+
+	<target name="mvn-eclipse" description="生成 Eclipse 项目文件" depends="os-mvn-init">
+		<mvn>
+			<arg value="-X" />
+			<arg value="-U" />
+			<!--arg value="eclipse:clean" / -->
+			<arg value="eclipse:eclipse" />
+			<!-- 查看依赖 -->
+			<arg value="dependency:resolve" />
+			<!-- 查看项目依赖情况， 打印出项目的整个依赖树 -->
+			<arg value="dependency:tree" />
+			<!-- 帮助你分析依赖关系, 用来取出无用, 重复依赖的好帮手 -->
+			<arg value="dependency:analyze" />
+		</mvn>
+	</target>
+
+	<target name="mvn-clean" description="除目标目录中的生成结果" depends="os-mvn-init">
+		<mvn>
+<!--			<arg value="-X" />-->
+			<arg value="clean" />
+		</mvn>
+		<mkdir dir="${basedir}/target" />
+	</target>
+
+	<target name="cleanEclipseTomcatBuildWork" description="--> 清除所有构建相关的临时目录文件">
+		<!-- 清空本地的构建中间目录 -->
+		<delete verbose="true" includeemptydirs="true" failonerror="false">
+			<fileset dir="${basedir}/target">
+				<include name="**/*" />
+			</fileset>
+			<fileset dir="${basedir}/work">
+				<include name="**/*" />
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="mvn-compile" description="编译源代码" depends="os-mvn-init">
+		<mvn>
+			<arg value="-X" />
+			<arg value="-e" />
+			<arg value="compile" />
+		</mvn>
+	</target>
+
+	<target name="mvn-local-run" depends="mvn-clean">
+		<mvn>
+			<arg value="-X" />
+			<!-- arg value="-U" / -->
+			<arg value="-Dmaven.test.skip=true" />
+			<arg value="spring-boot:run" />
+		</mvn>
+	</target>
+
+	<target name="mvn-package-local" depends="mvn-clean">
+		<mvn>
+			<arg value="-P${env-profile-name}" />
+			<arg value="-Dmaven.test.skip=true" />
+			<!-- 依据项目生成 jar 文件 -->
+			<arg value="package" />
+		</mvn>
+	</target>
+
+	<target name="mvn-build-docker" depends="mvn-package-local">
+        <copy todir="${basedir}/target" overwrite="true" file="${docker.java.jdk.filePath}" />
+		<mvn>
+			<arg value="-X" />
+			<!--<arg value="-U" />-->
+			<arg value="docker:build" />
+		</mvn>
+	</target>
+	<target name="mvn-package-docker-docker" >
+		<antcall target="mvn-build-docker">
+			<param name="env-profile-name" value="docker" />
+		</antcall>
+	</target>
+   <!-- <target name="mvn-package-local-dockerfile-build" depends="mvn-package-local">
+        <copy todir="${basedir}/target" overwrite="true" file="${docker.java.jdk.filePath}" />
+        <mvn>
+            <arg value="-X" />
+            &lt;!&ndash;<arg value="-U" />&ndash;&gt;
+            <arg value="dockerfile:build" />
+        </mvn>
+    </target>-->
+	<target name="mvn-deploy-restart" >
+		<sleep seconds="1" />
+		<available file="${project.jar.filename}" filepath="${basedir}/target/" property="war.present" />
+		<fail unless="war.present">本地打包失败,无法继续进行发布!</fail>
+		<sshexec host="${ip}" username="${user}" password="${password}" trust="true" command="
+cd /app/deploy/business;
+./general-start-stop.sh  stop  ${project.jar.filename};
+echo 'successful stop ${project.filePath} ';
+cd /app/deploy/business;
+if [ -f '${project.jar.filename}' ]; then
+	if [ -d backup ]; then
+		ls;
+	else
+		mkdir backup;
+	fi;
+    if [ -d backup/'${project.filePath}' ]; then
+    	ls;
+    else
+    	mkdir backup/'${project.filePath}';
+    fi;
+    nowtime=`date +%Y-%m-%d-%H:%M:%S`;
+	mv '${project.jar.filename}'  backup/'${project.filePath}'/'${project.jar.filename}.bak'.${nowtime};
+fi;
+echo 'Service ${project.filePath} backup completed';
+"/>
+		<echo message="将jar[${project.jar.filename}]上传服务器" />
+		<scp file="${basedir}/target/${project.jar.filename}" todir="${user}:${password}@${ip}: /app/deploy/business/" trust="true" verbose="true" />
+		<echo message="上传jar完毕" />
+		<echo>远程启动...</echo>
+		<sshexec host="${ip}" username="${user}" password="${password}" trust="true" command="
+cd /app/deploy/business;
+ls;
+./general-start-stop.sh  start  ${project.jar.filename} ${project.active};
+echo $?;
+echo 'successful deploy !!!';
+">
+		</sshexec>
+		<!--<sleep seconds="45" />
+        <get src="${project.health.url}" maxtime="2" ignoreerrors="false" retries="25" dest="${basedir}/target/${jar-deploy-get}.txt" skipexisting="false" verbose="true" />-->
+		<!-- exec executable="sh" outputproperty="v_code">
+            <arg value="-c" />
+            <arg value="svnversion | sed -e 's/^[^:]*://;s/[A-Za-z]//'" />
+        </exec -->
+		<!-- echo>Revision (app): ${v_code}</echo -->
+		<!-- replaceregexp file="AndroidManifest.xml" match='android:versionCode="0"' replace='android:versionCode="${v_code}"' / -->
+	</target>
+	<target name="mvn-package" depends="mvn-clean">
+		<mvn>
+			<arg value="-X" />
+			<!--arg value="-U" / -->
+			<arg value="-P${env-profile-name}" />
+			<arg value="-Dmaven.test.skip=true" />
+			<!-- 依据项目生成 jar 文件 -->
+			<arg value="package" />
+		</mvn>
+	</target>
+
+	<target name="mvn-package-dev">
+		<antcall target="mvn-package">
+			<param name="env-profile-name" value="dev" />
+		</antcall>
+	</target>
+
+	<target name="mvn-package-uat">
+		<antcall target="mvn-package">
+			<param name="env-profile-name" value="uat" />
+		</antcall>
+	</target>
+
+	<target name="mvn-package-prod">
+		<antcall target="mvn-package">
+			<param name="env-profile-name" value="prod" />
+		</antcall>
+	</target>
+
+	<target name="mvn-local-install" description="安装jar包到本地仓库" depends="mvn-clean">
+		<mvn>
+			<arg value="-X" />
+			<!-- arg value="-U" / -->
+			<arg value="-Dmaven.test.skip=true" />
+			<arg value="install" />
+		</mvn>
+	</target>
+</project>

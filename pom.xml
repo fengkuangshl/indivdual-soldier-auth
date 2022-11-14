@@ -46,6 +46,14 @@
         <log4j2.version>2.15.0</log4j2.version>
         <spring-cloud-context.version>2.2.5.RELEASE</spring-cloud-context.version>
         <hutool.version>5.1.0</hutool.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+        <docker.image.prefix>key-win</docker.image.prefix>
+        <!-- docker私有仓库地址 -->
+        <docker.registry.url>192.168.1.11:8083</docker.registry.url>
+        <docker.registry.host>http://192.168.1.11:2375</docker.registry.host>
+        <ant.version>1.10.7</ant.version>
     </properties>
 
     <dependencies>
@@ -266,6 +274,37 @@
                         <archive>
                             <addMavenDescriptor>false</addMavenDescriptor>
                         </archive>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>com.spotify</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <version>1.2.2</version>
+                    <configuration>
+                        <serverId>docker-hub</serverId>   <!--mvn setting.xml配置的那个id-->
+                        <imageName>${docker.registry.url}/${docker.image.prefix}/${project.artifactId}</imageName>
+                        <!-- 镜像tag-->
+                        <imageTags>
+                            <imageTag>latest</imageTag>
+                        </imageTags>
+                        <!--覆盖相同标签镜像-->
+                        <forceTags>true</forceTags>
+                        <dockerDirectory>src/main/docker</dockerDirectory>
+                        <!-- docker远程服务器地址 -->
+                        <dockerHost>${docker.registry.host}</dockerHost>
+                        <!-- 上传镜像-->
+                        <!--                        <pushImage>true</pushImage>-->
+                        <pushImageTag>true</pushImageTag>
+                        <!-- 重试次数-->
+                        <retryPushCount>3</retryPushCount>
+                        <resources>
+                            <resource>
+                                <targetPath>/</targetPath>
+                                <directory>${project.build.directory}</directory>
+                                <include>${project.build.finalName}.jar</include>
+                                <include>jdk-8u261-linux-x64.rpm</include>
+                            </resource>
+                        </resources>
                     </configuration>
                 </plugin>
             </plugins>
