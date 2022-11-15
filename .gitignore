@@ -5,6 +5,7 @@ target/
 !**/src/test/**/target
 logs/
 img/
+!**/docker/dist
 
 ### STS ###
 .apt_generated

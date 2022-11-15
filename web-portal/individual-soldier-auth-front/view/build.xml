@@ -7,6 +7,8 @@
     <target name="deploy-auth-front-docker" depends="os-mvn-init">
         <delete dir="${basedir}/build"/>
         <delete dir="${basedir}/docker/dist"/>
+        <delete dir="${basedir}/target"/>
+        <mkdir dir="${basedir}/target"/>
         <exec executable="cmd.exe">
             <arg line="/c npm run build:docker"/>
         </exec>
