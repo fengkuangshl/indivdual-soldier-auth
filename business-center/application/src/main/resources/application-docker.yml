@@ -60,7 +60,7 @@ spring:
 
       filter:
         wall:
-          enabled: true  # 开启SQL防火墙功能
+          enabled: false  # 开启SQL防火墙功能
           config:
             select-allow: true # 允许执行Select查询操作
             delete-allow: false # 不允许执行delete操作

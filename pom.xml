@@ -293,7 +293,7 @@
                         <!-- docker远程服务器地址 -->
                         <dockerHost>${docker.registry.host}</dockerHost>
                         <!-- 上传镜像-->
-                        <!--                        <pushImage>true</pushImage>-->
+                        <!--<pushImage>true</pushImage>-->
                         <pushImageTag>true</pushImageTag>
                         <!-- 重试次数-->
                         <retryPushCount>3</retryPushCount>

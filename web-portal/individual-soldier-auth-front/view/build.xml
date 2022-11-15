@@ -17,7 +17,6 @@
             <arg value="-X"/>
             <!--<arg value="-U" />-->
             <arg value="docker:build"/>
-            <arg value="-DpushImage"/>
         </mvn>
 
         <!--<sleep seconds="45" />

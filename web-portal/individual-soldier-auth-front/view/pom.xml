@@ -40,11 +40,16 @@
                         <!-- docker远程服务器地址 -->
                         <dockerHost>${docker.registry.host}</dockerHost>
                         <!-- 上传镜像-->
-                        <!--                        <pushImage>true</pushImage>-->
+                        <!--<pushImage>false</pushImage>-->
                         <pushImageTag>true</pushImageTag>
                         <!-- 重试次数-->
                         <retryPushCount>3</retryPushCount>
-                        <noCache>true</noCache>
+                        <resources>
+                            <resource>
+                                <targetPath>/</targetPath>
+                                <directory>${project.build.directory}</directory>
+                            </resource>
+                        </resources>
                     </configuration>
                 </plugin>
             </plugins>

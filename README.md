@@ -2071,4 +2071,68 @@ Vue.filter('dateTimeFormat', function(dateTime: string | number | Date): string 
 22.2、使用filter
 {{ scope.row.createDate | dateTimeFormat }}
 ```
+##docker化的部署使用说明
+1、docker的部署有两种方式：
+```
+1.1、通过docker或docker-compose部署 
+1.2、通过rancher+k8s容器化部署
+```
+2、打包应用生成docker镜像,上传至docker私服仓库,方式有两种：
+```
+2.1、通过docker-maven-plugin插件上传docker镜像至私服仓库
+2.2、通过jenkins打包生成docker镜像上传至私服仓库
+```
++ 1、docker的使用公共配置
+````
+1.1、pom.xml
+1.2、jdk-8u261-linux-x64.rpm
+1.3、build-base.xml
+1.4、build.properties
+````
++ 2、后端的docker的使用
+    + 2.1、dockerfile
+    + 2.2、build.xml
+    + 2.3、pom.xml
++ 3、前端的docker的使用
+    + 3.1、dockerfile
+    + 3.2、build.xml
+    + 3.3、pom.xml
+##git上传大文件
++ 1、安装lfs
+````
+https://git-lfs.github.com/
+````
 
++ 2、开启lfs功能
+````
+git lfs install
+````
++ 3、选择文件类型（）这里我选择的是rpm类型
+```
+git lfs track "jdk-8u261-linux-x64.rpm"
+```
++ 4、然后配置远程仓库
+```
+执行完上面的命令后，会生成一个.gitattributes文件，要将其上传到远程gitee仓库。这里我把.gitattributes和大文件分开上传。
+
+git add .gitattributes
+git commit -m '上传.gitattributes'
+git push origin master（如果提交不了，后面可以加一个-f）
+```
++ 5、上传大文件
+```
+git add jdk-8u261-linux-x64.rpm
+git commit -m "上传大文件"
+git push origin master
+```
+ + 6、解决报错
+```
+报错信息：
+warning: Authentication error: Authentication required: LFS only supported repository in paid enterprise.
+batch response: LFS only supported repository in paid enterprise.
+Uploading LFS objects:   0% (0/1), 0 B | 0 B/s, done.
+error: failed to push some refs to 'https://xxx.xx/xxxx/xxxx.git'
+解决方案:
+6.1、删除./git/hooks/pre-push文件
+6.2、再次 git push origin master
+```
