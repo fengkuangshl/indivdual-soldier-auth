@@ -2215,7 +2215,7 @@ Vue.filter('dateTimeFormat', function(dateTime: string | number | Date): string 
 2.1、通过jenkins打包生成docker镜像上传至私服仓库
 2.2、通过docker-maven-plugin插件上传docker镜像至私服仓库
 ```
-+ 3、docker的使用公共配置(docker-maven-plugin方式配置)
++ 3、docker的使用公共配置(docker-maven-plugin方式配置),在根pom.xml中配置ad
 ````
 3.1、docker-maven-plugin的配置，主要是配置serverId（主要是登录docker仓库中，这个对应的是setting.xml中server配置的id）、imageName、dockerDirectory、dockerHost等
 <build>
