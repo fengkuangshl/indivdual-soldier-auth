@@ -71,36 +71,6 @@
     <dependencyManagement>
         <dependencies>
 
-            <!--电子围栏 -->
-            <dependency>
-                <groupId>com.key.win</groupId>
-                <artifactId>electronic-fence-center</artifactId>
-                <version>${core.version}</version>
-            </dependency>
-            <!--事件日志 -->
-            <dependency>
-                <groupId>com.key.win</groupId>
-                <artifactId>event-log-center</artifactId>
-                <version>${core.version}</version>
-            </dependency>
-            <!--即时聊天 -->
-            <dependency>
-                <groupId>com.key.win</groupId>
-                <artifactId>im-center</artifactId>
-                <version>${core.version}</version>
-            </dependency>
-            <!--音视频会议 -->
-            <dependency>
-                <groupId>com.key.win</groupId>
-                <artifactId>meeting-center</artifactId>
-                <version>${core.version}</version>
-            </dependency>
-            <!--sos报警 -->
-            <dependency>
-                <groupId>com.key.win</groupId>
-                <artifactId>sos-center</artifactId>
-                <version>${core.version}</version>
-            </dependency>
             <!-- 附件中心 -->
             <dependency>
                 <groupId>com.key.win</groupId>

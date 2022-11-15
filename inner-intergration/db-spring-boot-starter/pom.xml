@@ -42,12 +42,12 @@
             <optional>true</optional>
         </dependency>
         <!-- druid数据库连接池 -->
-        <dependency>
+
+        <!-- druid 官方 star        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
             <version>${druid.version}</version>
-        </dependency>
-        <!-- druid 官方 starter -->
+        </dependency>ter -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>

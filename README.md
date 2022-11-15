@@ -797,6 +797,134 @@ spring:
   21.3.1、websocket client端一般都是通过http发起请请求，地址http://x.x.x.x:9902/ws/**,入口类：Controller:WebSocketCtrl
   21.3.2、websocket server端会直接将消息推送至websocket的client端，MessageSendUtil.java和WebSocketUtil是两个推送的工具类
 ```
++ 22、druid的使用
+```
+22.1、在pom中加入websocket-spring-boot-starter依赖
+<dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>druid-spring-boot-starter</artifactId>
+    <version>${druid.version}</version>
+</dependency>
+22.2、yml中的配置,使用方式一
+druid:
+      #连接池配置(通常来说，只需要修改initialSize、minIdle、maxActive
+      initial-size: 1
+      max-active: 20
+      min-idle: 1
+      # 配置获取连接等待超时的时间
+      max-wait: 60000
+      #打开PSCache，并且指定每个连接上PSCache的大小
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      validation-query: SELECT 'x'
+      test-on-borrow: false
+      test-on-return: false
+      test-while-idle: true
+      #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      time-between-eviction-runs-millis: 60000
+      #配置一个连接在池中最小生存的时间，单位是毫秒
+      min-evictable-idle-time-millis: 300000
+      filters: stat,wall
+
+
+      # StatViewServlet监控器。开启后，访问http://域名/druid/index.html
+      stat-view-servlet:
+        enabled: true # 开启 StatViewServlet，即开启监控功能
+        login-username: daniel # 访问监控页面时登录的账号
+        login-password: 1234 # 密码
+        url-pattern: /druid/* # Servlet的映射地址，不填写默认为"/druid/*"。如填写其它地址，访问监控页面时，要使用相应的地址
+        reset-enable: false # 是否允许重置数据（在页面的重置按钮）。（停用后，依然会有重置按钮，但重置后不会真的重置数据）
+        # allow: 192.168.1.2,192.168.1.1 # 监控页面访问白名单。默认为127.0.0.1。与黑名单一样，支持子网掩码，如128.242.127.1/24。多个ip用英文逗号分隔
+        # deny: 18.2.1.3 # 监控页面访问黑名单
+
+
+      # 配置 WebStatFilter（StatFilter监控器中的Web模板）
+      web-stat-filter:
+        enabled: true # 开启 WebStatFilter，即开启监控功能中的 Web 监控功能
+        url-pattern: /* # 映射地址，即统计指定地址的web请求
+        exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*' # 不统计的web请求，如下是不统计静态资源及druid监控页面本身的请求
+        session-stat-enable: true # 是否启用session统计
+        session-stat-max-count: 1 # session统计的最大个数，默认是1000。当统计超过这个数，只统计最新的
+        principal-session-name: userName # 所存用户信息的serssion参数名。Druid会依照此参数名读取相应session对应的用户名记录下来（在监控页面可看到）。如果指定参数不是基础数据类型，将会自动调用相应参数对象的toString方法来取值
+        principal-cookie-name: userName # 与上类似，但这是通过Cookie名取到用户信息
+        profile-enable: true # 监控单个url调用的sql列表（试了没生效，以后需要用再研究）
+
+      filter:
+        wall:
+          enabled: false  # 开启SQL防火墙功能
+          config:
+            select-allow: true # 允许执行Select查询操作
+            delete-allow: false # 不允许执行delete操作
+            create-table-allow: false # 不允许创建表
+            # 更多用法，参考官方文档：https://github.com/alibaba/druid/wiki/%E9%85%8D%E7%BD%AE-wallfilter
+22.3、yml中的配置,使用方式二
+  datasource:
+      ...
+      druid:
+        # JDBC 配置(驱动类自动从url的mysql识别,数据源类型自动识别)
+        core:
+          url: jdbc:mysql://127.0.0.1:3307/single-soldier-wireless?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+          username: root
+          password: key-win123
+          driver-class-name:  com.mysql.cj.jdbc.Driver
+        log:
+          url: jdbc:mysql://127.0.0.1:3307/log-center?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+          username: root
+          password: key-win123
+          driver-class-name:  com.mysql.cj.jdbc.Driver
+        #连接池配置(通常来说，只需要修改initialSize、minIdle、maxActive
+        initial-size: 1
+        max-active: 20
+        min-idle: 1
+        # 配置获取连接等待超时的时间
+        max-wait: 60000
+        #打开PSCache，并且指定每个连接上PSCache的大小
+        pool-prepared-statements: true
+        max-pool-prepared-statement-per-connection-size: 20
+        validation-query: SELECT 'x'
+        test-on-borrow: false
+        test-on-return: false
+        test-while-idle: true
+        #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+        time-between-eviction-runs-millis: 60000
+        #配置一个连接在池中最小生存的时间，单位是毫秒
+        min-evictable-idle-time-millis: 300000
+        filters: stat,wall
+  
+  
+        # StatViewServlet监控器。开启后，访问http://域名/druid/index.html
+        stat-view-servlet:
+          enabled: true # 开启 StatViewServlet，即开启监控功能
+          login-username: daniel # 访问监控页面时登录的账号
+          login-password: 1234 # 密码
+          url-pattern: /druid/* # Servlet的映射地址，不填写默认为"/druid/*"。如填写其它地址，访问监控页面时，要使用相应的地址
+          reset-enable: false # 是否允许重置数据（在页面的重置按钮）。（停用后，依然会有重置按钮，但重置后不会真的重置数据）
+          # allow: 192.168.1.2,192.168.1.1 # 监控页面访问白名单。默认为127.0.0.1。与黑名单一样，支持子网掩码，如128.242.127.1/24。多个ip用英文逗号分隔
+          # deny: 18.2.1.3 # 监控页面访问黑名单
+  
+  
+        # 配置 WebStatFilter（StatFilter监控器中的Web模板）
+        web-stat-filter:
+          enabled: true # 开启 WebStatFilter，即开启监控功能中的 Web 监控功能
+          url-pattern: /* # 映射地址，即统计指定地址的web请求
+          exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*' # 不统计的web请求，如下是不统计静态资源及druid监控页面本身的请求
+          session-stat-enable: true # 是否启用session统计
+          session-stat-max-count: 1 # session统计的最大个数，默认是1000。当统计超过这个数，只统计最新的
+          principal-session-name: userName # 所存用户信息的serssion参数名。Druid会依照此参数名读取相应session对应的用户名记录下来（在监控页面可看到）。如果指定参数不是基础数据类型，将会自动调用相应参数对象的toString方法来取值
+          principal-cookie-name: userName # 与上类似，但这是通过Cookie名取到用户信息
+          profile-enable: true # 监控单个url调用的sql列表（试了没生效，以后需要用再研究）
+  
+        filter:
+          wall:
+            enabled: false  # # 开启SQL防火墙功能 WallFilter得check未通过，delete删除不被允许 当前项目不允许数据库删除，删除为逻辑删除，修改状态值等
+            config:
+              select-allow: true # 允许执行Select查询操作
+              delete-allow: false # 不允许执行delete操作
+              create-table-allow: false # 不允许创建表
+              # 更多用法，参考官方文档：https://github.com/alibaba/druid/wiki/%E9%85%8D%E7%BD%AE-wallfilter
+21.4、通过 http://127.0.0.1:9902/druid/index.html 访问查看，daniel/1234
+```
+
 ##前端系统功能或模块的使用说明
 + 1、前端的路径在项目中的web-portal文件夹下的individual-soldier-auth-front下的view文件中，目前有三个环境变量，既dev、uat、prod。主要配置了build文件之后的输入目录信息，环境变量、及访问的api，在dev环境中采用的代理模式，主要解决在dev环境中，因为没有登录而造成的跨域问题。修改后端的请求路径，请在这三个文件中修改
 ```
