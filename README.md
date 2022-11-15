@@ -230,7 +230,7 @@ spring:
     8.3.2、在目标方法或类上完成@DataSource(name = "log")注解的配置，标明此方法或类使用数据log数据源
     8.3.3、如果还想配置更多的数据源，请参考mybatis-plus中的DS组件
 ```
-9、log-spring-boot-starter组件的使用，记录系统的输入输出参数
++ 9、log-spring-boot-starter组件的使用，记录系统的输入输出参数
 ```
 9.1、在pom中加入log-spring-boot-starter依赖
 <dependency>
@@ -248,7 +248,7 @@ public Result delete(@PathVariable Long id) {
 }
 9.3、需要注意的是，如果recordRequestParam的值为true时，会将此流水记录保存至数据库的sys_log表中
 ```
-10、mongo-spring-boot-starter组件的使用
++ 10、mongo-spring-boot-starter组件的使用
 ```
 10.1、在pom中加入mongo-spring-boot-starter依赖
 <dependency>
@@ -806,7 +806,12 @@ spring:
     <version>${druid.version}</version>
 </dependency>
 22.2、yml中的配置,使用方式一
-druid:
+  datasource:
+    username: root
+    password: key-win123
+    url: jdbc:mysql://127.0.0.1:3307/individual-soldier-auth?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    druid:
       #连接池配置(通常来说，只需要修改initialSize、minIdle、maxActive
       initial-size: 1
       max-active: 20
@@ -2200,31 +2205,331 @@ Vue.filter('dateTimeFormat', function(dateTime: string | number | Date): string 
 {{ scope.row.createDate | dateTimeFormat }}
 ```
 ##docker化的部署使用说明
-1、docker的部署有两种方式：
++ 1、docker的部署有两种方式：
 ```
 1.1、通过docker或docker-compose部署 
 1.2、通过rancher+k8s容器化部署
 ```
-2、打包应用生成docker镜像,上传至docker私服仓库,方式有两种：
++ 2、打包应用生成docker镜像,上传至docker私服仓库,方式有两种：
 ```
-2.1、通过docker-maven-plugin插件上传docker镜像至私服仓库
-2.2、通过jenkins打包生成docker镜像上传至私服仓库
+2.1、通过jenkins打包生成docker镜像上传至私服仓库
+2.2、通过docker-maven-plugin插件上传docker镜像至私服仓库
 ```
-+ 1、docker的使用公共配置
++ 3、docker的使用公共配置(docker-maven-plugin方式配置)
 ````
-1.1、pom.xml
-1.2、jdk-8u261-linux-x64.rpm
-1.3、build-base.xml
-1.4、build.properties
+3.1、docker-maven-plugin的配置，主要是配置serverId（主要是登录docker仓库中，这个对应的是setting.xml中server配置的id）、imageName、dockerDirectory、dockerHost等
+<build>
+    <pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>1.2.2</version>
+                <configuration>
+                    <serverId>docker-hub</serverId>   <!--mvn setting.xml中server配置的那个id-->
+                    <imageName>${docker.registry.url}/${docker.image.prefix}/${project.artifactId}</imageName>
+                    <!-- 镜像tag-->
+                    <imageTags>
+                        <imageTag>latest</imageTag>
+                    </imageTags>
+                    <!--覆盖相同标签镜像-->
+                    <forceTags>true</forceTags>
+                    <!--Dockerfile文件的配置-->
+                    <dockerDirectory>src/main/docker</dockerDirectory>
+                    <!-- docker远程服务器地址 -->
+                    <dockerHost>${docker.registry.host}</dockerHost>
+                    <!-- 上传镜像-->
+                    <!--<pushImage>true</pushImage>-->
+                    <pushImageTag>true</pushImageTag>
+                    <!-- 重试次数-->
+                    <retryPushCount>3</retryPushCount>
+                    <resources>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                            <include>jdk-8u261-linux-x64.rpm</include>
+                        </resource>
+                    </resources>
+                </configuration>
+            </plugin>
+       </plugins>
+    </pluginManagement> 
+</build>   
+3.2、settings.xml的配置，主要是配置serverId（主要和上边的serverId对应,提供docker登录时的用户名和密码)
+<servers>
+    <server>
+        <id>docker-hub</id>
+        <username>admin</username>
+        <password>admin123</password>
+    </server>
+</servers>
+3.4、docker-maven-plugin其它的变量引用
+<properties>
+    <docker.image.prefix>key-win</docker.image.prefix>
+    <!-- docker私有仓库地址 -->
+    <docker.registry.url>192.168.1.11:8083</docker.registry.url>
+    <docker.registry.host>http://192.168.1.11:2375</docker.registry.host>
+</properties>
+3.5、jdk-8u261-linux-x64.rpm 为应用的jdk的版本
+3.6、build-base.xml 是一个ant插件的应用，主要是方便开发人员以双击形式操作调用maven命令打包发布docker镜像，主要用以下ant脚本：
+<target name="mvn-clean" description="除目标目录中的生成结果" depends="os-mvn-init">
+    <mvn>
+        <!--<arg value="-X" />-->
+        <arg value="clean" />
+    </mvn>
+    <mkdir dir="${basedir}/target" />
+</target>
+<target name="mvn-package-local" depends="mvn-clean">
+    <mvn>
+        <arg value="-P${env-profile-name}" />
+        <arg value="-Dmaven.test.skip=true" />
+        <!-- 依据项目生成 jar 文件 -->
+        <arg value="package" />
+    </mvn>
+</target>
+<target name="mvn-build-docker" depends="mvn-package-local">
+    <copy todir="${basedir}/target" overwrite="true" file="${docker.java.jdk.filePath}" />
+    <mvn>
+        <arg value="-X" />
+        <!--<arg value="-U" />-->
+        <arg value="docker:build" />
+    </mvn>
+</target>
+<target name="mvn-package-docker-docker" >
+    <antcall target="mvn-build-docker">
+        <param name="env-profile-name" value="docker" />
+    </antcall>
+</target>
+3.7、build.properties ant打包配置文件，主要是配置jdk和maven的路径信息
+ANT_MAVEN_HOME=D:/dev-env/apache-maven-3.3.9
+ANT_JAVA_HOME=D:/dev-env/Java/jdk1.8.0_102
 ````
-+ 2、后端的docker的使用
-    + 2.1、dockerfile
-    + 2.2、build.xml
-    + 2.3、pom.xml
-+ 3、前端的docker的使用
-    + 3.1、dockerfile
-    + 3.2、build.xml
-    + 3.3、pom.xml
++ 4、后端的docker的使用
+````
+4.1、pom.xml配置，主要是配置spring-boot-maven-plugin，定义jar的名称
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>repackage</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+    <finalName>${project.artifactId}</finalName>
+</build>
+4.2、build-base.xml
+<project name="xxx" default="mvn-clean">
+    <loadproperties srcFile="../../build.properties" encoding="UTF-8"/><!--注意build.properties的相对路径-->
+    <import file="../../build-base.xml"/><!--注意build-base.xml的相对路径-->
+    <property name="project.jar.filename" value="${ant.project.name}.jar"/>
+    <property name="project.filePath" value="${ant.project.name}" />
+    <property name="docker.java.jdk.filePath" value="../../jdk-8u261-linux-x64.rpm" /><!--注意jdk-8u261-linux-x64.rpm的相对路径-->
+</project>
+4.3、Dockerfile文件的配置，位置于当前项目中的src/main/docker目录下
+
+FROM centos:centos7.1.1503
+#拷贝jdk
+ADD jdk-8u261-linux-x64.rpm jdk-8u261-linux-x64.rpm
+RUN rpm -ivh jdk-8u261-linux-x64.rpm
+RUN rm jdk-8u261-linux-x64.rpm
+#设置环境变量
+ENV JAVA_HOME=/usr/java/jdk1.8.0_261-amd64
+ENV JRE_HOME=$JAVA_HOME/jre
+ENV CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$JRE_HOME/lib:$CLASSPATH
+ENV PATH=/sbin:$JAVA_HOME/bin:$PATH
+#查看环境变量
+RUN java -version
+ENV LC_ALL=zh_CN.utf8
+ENV LANG=zh_CN.utf8
+ENV LANGUAGE=zh_CN.utf8
+RUN localedef -c -f UTF-8 -i zh_CN zh_CN.utf8
+#RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
+VOLUME /tmp
+#注意xxxx要改写成自己的打jar后的jar的名称
+ADD xxxx.jar app.jar 
+#RUN apk --no-cache add tzdata  && \
+#    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+#    echo "Asia/Shanghai" > /etc/timezone
+#设置时间
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+RUN  date +'%x %X.%N'
+RUN sh -c 'touch /app.jar'
+ENV JAVA_OPTS=""
+ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app.jar" ]
+4.4、application-docker.yml的配置（一定要有一个application-docker.yml文件，因为应用ant打包发布时传进去的就是docker变量），这里主要是数据库配置和redis配置，数据库建议配置:192.168.1.29，redis建议配置:192.168.1.13
+4.4.1、数据库配置:
+spring:
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://192.168.1.29:3306/individual-soldier-auth?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+4.4.2、redis配置:
+spring:
+  redis:
+    ################### redis 单机版 start ##########################
+    host: 192.168.1.13
+    port: 6379
+    timeout: 6000
+    database: 1
+    lettuce:
+      pool:
+        max-active: 10 # 连接池最大连接数（使用负值表示没有限制）,如果赋值为-1，则表示不限制；如果pool已经分配了maxActive个jedis实例，则此时pool的状态为exhausted(耗尽)
+        max-idle: 8   # 连接池中的最大空闲连接 ，默认值也是8
+        max-wait: 100 # # 等待可用连接的最大时间，单位毫秒，默认值为-1，表示永不超时。如果超过等待时间，则直接抛出JedisConnectionException
+        min-idle: 2    # 连接池中的最小空闲连接 ，默认值也是0
+      shutdown-timeout: 100ms
+    ################### redis 单机版 end ##########################
+    #    cluster:
+    #      nodes: 130.75.131.237:7000,130.75.131.238:7000,130.75.131.239:7000,130.75.131.237:7001,130.75.131.238:7001,130.75.131.239:7001
+    #        #130.75.131.237:7000,130.75.131.238:7000,130.75.131.239:7000,130.75.131.237:7001,130.75.131.238:7001,130.75.131.239:7001
+    #        #192.168.3.157:7000,192.168.3.158:7000,192.168.3.159:7000,192.168.3.157:7001,192.168.3.158:7001,192.168.3.159:7001
+    #    timeout: 1000 # 连接超时时间（毫秒）
+    #    lettuce:
+    #      pool:
+    #        max-active: 10 # 连接池最大连接数（使用负值表示没有限制）,如果赋值为-1，则表示不限制；如果pool已经分配了maxActive个jedis实例，则此时pool的状态为exhausted(耗尽)
+    #        max-idle: 8   # 连接池中的最大空闲连接 ，默认值也是8
+    #        max-wait: 100 # # 等待可用连接的最大时间，单位毫秒，默认值为-1，表示永不超时。如果超过等待时间，则直接抛出JedisConnectionException
+    #        min-idle: 2    # 连接池中的最小空闲连接 ，默认值也是0
+    #      shutdown-timeout: 100ms
+4.5、将build.xml拖拽至idea中的ant面板中，打到其中的bulid.base.mv-package-docker-docker指令，双击执行既可(如果ant有问题，在ant面板中右键属性，配置ant版本及jdk版本)
+````
++ 5、前端的docker的使用
+```
+5.1、pom.xml配置，主要是配置docker-maven-plugin(添加pom.xml主是让maven能识别这一个maven项目，好用docker-maven-plugin插件命令)
+<build>
+    <pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>1.2.2</version>
+                <configuration>
+                    <serverId>docker-hub</serverId>   <!--mvn setting.xml配置的那个id-->
+                    <imageName>${docker.registry.url}/${docker.image.prefix}/${project.artifactId}</imageName>
+                    <!-- 镜像tag-->
+                    <imageTags>
+                        <imageTag>latest</imageTag>
+                    </imageTags>
+                    <!--覆盖相同标签镜像-->
+                    <forceTags>true</forceTags>
+                    <dockerDirectory>docker</dockerDirectory>
+                    <!-- docker远程服务器地址 -->
+                    <dockerHost>${docker.registry.host}</dockerHost>
+                    <!-- 上传镜像-->
+                    <!--<pushImage>false</pushImage>-->
+                    <pushImageTag>true</pushImageTag>
+                    <!-- 重试次数-->
+                    <retryPushCount>3</retryPushCount>
+                    <resources>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                        </resource>
+                    </resources>
+                </configuration>
+            </plugin>
+        </plugins>
+    </pluginManagement>
+</build>
+5.2、.env.docker文件，这个文件必须存在，是下边ant打包中命令中要用到的
+//生成地址
+outputDir = "dist"
+VUE_APP_MODE = 'docker'
+NODE_ENV = 'docker'
+VUE_APP_HTTP_BASE_URL = 'http://192.168.1.14:9902'
+VUE_APP_WEBSOCKET_BASE_WS_URL='ws://192.168.1.14:9902/ws/'
+VUE_APP_TEXT = 'docker环境'
+5.3、package.json文件，在scripts中添加如下配置信息，是下边ant打包中命令中要用到的
+"docker": "vue-cli-service serve --mode docker",
+"build:docker": "vue-cli-service build --mode docker"
+5.4、build-base.xml
+<project name="xx-xxx" default="mvn-clean"><!--xx-xx改为项目打包的名称-->
+    <loadproperties srcFile="../../../build.properties" encoding="UTF-8"/><!--注意build.properties的相对路径-->
+    <import file="../../../build-base.xml"/><!--注意build-base.xml的相对路径-->
+    <target name="deploy-auth-front-docker" depends="os-mvn-init">
+        <delete dir="${basedir}/build"/>
+        <delete dir="${basedir}/docker/dist"/>
+        <delete dir="${basedir}/target"/>
+        <mkdir dir="${basedir}/target"/>
+        <exec executable="cmd.exe">
+            <arg line="/c npm run build:docker"/>
+        </exec>
+        <copy todir="${basedir}/docker">
+            <fileset dir="${basedir}/build"/>
+        </copy>
+        <mvn>
+            <arg value="-X"/>
+            <!--<arg value="-U" />-->
+            <arg value="docker:build"/>
+        </mvn>
+    </target>
+</project>
+5.5、Dockerfile文件的配置，位置于当前项目中的docker目录下（主要目的是把通过npm run build:docker打成的dist包copy到nginx的指定目录，然后通过nginx.conf文件对外发布出来，供外界访问）
+FROM nginx:1.19.2
+# 将dist文件中的内容复制到 /usr/share/nginx/html/ 这个目录下面
+COPY dist/  /usr/share/nginx/html/auth_front
+COPY nginx.conf /etc/nginx/nginx.conf
+RUN sh -c 'chmod -R 777 /usr/share/nginx/html/auth_front'
+5.6、nginx.conf配置,这是上面dockerfile所依赖的文件，其主要目的是对外发布前端应用
+worker_processes auto;
+#error_log  logs/error.log;
+#error_log  logs/error.log  notice;
+#error_log  logs/error.log  info;
+#pid        logs/nginx.pid;
+events {
+    worker_connections  1024;
+}
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    #log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+    #                  '$status $body_bytes_sent "$http_referer" '
+    #                  '"$http_user_agent" "$http_x_forwarded_for"';
+
+    #access_log  logs/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    #keepalive_timeout  0;
+    keepalive_timeout  65;
+
+    #gzip  on;
+
+    client_max_body_size   20m;
+    server {
+         listen       8882;
+         server_name  127.0.0.1;
+
+         #charset koi8-r;
+
+         #access_log  logs/host.access.log  main;
+         location / {
+            root   /usr/share/nginx/html/auth_front;
+            index  index.html index.htm;
+            #try_files $uri $uri/ /index.html;
+         }
+            #error_page  404              /404.html;
+
+            # redirect server error pages to the static page /50x.html
+            #
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+    }
+}
+5.5、将build.xml拖拽至idea中的ant面板中，打到其中的deploy-auth-front-docker指令，双击执行既可(如果ant有问题，在ant面板中右键属性，配置ant版本及jdk版本)
+```
 ##git上传大文件
 + 1、安装lfs
 ````

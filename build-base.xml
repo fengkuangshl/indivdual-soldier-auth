@@ -91,14 +91,14 @@
 		<echo message="项目引用的根路径:         ${basedir}" />
 		<echo message="Ant工具的根目录位置:      ${ant.home}" />
 		<echo message="构件文件的绝对路径:       ${ant.file}" />
-		<echo message="ant的版本信息:           ${ant.version}" />
-		<echo message="ant检测到的JVM版本:      ${ant.java.version}" />
-		<echo message="当前执行的项目名称及信息:  ${ant.project.name}" />
-		<echo message="Java的版本信息:          ${java.version}" />
-		<echo message="Java的根目录位置:        ${java.home}" />
+		<echo message="ant的版本信息:            ${ant.version}" />
+		<echo message="ant检测到的JVM版本:       ${ant.java.version}" />
+		<echo message="当前执行的项目名称及信息: ${ant.project.name}" />
+		<echo message="Java的版本信息:           ${java.version}" />
+		<echo message="Java的根目录位置:         ${java.home}" />
 		<echo message="Java类库的文件的位置:     ${java.class.path}" />
-		<echo message="换行符:                  ${line.separator}" />
-		<echo message="用户的home目录:          ${user.home}" />
+		<echo message="换行符:                   ${line.separator}" />
+		<echo message="用户的home目录:           ${user.home}" />
 		<echo message="******************System properties******************" level="warn" />
 		<echo message="Java installation directory:                        ${java.home}" />
 		<echo message="Java class format version number:                   ${java.class.version}" />
