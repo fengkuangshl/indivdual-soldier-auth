@@ -18,12 +18,12 @@ networks:
 services:
 
   individual-soldier-auth-application:
-    # image: 192.168.1.11:8083/key-win/individual-soldier-auth-application
-    build:
-      #构建的地址
-      context: ../business-center/application/src/main/docker
-      dockerfile: Dockerfile
-    image: individual-soldier-auth-application
+    image: 192.168.1.11:8083/key-win/individual-soldier-auth-application
+#    build:
+#      #构建的地址
+#      context: ../business-center/application/src/main/docker
+#      dockerfile: Dockerfile
+#    image: individual-soldier-auth-application
     container_name: individual-soldier-auth-application
     restart: always
     networks:
@@ -39,12 +39,12 @@ services:
         max-size: "${DOCKER_LOGS_MAX_SIZE:-100M}"
 
   auth-front:
-    # image: 192.168.1.11:8083/key-win/auth-front
-    build:
-      #构建的地址
-      context: ../web-portal/individual-soldier-auth-front/view/docker
-      dockerfile: Dockerfile
-    image: auth-front
+     image: 192.168.1.11:8083/key-win/auth-front
+#    build:
+#      #构建的地址
+#      context: ../web-portal/individual-soldier-auth-front/view/docker
+#      dockerfile: Dockerfile
+#    image: auth-front
     container_name: auth-front
     restart: always
     networks:
