@@ -1,0 +1,56 @@
+# ------------------------------------------------------------------------------
+#
+#    DO NOT MODIFY THIS FILE !!!
+#
+#
+# ------------------------------------------------------------------------------
+
+version: '3.1'
+
+networks:
+  docker-compose-auth-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.220.2.0/24
+          gateway: 10.220.2.1
+
+services:
+
+  individual-soldier-auth-application:
+    # image: 192.168.1.11:8083/key-win/individual-soldier-auth-application
+    build:
+      #构建的地址
+      context: ../business-center/application/src/main/docker
+      dockerfile: Dockerfile
+    image: individual-soldier-auth-application
+    container_name: individual-soldier-auth-application
+    restart: always
+    networks:
+      - docker-compose-auth-net
+    ports:
+      - 9902:9902/tcp
+    volumes:
+      - /logs/:/app/deploy/business/logs/
+    environment:
+      - spring.profiles.active=docker
+    logging:
+      options:
+        max-size: "${DOCKER_LOGS_MAX_SIZE:-100M}"
+
+  auth-front:
+    # image: 192.168.1.11:8083/key-win/auth-front
+    build:
+      #构建的地址
+      context: ../web-portal/individual-soldier-auth-front/view/docker
+      dockerfile: Dockerfile
+    image: auth-front
+    container_name: auth-front
+    restart: always
+    networks:
+      - docker-compose-auth-net
+    ports:
+      - 8882:8882/tcp
+    logging:
+      options:
+        max-size: "${DOCKER_LOGS_MAX_SIZE:-100M}"
