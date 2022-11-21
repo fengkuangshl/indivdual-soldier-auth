@@ -1,4 +1,7 @@
 spring:
+  cache:
+    redis:
+      cache-null-values: true
   redis:
     ################### redis 单机版 start ##########################
     host: 127.0.0.1
