@@ -109,6 +109,8 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
     }
 
     @Override
+    // sync:防止缓存并发，public synchronized <T> T get(Object key, Callable<T> valueLoader) {...}
+    // @Cacheable(cacheNames = ParamUtils.REDIS_SYS_DICT_DATA_KEY_PREFIX, key = "#type",sync = true)
     @Cacheable(cacheNames = ParamUtils.REDIS_SYS_DICT_DATA_KEY_PREFIX, key = "#type")
     public List<SysDictData> findSysDictDataByType(Long type) {
         SysDictData sdd = new SysDictData();
