@@ -38,6 +38,9 @@ spring:
     method:
       security:
         enable: true
+  cache:
+    redis:
+      cache-null-values: true
 #mybatis是独立节点，需要单独配置
 mybatis-plus:
   global-config:

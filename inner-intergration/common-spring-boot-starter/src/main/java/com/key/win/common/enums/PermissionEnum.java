@@ -1,7 +1,9 @@
 package com.key.win.common.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.key.win.basic.enumjson.TextureEnumDeserializer;
 import com.key.win.basic.enumjson.TextureEnumSerializerCode;
 
 @JsonSerialize(using = TextureEnumSerializerCode.class)

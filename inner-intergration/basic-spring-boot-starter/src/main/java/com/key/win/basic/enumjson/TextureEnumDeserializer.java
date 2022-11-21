@@ -4,18 +4,32 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 
-
-public class TextureEnumDeserlizer extends JsonDeserializer<Object> implements ContextualDeserializer {
+/**
+ * @package: com.key.win.jsonEnum
+ * @program:
+ * @Date: 2019/6/24 14:16
+ * @Author: Floating
+ * @Description:
+ */
+public class TextureEnumDeserializer extends JsonDeserializer<Object> implements ContextualDeserializer {
 
     private JsonEnum target;
 
     @Override
     public Object deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         JsonNode node = jp.getCodec().readTree(jp);
-        String enumName = node.get("stringValue").asText();
+        JsonNode jn = node.get("stringValue");
+        String enumName = "";
+        if (jn != null){
+            enumName= jn.asText();
+        }
+        if (StringUtils.isBlank(enumName)) {
+            enumName = node.asText();
+        }
         return target.selectEnumByName(enumName);
     }
 

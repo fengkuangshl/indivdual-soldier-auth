@@ -12,7 +12,7 @@
     <artifactId>db-spring-boot-starter</artifactId>
     <description>数据库支撑</description>
     <properties>
-        <druid.version>1.1.14</druid.version>
+        <druid.version>1.2.8</druid.version>
         <mybatis-plus.version>3.3.2</mybatis-plus.version>
         <druid.version>1.1.14</druid.version>
     </properties>

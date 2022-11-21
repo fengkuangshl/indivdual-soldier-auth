@@ -2,6 +2,7 @@ package com.key.win.common.model.system;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.key.win.common.enums.SexEnum;
 import com.key.win.common.enums.UserTypeEnum;
 import com.key.win.common.model.basic.MybatisID;
@@ -79,6 +80,7 @@ public class SysUser extends MybatisID {
     private String refreshToken;
 
 
+    @JsonIgnore
     public String getAvatar() {
         return this.headImgUrl;
     }
