@@ -49,14 +49,14 @@ replicate-ignore-db=information_schema
 replicate-ignore-db=performance_schema
 
 #2.5、 重启mysql-master容器
-docer restart mysql-master
+docker restart mysql-master
 
 #2.6、为master授权用户来他的同步数据
 #2.6.1、进入master容器
 docker exec -it mysql-master /bin/sh
 #2.6.2、连接mysql
 mysql -uroot -proot
-#2.6.2.1、授权root可以远程访问（主从无关，为了方便远程连接mysql,这一步可以省掉，因为为我们的mysql已经可以远程连接了）
+#2.6.2.1、授权root可以远程访问（主从无关，为了方便远程连接mysql,这一步可以省掉，因为我们的mysql已经可以远程连接了）
 grant all privileges on *.* to 'root'@'%' identified by 'root' with grant option;
 flush privileges;
 #2.6.2.2、添加用来同步的用户
@@ -110,14 +110,14 @@ replicate-ignore-db=information_schema
 replicate-ignore-db=performance_schema
 
 #3.5、 重启mysql-slaver-01容器
-docer restart mysql-slaver-01
+docker restart mysql-slaver-01
 
 #3.6、为master授权用户来他的同步数据
 #3.6.1、进入master容器
 docker exec -it mysql-slaver-01 /bin/sh
 #3.6.2、连接mysql
 mysql -uroot -proot
-#3.6.2.1、授权root可以远程访问（主从无关，为了方便远程连接mysql,这一步可以省掉，因为为我们的mysql已经可以远程连接了）
+#3.6.2.1、授权root可以远程访问（主从无关，为了方便远程连接mysql,这一步可以省掉，因为我们的mysql已经可以远程连接了）
 grant all privileges on *.* to 'root'@'%' identified by 'root' with grant option;
 flush privileges;
 #3.6.2.2、设置主库连接 master_host对应主数据库的对外暴露的ip, master_log_file对就主数据库通过show master status的File字段的值，master_port对应是主数据库的对外暴露端口

@@ -54,6 +54,7 @@
         <docker.registry.url>192.168.1.11:8083</docker.registry.url>
         <docker.registry.host>http://192.168.1.11:2375</docker.registry.host>
         <ant.version>1.10.7</ant.version>
+        <snakeyaml.version>1.33</snakeyaml.version>
     </properties>
 
     <dependencies>
@@ -168,6 +169,11 @@
                 <version>${core.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.key.win</groupId>
+                <artifactId>shardingsphere-spring-boot-starter</artifactId>
+                <version>${core.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
                 <version>${fastjson.version}</version>
@@ -213,6 +219,12 @@
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
             </dependency>
 
         </dependencies>

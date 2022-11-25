@@ -3,7 +3,7 @@ server:
 
 spring:
   profiles:
-    active: dev
+    active: readwrite-splitting
   servlet:
     multipart:
       max-file-size: 300MB

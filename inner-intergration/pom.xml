@@ -23,6 +23,7 @@
         <module>data-log-spring-boot-starter</module>
         <module>security-spring-boot-starter</module>
         <module>rsa-spring-boot-starter</module>
+        <module>shardingsphere-spring-boot-starter</module>
     </modules>
 
 
