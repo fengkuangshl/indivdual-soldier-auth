@@ -2,8 +2,10 @@ server:
   port: 9902
 
 spring:
+#  main:
+#    allow-bean-definition-overriding: true
   profiles:
-    active: sharding-vertical
+    active: sharding-horizontal
   servlet:
     multipart:
       max-file-size: 300MB

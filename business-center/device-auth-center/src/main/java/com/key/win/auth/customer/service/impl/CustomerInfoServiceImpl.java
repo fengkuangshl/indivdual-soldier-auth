@@ -14,6 +14,7 @@ import com.key.win.basic.util.DateUtils;
 import com.key.win.basic.util.DefaultIdentifierGeneratorUtils;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
+import com.key.win.common.auth.AuthenticationUtil;
 import com.key.win.mybatis.page.MybatisPageServiceTemplate;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -122,6 +123,7 @@ public class CustomerInfoServiceImpl extends ServiceImpl<CustomerInfoDao, Custom
                 throw new BizException("客户授权码已存在，不允许使用！!");
             }
         }
+        po.setCreateUserId(AuthenticationUtil.getUserId());
         return super.saveOrUpdate(po);
     }
 

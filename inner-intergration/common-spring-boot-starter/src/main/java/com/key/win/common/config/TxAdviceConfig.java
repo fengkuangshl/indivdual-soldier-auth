@@ -5,13 +5,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
+import org.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.core.annotation.Order;
 import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.interceptor.*;
 
 import java.util.Collections;
@@ -30,7 +32,7 @@ import java.util.Map;
 @ConditionalOnProperty(name = "spring.tx.manager.enabled", matchIfMissing = false, havingValue = "true")
 public class TxAdviceConfig {
 
-    private  final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     /**
      * service事务aop
      */
@@ -52,7 +54,7 @@ public class TxAdviceConfig {
     /**
      * 配置事务管理器使用springboot默认的
      *
-     * 关于事务管理器，不管是JPA还是JDBC等都实现自接口 PlatformTransactionManager 
+     * 关于事务管理器，不管是JPA还是JDBC等都实现自接口 PlatformTransactionManager
      * 如果你添加的是 spring-boot-starter-jdbc 依赖，框架会默认注入 DataSourceTransactionManager 实例。
      * 如果你添加的是 spring-boot-starter-data-jpa 依赖，框架会默认注入 JpaTransactionManager 实例。
      *
@@ -73,7 +75,7 @@ public class TxAdviceConfig {
      * @see org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration$TransactionTemplateConfiguration
      */
     @Bean
-    public TransactionInterceptor txAdvice(/*@Qualifier("txManager") */PlatformTransactionManager transactionManager) {
+    public TransactionInterceptor txAdvice(/*@Qualifier("txManager") */TransactionManager transactionManager) {
         logger.warn("#[Tx Config:TX_SERVICE_METHOD_TIMEOUT]" + TX_SERVICE_METHOD_TIMEOUT);
 
         /* 只读事务，不做更新操作， 不超时 */
@@ -93,6 +95,7 @@ public class TxAdviceConfig {
         requiredTx.setTimeout(TX_SERVICE_METHOD_TIMEOUT);
 
         Map<String, TransactionAttribute> txMap = new HashMap<>();
+        txMap.put("login*", readOnlyTx);
         txMap.put("get*", readOnlyTx);
         txMap.put("query*", readOnlyTx);
         txMap.put("find*", readOnlyTx);
@@ -118,12 +121,17 @@ public class TxAdviceConfig {
      * @return
      */
     @Bean
-    public Advisor txAdviceAdvisor(/*@Qualifier("txAdvice") */TransactionInterceptor txAdvice) {
+    public Advisor txAdviceAdvisor(/*@Qualifier("txAdvice")*/ TransactionInterceptor txAdvice) {
         logger.warn("#[Tx Config:TX_SERVICE_POINTCUT_EXPRESSION]" + TX_SERVICE_POINTCUT_EXPRESSION);
 
-        AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
-        pointcut.setExpression(TX_SERVICE_POINTCUT_EXPRESSION);
-        return new DefaultPointcutAdvisor(pointcut, txAdvice);
+            AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
+            pointcut.setExpression(TX_SERVICE_POINTCUT_EXPRESSION);
+            return new DefaultPointcutAdvisor(pointcut, txAdvice);
+//        AspectJExpressionPointcutAdvisor aspectJExpressionPointcutAdvisor = new AspectJExpressionPointcutAdvisor();
+//        aspectJExpressionPointcutAdvisor.setExpression(TX_SERVICE_POINTCUT_EXPRESSION);
+//        aspectJExpressionPointcutAdvisor.setAdvice(txAdvice);
+//        return aspectJExpressionPointcutAdvisor;
+
     }
 
 }

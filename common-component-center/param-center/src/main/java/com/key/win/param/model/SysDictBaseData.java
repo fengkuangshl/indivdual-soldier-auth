@@ -3,6 +3,7 @@ package com.key.win.param.model;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.key.win.common.model.basic.MybatisID;
+import com.key.win.common.model.basic.MybatisIDForAssignID;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,7 +11,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class SysDictBaseData extends MybatisID {
+public class SysDictBaseData extends MybatisIDForAssignID {
 
     /**
      * 字典排序
