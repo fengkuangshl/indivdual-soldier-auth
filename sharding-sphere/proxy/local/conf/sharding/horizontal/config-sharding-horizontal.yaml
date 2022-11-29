@@ -1,0 +1,267 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+######################################################################################################
+#
+# Here you can configure the rules for the proxy.
+# This example is configuration of sharding rule.
+#
+######################################################################################################
+#
+#databaseName: sharding_db
+#
+#dataSources:
+#  ds_0:
+#    url: jdbc:postgresql://127.0.0.1:5432/demo_ds_0
+#    username: postgres
+#    password: postgres
+#    connectionTimeoutMilliseconds: 30000
+#    idleTimeoutMilliseconds: 60000
+#    maxLifetimeMilliseconds: 1800000
+#    maxPoolSize: 50
+#    minPoolSize: 1
+#  ds_1:
+#    url: jdbc:postgresql://127.0.0.1:5432/demo_ds_1
+#    username: postgres
+#    password: postgres
+#    connectionTimeoutMilliseconds: 30000
+#    idleTimeoutMilliseconds: 60000
+#    maxLifetimeMilliseconds: 1800000
+#    maxPoolSize: 50
+#    minPoolSize: 1
+#
+#rules:
+#- !SHARDING
+#  tables:
+#    t_order:
+#      actualDataNodes: ds_${0..1}.t_order_${0..1}
+#      tableStrategy:
+#        standard:
+#          shardingColumn: order_id
+#          shardingAlgorithmName: t_order_inline
+#      keyGenerateStrategy:
+#        column: order_id
+#        keyGeneratorName: snowflake
+#      auditStrategy:
+#        auditorNames:
+#          - sharding_key_required_auditor
+#        allowHintDisable: true
+#    t_order_item:
+#      actualDataNodes: ds_${0..1}.t_order_item_${0..1}
+#      tableStrategy:
+#        standard:
+#          shardingColumn: order_id
+#          shardingAlgorithmName: t_order_item_inline
+#      keyGenerateStrategy:
+#        column: order_item_id
+#        keyGeneratorName: snowflake
+#  bindingTables:
+#    - t_order,t_order_item
+#  defaultDatabaseStrategy:
+#    standard:
+#      shardingColumn: user_id
+#      shardingAlgorithmName: database_inline
+#  defaultTableStrategy:
+#    none:
+#  defaultAuditStrategy:
+#    auditorNames:
+#      - sharding_key_required_auditor
+#    allowHintDisable: true
+#
+#  shardingAlgorithms:
+#    database_inline:
+#      type: INLINE
+#      props:
+#        algorithm-expression: ds_${user_id % 2}
+#    t_order_inline:
+#      type: INLINE
+#      props:
+#        algorithm-expression: t_order_${order_id % 2}
+#    t_order_item_inline:
+#      type: INLINE
+#      props:
+#        algorithm-expression: t_order_item_${order_id % 2}
+#
+#  keyGenerators:
+#    snowflake:
+#      type: SNOWFLAKE
+#
+#  auditors:
+#    sharding_key_required_auditor:
+#      type: DML_SHARDING_CONDITIONS
+
+######################################################################################################
+#
+# If you want to connect to MySQL, you should manually copy MySQL driver to lib directory.
+#
+######################################################################################################
+
+databaseName: sharding_horizontal_db
+
+dataSources:
+  # 配置第 0 个数据源
+  businessCenter0:
+    url: jdbc:mysql://192.168.1.222:3313/business_center?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    connectionTimeoutMilliseconds: 30000
+    idleTimeoutMilliseconds: 60000
+    maxLifetimeMilliseconds: 1800000
+    maxPoolSize: 50
+    minPoolSize: 1
+  # 配置第 1 个数据源
+  businessCenter1:
+    url: jdbc:mysql://192.168.1.222:3314/business_center?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    connectionTimeoutMilliseconds: 30000
+    idleTimeoutMilliseconds: 60000
+    maxLifetimeMilliseconds: 1800000
+    maxPoolSize: 50
+    minPoolSize: 1
+    # 配置第 2 个数据源
+  fileCenter:
+    url: jdbc:mysql://192.168.1.222:3309/file_center?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    connectionTimeoutMilliseconds: 30000
+    idleTimeoutMilliseconds: 60000
+    maxLifetimeMilliseconds: 1800000
+    maxPoolSize: 50
+    minPoolSize: 1
+  # 配置第 3 个数据源
+  logCenter:
+    url: jdbc:mysql://192.168.1.222:3310/log_center?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    connectionTimeoutMilliseconds: 30000
+    idleTimeoutMilliseconds: 60000
+    maxLifetimeMilliseconds: 1800000
+    maxPoolSize: 50
+    minPoolSize: 1
+  # 配置第 5 个数据源
+  userCenter:
+    url: jdbc:mysql://192.168.1.222:3312/user_center?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    connectionTimeoutMilliseconds: 30000
+    idleTimeoutMilliseconds: 60000
+    maxLifetimeMilliseconds: 1800000
+    maxPoolSize: 50
+    minPoolSize: 1
+# 由数据源名 + 表名组成，以小数点分隔。多个表以逗号分隔，支持 inline 表达式。缺省表示使用已知数据源与逻辑表名称生成数据节点，用于广播表（即每个库中都需要一个同样的表用于关联查询，多为字典表）或只分库不分表且所有库的表结构完全一致的情况
+rules:
+  - !SHARDING
+    tables:
+      # user-center
+      sys_group:
+        actualDataNodes: userCenter.sys_group
+      sys_menu:
+        actualDataNodes: userCenter.sys_menu
+      sys_menu_permission:
+        actualDataNodes: userCenter.sys_menu_permission
+      sys_permission:
+        actualDataNodes: userCenter.sys_permission
+      sys_role:
+        actualDataNodes: userCenter.sys_role
+      sys_role_menu_permission:
+        actualDataNodes: userCenter.sys_role_menu_permission
+      sys_user:
+        actualDataNodes: userCenter.sys_user
+      sys_user_role:
+        actualDataNodes: userCenter.sys_user_role
+      sys_user_group:
+        actualDataNodes: userCenter.sys_user_group
+        # 广播表的配置
+      sys_dic_data:
+        actualDataNodes: businessCenter$->{0..1}.sys_dic_data,logCenter.sys_dic_data,userCenter.sys_dic_data,fileCenter.sys_dict_tree
+      sys_dic_type:
+        actualDataNodes: businessCenter$->{0..1}.sys_dic_type,logCenter.sys_dic_type,userCenter.sys_dic_type,fileCenter.sys_dict_tree
+      sys_dict_tree:
+        actualDataNodes: businessCenter$->{0..1}.sys_dict_tree,logCenter.sys_dict_tree,userCenter.sys_dict_tree,fileCenter.sys_dict_tree
+      # file-center
+      sys_chunk_file:
+        actualDataNodes: fileCenter.sys_chunk_file
+      sys_file_info:
+        actualDataNodes: fileCenter.sys_file_info
+      # log-center
+      sys_data_log:
+        actualDataNodes: logCenter.sys_data_log
+      sys_log:
+        actualDataNodes: logCenter.sys_log
+      # business-center
+      device_auth:
+        actualDataNodes: businessCenter$->{0..1}.device_auth_$->{0..1}
+        # 分库策略，缺省表示使用默认分库策略，以下的分片策略只能选其一
+        # 用于单分片键的标准分片场景
+        databaseStrategy:
+          standard:
+            shardingColumn: create_user_id # 分片列名称
+            shardingAlgorithmName: alg-mod # 分片算法名称
+        #分表策略
+        tableStrategy:
+          standard:
+            shardingColumn: auth_Code # 分片列名称
+            shardingAlgorithmName: alg-hash-mod # 分片算法名称
+        # 分布式序列策略配置
+        keyGenerateStrategy:
+          column: id # 分布式序列列名称
+          keyGeneratorName: alg-sonwflake # 分布式序列算法名称
+      device_customer_info:
+        actualDataNodes: businessCenter$->{0..1}.device_customer_info_$->{0..1}
+        # 分库策略，缺省表示使用默认分库策略，以下的分片策略只能选其一
+        # 用于单分片键的标准分片场景
+        databaseStrategy:
+          standard:
+            shardingColumn: create_user_id # 分片列名称
+            shardingAlgorithmName: alg-mod # 分片算法名称
+        #分表策略
+        tableStrategy:
+          standard:
+            shardingColumn: auth_device_code # 分片列名称
+            shardingAlgorithmName: alg-hash-mod # 分片算法名称
+        # 分布式序列策略配置
+        keyGenerateStrategy:
+          column: id # 分布式序列列名称
+          keyGeneratorName: alg-sonwflake # 分布式序列算法名称
+    # 默认数据库分片策略
+    #        defaultDatabaseStrategy:
+    #          standard:
+    #            shardingColumn: id  # 分片列名称
+    #            shardingAlgorithmName: alg-mod # 分片算法名称
+    # 分片算法配置
+    shardingAlgorithms:
+      alg-hash-mod:
+        type: HASH_MOD # 分片算法类型
+        props:
+          sharding-count: 2 #分片数量
+      alg-mod:
+        type: MOD # 分片算法类型
+        props:
+          sharding-count: 2
+          # algorithm-expression: businessCenter$->{0..1}.{create_user_id % 2}
+    keyGenerators:
+      alg-sonwflake:
+        type: SNOWFLAKE
+    # 绑定表规则列表,用逗号隔开
+    bindingTables:
+      - device_customer_info,device_auth
+    # 广播表规则列表
+    broadcastTables:
+      - sys_dic_data
+      - sys_dic_type
+      - sys_dict_tree

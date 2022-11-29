@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.handlers.AbstractSqlParserHandler;
 import com.key.win.base.util.EntityUtils;
 import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
 import com.key.win.common.model.basic.MybatisID;
+import com.key.win.common.model.basic.MybatisIDForAssignID;
 import com.key.win.datalog.annotation.IgnoreDataLog;
 import com.key.win.datalog.handle.BaseDataLog;
 import com.key.win.datalog.util.SysDataLogUtil;
@@ -231,8 +232,20 @@ public class DataUpdateInterceptor extends AbstractSqlParserHandler implements I
             change.setNewData(valueList);
         } else if (parameterObject instanceof MybatisID) {//传进来的实体包含了Id
             MybatisID id = (MybatisID) parameterObject;
-            valueList.get(0).put(IndividualSoldierAuthConstantUtils.MODEL_ID, id.getId().toString());
-            change.setNewData(valueList);
+            if (id.getId() != null) {
+                valueList.get(0).put(IndividualSoldierAuthConstantUtils.MODEL_ID, id.getId().toString());
+                change.setNewData(valueList);
+            }else{
+                logger.error("MybatisID中Id为null,不做任何处理！");
+            }
+        } else if (parameterObject instanceof MybatisIDForAssignID) {//传进来的实体包含了Id
+            MybatisIDForAssignID id = (MybatisIDForAssignID) parameterObject;
+            if (id.getId() != null) {
+                valueList.get(0).put(IndividualSoldierAuthConstantUtils.MODEL_ID, id.getId().toString());
+                change.setNewData(valueList);
+            }else{
+                logger.error("MybatisIDForAssignID中Id为null,不做任何处理！");
+            }
         } else if (parameterObject instanceof List) {//list中的实体包含Id
             valueList.clear();
             List list = (List) parameterObject;

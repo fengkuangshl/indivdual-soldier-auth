@@ -128,7 +128,8 @@ public class CustomerInfoServiceImpl extends ServiceImpl<CustomerInfoDao, Custom
                 logger.error("客户授权码[{}]已存在！", customer.getAuthDeviceCode());
                 throw new BizException("客户授权码已存在，不允许使用！!");
             }
-            return super.save(po);
+            boolean save = super.save(po);
+            return  save;
         }
 
     }

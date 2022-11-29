@@ -1,0 +1,101 @@
+spring:
+  file:
+    root-path: /individual-soldier-auth
+    access-path-prefix: http://127.0.0.1:9902/individual-soldier-auth/
+    upload:
+      channel: LOCAL
+      default:
+        path: /default
+  rsa:
+    private-key-path: D:/dev-env/workspace-boot/individual-soldier-auth/inner-intergration/rsa-spring-boot-starter/rsa-encryptor/java/rsa_public_key.pem
+    public-key-path: D:/dev-env/workspace-boot/individual-soldier-auth/inner-intergration/rsa-spring-boot-starter/rsa-encryptor/java/pkcs8_private_key.pem
+    intercept-url-path: /api/auth/*
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://127.0.0.1:8988/sharding_vertical_db?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    druid:
+      #连接池配置(通常来说，只需要修改initialSize、minIdle、maxActive
+      initial-size: 1
+      max-active: 20
+      min-idle: 1
+      # 配置获取连接等待超时的时间
+      max-wait: 60000
+      #打开PSCache，并且指定每个连接上PSCache的大小
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      validation-query: SELECT 'x'
+      test-on-borrow: false
+      test-on-return: false
+      test-while-idle: true
+      #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      time-between-eviction-runs-millis: 60000
+      #配置一个连接在池中最小生存的时间，单位是毫秒
+      min-evictable-idle-time-millis: 300000
+      filters: stat,wall
+
+
+      # StatViewServlet监控器。开启后，访问http://域名/druid/index.html
+      stat-view-servlet:
+        enabled: true # 开启 StatViewServlet，即开启监控功能
+        login-username: daniel # 访问监控页面时登录的账号
+        login-password: 1234 # 密码
+        url-pattern: /druid/* # Servlet的映射地址，不填写默认为"/druid/*"。如填写其它地址，访问监控页面时，要使用相应的地址
+        reset-enable: false # 是否允许重置数据（在页面的重置按钮）。（停用后，依然会有重置按钮，但重置后不会真的重置数据）
+        # allow: 192.168.1.2,192.168.1.1 # 监控页面访问白名单。默认为127.0.0.1。与黑名单一样，支持子网掩码，如128.242.127.1/24。多个ip用英文逗号分隔
+        # deny: 18.2.1.3 # 监控页面访问黑名单
+
+
+      # 配置 WebStatFilter（StatFilter监控器中的Web模板）
+      web-stat-filter:
+        enabled: true # 开启 WebStatFilter，即开启监控功能中的 Web 监控功能
+        url-pattern: /* # 映射地址，即统计指定地址的web请求
+        exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*' # 不统计的web请求，如下是不统计静态资源及druid监控页面本身的请求
+        session-stat-enable: true # 是否启用session统计
+        session-stat-max-count: 1 # session统计的最大个数，默认是1000。当统计超过这个数，只统计最新的
+        principal-session-name: userName # 所存用户信息的serssion参数名。Druid会依照此参数名读取相应session对应的用户名记录下来（在监控页面可看到）。如果指定参数不是基础数据类型，将会自动调用相应参数对象的toString方法来取值
+        principal-cookie-name: userName # 与上类似，但这是通过Cookie名取到用户信息
+        profile-enable: true # 监控单个url调用的sql列表（试了没生效，以后需要用再研究）
+
+      filter:
+        wall:
+          enabled: false  # 开启SQL防火墙功能
+          config:
+            select-allow: true # 允许执行Select查询操作
+            delete-allow: false # 不允许执行delete操作
+            create-table-allow: false # 不允许创建表
+            # 更多用法，参考官方文档：https://github.com/alibaba/druid/wiki/%E9%85%8D%E7%BD%AE-wallfilter
+  redis:
+    ################### redis 单机版 start ##########################
+    host: 127.0.0.1
+    port: 6379
+    timeout: 6000
+    database: 8
+    lettuce:
+      pool:
+        max-active: 10 # 连接池最大连接数（使用负值表示没有限制）,如果赋值为-1，则表示不限制；如果pool已经分配了maxActive个jedis实例，则此时pool的状态为exhausted(耗尽)
+        max-idle: 8   # 连接池中的最大空闲连接 ，默认值也是8
+        max-wait: 100 # # 等待可用连接的最大时间，单位毫秒，默认值为-1，表示永不超时。如果超过等待时间，则直接抛出JedisConnectionException
+        min-idle: 2    # 连接池中的最小空闲连接 ，默认值也是0
+      shutdown-timeout: 100ms
+    ################### redis 单机版 end ##########################
+    #    cluster:
+    #      nodes: 130.75.131.237:7000,130.75.131.238:7000,130.75.131.239:7000,130.75.131.237:7001,130.75.131.238:7001,130.75.131.239:7001
+    #        #130.75.131.237:7000,130.75.131.238:7000,130.75.131.239:7000,130.75.131.237:7001,130.75.131.238:7001,130.75.131.239:7001
+    #        #192.168.3.157:7000,192.168.3.158:7000,192.168.3.159:7000,192.168.3.157:7001,192.168.3.158:7001,192.168.3.159:7001
+    #    timeout: 1000 # 连接超时时间（毫秒）
+    #    lettuce:
+    #      pool:
+    #        max-active: 10 # 连接池最大连接数（使用负值表示没有限制）,如果赋值为-1，则表示不限制；如果pool已经分配了maxActive个jedis实例，则此时pool的状态为exhausted(耗尽)
+    #        max-idle: 8   # 连接池中的最大空闲连接 ，默认值也是8
+    #        max-wait: 100 # # 等待可用连接的最大时间，单位毫秒，默认值为-1，表示永不超时。如果超过等待时间，则直接抛出JedisConnectionException
+    #        min-idle: 2    # 连接池中的最小空闲连接 ，默认值也是0
+    #      shutdown-timeout: 100ms
+#ftp:
+#  #  host: 127.0.0.1
+#  host: 192.168.1.41
+#  port: 21
+#  #  username: administrator
+#  username: ftpadmin
+#  password: 123456
