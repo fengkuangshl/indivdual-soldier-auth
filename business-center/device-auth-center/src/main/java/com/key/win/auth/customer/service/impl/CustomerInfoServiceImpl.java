@@ -114,6 +114,12 @@ public class CustomerInfoServiceImpl extends ServiceImpl<CustomerInfoDao, Custom
                 throw new BizException("客户授权码已锁定，不允许修改！!");
             }
             BeanUtils.copyPropertiesToPartField(customer, po);
+            LambdaQueryWrapper<CustomerInfo> objectLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            objectLambdaQueryWrapper.eq(CustomerInfo::getId,po.getId());
+            objectLambdaQueryWrapper.eq(CustomerInfo::getCreateUserId,po.getCreateUserId());
+            objectLambdaQueryWrapper.eq(CustomerInfo::getAuthDeviceCode,po.getAuthDeviceCode());
+            return super.update(po,objectLambdaQueryWrapper);
+            //return super.updateById(po);
         } else {
             po = customer;
             po.setSequence(CUSTOMER_SEQUENCE_PREFIX + DefaultIdentifierGeneratorUtils.getGeneratorLongId());
@@ -122,9 +128,9 @@ public class CustomerInfoServiceImpl extends ServiceImpl<CustomerInfoDao, Custom
                 logger.error("客户授权码[{}]已存在！", customer.getAuthDeviceCode());
                 throw new BizException("客户授权码已存在，不允许使用！!");
             }
+            return super.save(po);
         }
-        po.setCreateUserId(AuthenticationUtil.getUserId());
-        return super.saveOrUpdate(po);
+
     }
 
     public CustomerInfo findCustomerByAuthCode(String authCode) {

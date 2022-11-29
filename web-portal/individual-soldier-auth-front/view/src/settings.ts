@@ -20,7 +20,7 @@ const settings: ISettings = {
   menuTypeDirectory: '目录',
   defaultAvatar: require('./assets/head.png'),
   isEnablePermission: true,
-  isEnableWebSocket: true
+  isEnableWebSocket: false
 }
 
 export default settings

@@ -141,7 +141,7 @@ public class DeviceAuthServiceImpl extends ServiceImpl<DeviceAuthDao, DeviceAuth
     }
 
     private String getDataLogFkId(Long id) {
-        return tableName +"::"+ id;
+        return tableName + "::" + id;
     }
 
     @Override
@@ -177,7 +177,12 @@ public class DeviceAuthServiceImpl extends ServiceImpl<DeviceAuthDao, DeviceAuth
                         expireDeviceDate = deviceAuth.getExpireDeviceDate();
                     } else {
                         deviceAuth.setExpireDeviceDate(expireDeviceDate);
-                        super.updateById(deviceAuth);//更新设备授权到期日期
+                        LambdaQueryWrapper<DeviceAuth> objectLambdaQueryWrapper = new LambdaQueryWrapper<>();
+                        objectLambdaQueryWrapper.eq(DeviceAuth::getId, deviceAuth.getId());
+                        objectLambdaQueryWrapper.eq(DeviceAuth::getCreateUserId, deviceAuth.getCreateUserId());
+                        objectLambdaQueryWrapper.eq(DeviceAuth::getAuthCode, deviceAuth.getAuthCode());
+                        super.update(deviceAuth, objectLambdaQueryWrapper);
+                        //super.updateById(deviceAuth);//更新设备授权到期日期
                     }
                     String encodeStr = Base64Utils.encodeToString((expireDeviceDate.getTime() + "").getBytes());
                     String reverseStr = new StringBuffer(encodeStr).reverse().toString();
@@ -210,7 +215,12 @@ public class DeviceAuthServiceImpl extends ServiceImpl<DeviceAuthDao, DeviceAuth
             if (byId != null) {
                 if (deviceAuth.getExpireDeviceDate() != null) {
                     byId.setExpireDeviceDate(deviceAuth.getExpireDeviceDate());
-                    boolean b = super.updateById(byId);
+                    LambdaQueryWrapper<DeviceAuth> objectLambdaQueryWrapper = new LambdaQueryWrapper<>();
+                    objectLambdaQueryWrapper.eq(DeviceAuth::getId, byId.getId());
+                    objectLambdaQueryWrapper.eq(DeviceAuth::getCreateUserId, byId.getCreateUserId());
+                    objectLambdaQueryWrapper.eq(DeviceAuth::getAuthCode, byId.getAuthCode());
+                    boolean b = super.update(byId, objectLambdaQueryWrapper);
+                    //boolean b = super.updateById(byId);
                     if (b) {
                         sysDataLogService.saveDataLog("更新设备授权到期日期：[" + DateUtils.dateToStr(deviceAuth.getExpireDeviceDate()) + "]", getDataLogFkId(deviceAuth.getId()));
                     }
