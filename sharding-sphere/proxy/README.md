@@ -31,3 +31,4 @@
 3.2.2.1、param-center.sql:是基础参数表，在水平分库分表中是broadcast类型，没有专的的库来存储，需要在每一个数据库中均存一份，因此需要把param-center.sql，在business-center.sql、file-center.sql、log-center.sql、user-center.sql都需要执行
 3.2.3、mysql水平分片.yml:是mysql水平分表分库的docker运行文件，在操作完成此文件后，需要把business-center.sql、file-center.sql、log-center.sql、param-center.sql、user-center.sql分别在对应的数据库在执行
 ````
++ 4、docker和本地模式一样，只是不过把本地代理服务换成了docker而已

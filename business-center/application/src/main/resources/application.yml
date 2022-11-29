@@ -5,7 +5,7 @@ spring:
 #  main:
 #    allow-bean-definition-overriding: true
   profiles:
-    active: sharding-vertical-local
+    active: readwrite-splitting-docker
   servlet:
     multipart:
       max-file-size: 300MB
