@@ -22,6 +22,7 @@
     + redis-spring-boot-starter:redis的配置的核心模块，支持单节点和集群配置
     + rsa-spring-boot-starter:是一个非对称加解密的模块，主要用于和第三方接口通信，对数据安全处理
     + security-spring-boot-starter:是核心中安全处理的核心
+    + shardingsphere-spring-boot-starter:是基于sharding-sphere 5.2.1进行分库分表的模块
     + swagger-spring-boot-starter:用户生成系统请求的api模块
 + job:是一个开源的定时任务管理模块
 + sql:这是一个数据脚本文件
@@ -928,6 +929,10 @@ spring:
               create-table-allow: false # 不允许创建表
               # 更多用法，参考官方文档：https://github.com/alibaba/druid/wiki/%E9%85%8D%E7%BD%AE-wallfilter
 21.4、通过 http://127.0.0.1:9902/druid/index.html 访问查看，daniel/1234
+```
+22、sharding-sphere分库分表的使用
+```
+请参考sharding-sphere目录下的README.md文件
 ```
 
 ##前端系统功能或模块的使用说明

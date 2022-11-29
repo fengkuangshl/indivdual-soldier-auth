@@ -3,7 +3,7 @@
 docker pull mysql:5.7
 
 #2、 mysql-master
-#2.1、 创建目录
+#2.1、 创建目录(需要创建)
 mkdir -p /etc/mysql/conf.d
 #2.2、 运行master镜像 
 docker run -p 3307:3306 \
@@ -65,7 +65,7 @@ GRANT REPLICATION SLAVE ON *.* to 'backup'@'%' identified by '123456';
 show master status\G;
 
 #3、mysql-slave
-#3.1、 创建目录
+#3.1、 创建目录(需要创建)
 mkdir -p /etc/mysql/conf.d
 #3.2、 运行mysql-slaver-01镜像 
 docker run -p 3317:3306 --name mysql-slaver-01 \
