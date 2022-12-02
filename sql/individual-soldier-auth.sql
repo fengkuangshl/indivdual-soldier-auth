@@ -14,6 +14,9 @@
  Date: 27/09/2022 15:49:11
 */
 
+CREATE DATABASE individual-soldier-auth;
+USE individual-soldier-auth;
+
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 

@@ -1,0 +1,128 @@
+#mysql5.7主从配置
+#1、 拉取 mysql:5.7镜像
+docker pull mysql:5.7
+
+#2、 mysql-master
+#2.1、 创建目录(需要创建)
+mkdir -p /etc/mysql/conf.d
+#2.2、 运行master镜像
+docker run -p 3307:3306 \
+--privileged=true \
+--name=mysql-master \
+-v /mydata/mysql/master/log:/var/log/mysql \
+-v /mydata/mysql/master/data:/var/lib/mysql \
+-v /mydata/mysql/master/conf:/etc/mysql/conf.d \
+-e MYSQL_ROOT_PASSWORD=root \
+-d mysql:5.7
+
+#2.3、 docker及mysql相关命令
+#2.3.1、进入docker容器
+docker exec -it mysql-master /bin/sh
+#2.3.2、连接mysql
+mysql -uroot -proot
+#2.3.3、查看mysql5.7版本的字符集编码默认为
+show variables like 'character_set_%';
+#2.3.4、停止docker容器
+docker stop mysql-master
+
+#2.4、修改master配置
+vi /mydata/mysql/master/conf/my.cnf
+
+[client]
+default-character-set=utf8
+[mysql]
+default-character-set=utf8
+[mysqld]
+# init_connect='SET collation_connection = utf8_unicode_ci' init_connect='SET NAMES utf8' character-set-server=utf8
+collation-server= utf8_general_ci
+character_set_server = utf8
+skip-character-set-client-handshake
+skip-name-resolve
+#添加 master 主从复制部分配置
+server_id=1 ## id不能重复
+log-bin=mysql-bin ##二进值日志
+read-only=0  ##可写
+binlog-do-db=individual-soldier-auth ##需要同步的库
+replicate-ignore-db=mysql ##不需要同步库
+replicate-ignore-db=sys
+replicate-ignore-db=information_schema
+replicate-ignore-db=performance_schema
+
+#2.5、 重启mysql-master容器
+docker restart mysql-master
+
+#2.6、为master授权用户来他的同步数据
+#2.6.1、进入master容器
+docker exec -it mysql-master /bin/sh
+#2.6.2、连接mysql
+mysql -uroot -proot
+#2.6.2.1、授权root可以远程访问（主从无关，为了方便远程连接mysql,这一步可以省掉，因为我们的mysql已经可以远程连接了）
+grant all privileges on *.* to 'root'@'%' identified by 'root' with grant option;
+flush privileges;
+#2.6.2.2、添加用来同步的用户
+GRANT REPLICATION SLAVE ON *.* to 'backup'@'%' identified by '123456';
+#2.6.3、查看master的状态
+show master status\G;
+
+#3、mysql-slave
+#3.1、 创建目录(需要创建)
+mkdir -p /etc/mysql/conf.d
+#3.2、 运行mysql-slaver-01镜像
+docker run -p 3317:3306 --name mysql-slaver-01 \
+--privileged=true \
+-v /mydata/mysql/slaver-01/log:/var/log/mysql \
+-v /mydata/mysql/slaver-01/data:/var/lib/mysql \
+-v /mydata/mysql/slaver-01/conf:/etc/mysql/conf.d \
+-e MYSQL_ROOT_PASSWORD=root \
+-d mysql:5.7
+
+#3.3、 docker及mysql相关命令
+#3.3.1、进入docker容器
+docker exec -it mysql-slaver-01 /bin/sh
+#3.3.2、 连接mysql
+mysql -uroot -proot
+#3.3.3、 查看mysql5.7版本的字符集编码默认为
+show variables like 'character_set_%';
+#3.3.4、 停止docker容器
+docker stop mysql-slaver-01
+
+#3.4、修改master配置
+vi /mydata/mysql/slaver-01/conf/my.cnf
+
+[client]
+default-character-set=utf8
+[mysql]
+default-character-set=utf8
+[mysqld]
+# init_connect='SET collation_connection = utf8_unicode_ci' init_connect='SET NAMES utf8' character-set-server=utf8
+collation-server= utf8_general_ci
+character_set_server = utf8
+skip-character-set-client-handshake
+skip-name-resolve
+# 添加 master 主从复制部分配置
+server_id=2  ## id不能重复
+log-bin=mysql-bin  ##二进值日志
+read-only=1   #只读
+binlog-do-db=individual-soldier-auth ##需要同步的库
+replicate-ignore-db=mysql ##不需要同步库
+replicate-ignore-db=sys
+replicate-ignore-db=information_schema
+replicate-ignore-db=performance_schema
+
+#3.5、 重启mysql-slaver-01容器
+docker restart mysql-slaver-01
+
+#3.6、为master授权用户来他的同步数据
+#3.6.1、进入master容器
+docker exec -it mysql-slaver-01 /bin/sh
+#3.6.2、连接mysql
+mysql -uroot -proot
+#3.6.2.1、授权root可以远程访问（主从无关，为了方便远程连接mysql,这一步可以省掉，因为我们的mysql已经可以远程连接了）
+grant all privileges on *.* to 'root'@'%' identified by 'root' with grant option;
+flush privileges;
+#3.6.2.2、设置主库连接 master_host对应主数据库的对外暴露的ip, master_log_file对就主数据库通过show master status的File字段的值，master_port对应是主数据库的对外暴露端口
+change master to master_host='192.168.1.222',master_user='backup',master_password='123456',master_log_file='mysql-bin.000002',master_log_pos=0,master_port=3307;
+#3.6.3、启动从库同步
+start slave;
+#3.6.4、查看slave的状态
+show slave status\G;

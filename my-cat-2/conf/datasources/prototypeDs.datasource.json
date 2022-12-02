@@ -1,0 +1,17 @@
+{
+	"dbType":"mysql",
+	"idleTimeout":60000,
+	"initSqls":[],
+	"initSqlsGetConnection":true,
+	"instanceType":"READ_WRITE",
+	"maxCon":1000,
+	"maxConnectTimeout":3000,
+	"maxRetryCount":5,
+	"minCon":1,
+	"name":"prototypeDs",
+	"password":"root",
+	"type":"JDBC",
+	"url":"jdbc:mysql://192.168.1.222:3307/individual-soldier-auth?useUnicode=true&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8",
+	"user":"root",
+	"weight":0
+}

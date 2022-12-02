@@ -1,1 +1,2 @@
 jdk-8u261-linux-x64.rpm filter=lfs diff=lfs merge=lfs -text
+mycat2-1.22-release-jar-with-dependencies-2022-10-13.jar filter=lfs diff=lfs merge=lfs -text
