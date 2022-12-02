@@ -8,6 +8,7 @@ import com.key.win.basic.util.BeanUtils;
 import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
+import com.key.win.datasource.annotation.DataSource;
 import com.key.win.mybatis.page.MybatisPageServiceTemplate;
 import com.key.win.param.dao.SysDictTreeDao;
 import com.key.win.param.model.SysDictTree;
@@ -24,6 +25,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.*;
 
 @Service
+@DataSource(name = "param")
 public class SysDictTreeServiceImpl extends ServiceImpl<SysDictTreeDao, SysDictTree> implements SysDictTreeService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

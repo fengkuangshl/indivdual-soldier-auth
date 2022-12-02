@@ -66,6 +66,7 @@ public class SysDataLogServiceImpl extends ServiceImpl<SysDataLogDao, SysDataLog
     }
 
     @Override
+    @DataSource(name = "log")
     public PageResult<SysDataLog> findSysLogByPaged(PageRequest<SysDataLog> pageRequest) {
         MybatisPageServiceTemplate<SysDataLog, SysDataLog> mybatiesPageServiceTemplate = new MybatisPageServiceTemplate<SysDataLog, SysDataLog>(this.baseMapper) {
             @Override

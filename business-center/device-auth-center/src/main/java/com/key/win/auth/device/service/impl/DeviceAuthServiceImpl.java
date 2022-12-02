@@ -21,6 +21,7 @@ import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
 import com.key.win.basic.web.Result;
 import com.key.win.datalog.service.SysDataLogService;
+import com.key.win.datasource.annotation.DataSource;
 import com.key.win.mybatis.page.MybatisPageServiceTemplate;
 import com.key.win.rsa.RSAEncryptor;
 import com.key.win.rsa.exception.BizEncryptException;
@@ -40,6 +41,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@DataSource(name = "business")
 public class DeviceAuthServiceImpl extends ServiceImpl<DeviceAuthDao, DeviceAuth> implements DeviceAuthService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

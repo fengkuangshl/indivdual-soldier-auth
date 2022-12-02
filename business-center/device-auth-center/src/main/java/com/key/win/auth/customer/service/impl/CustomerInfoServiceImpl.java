@@ -14,6 +14,7 @@ import com.key.win.basic.util.DateUtils;
 import com.key.win.basic.util.DefaultIdentifierGeneratorUtils;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
+import com.key.win.datasource.annotation.DataSource;
 import com.key.win.mybatis.page.MybatisPageServiceTemplate;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -25,6 +26,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 
 @Service
+@DataSource(name = "business")
 public class CustomerInfoServiceImpl extends ServiceImpl<CustomerInfoDao, CustomerInfo> implements CustomerInfoService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

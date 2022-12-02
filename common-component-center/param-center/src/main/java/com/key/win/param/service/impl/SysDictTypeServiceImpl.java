@@ -7,6 +7,7 @@ import com.key.win.basic.exception.BizException;
 import com.key.win.basic.util.BeanUtils;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
+import com.key.win.datasource.annotation.DataSource;
 import com.key.win.mybatis.page.MybatisPageServiceTemplate;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.CacheEvict;
@@ -21,6 +22,7 @@ import com.key.win.param.utils.ParamUtils;
 import java.util.List;
 
 @Service
+@DataSource(name = "param")
 public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictType> implements SysDictTypeService {
     @Override
     public PageResult<SysDictType> getSysDictTypeByPaged(PageRequest<SysDictType> t) {

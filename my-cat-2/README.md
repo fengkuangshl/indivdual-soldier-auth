@@ -161,6 +161,135 @@ vi conf/schemas/read_write_splitting.schema.json
 #5、更新集群信息,添加主从节点
 /*! mycat:createCluster{"name":"prototype","masters":["rwSepw"],"replicas":["rwSepr"]} */;
 /*+ mycat:showClusters{} */
+#6、重启mycat2
+docker restart mycat2
 #5、readwrite-splitting目录中application-readwrite-splitting.yml copy至application中的resources下，并修改spring.profiles.active为readwrite-splitting
 #6、启动项目验证
+```
+#Mycat2的垂直分库分表配置
+```shell script
+#1、按照sharding目录中的vertical目录下的mysql垂直分片.yml文件进行mysql的docker化集群配置
+#2、在Mycat里创建垂直分库分表逻辑库
+
+#2.1、business_center逻辑库创建
+#2.1.1、business_center
+create database business_center;
+#2.1.2、修改mread_write_splitting.schema.json 指定数据源 "targetName": "business_center"，配置主机数据源,
+# !!!(注意schemaName,一定是和读写数据库名字一样，不一样的话导致表加载不出来)
+vi conf/schemas/business_center.schema.json
+{
+        "customTables":{},
+        "globalTables":{},
+        "normalProcedures":{},
+        "normalTables":{},
+        "schemaName":"business_center",
+        "targetName": "business_center",
+        "shardingTables":{},
+        "views":{}
+}
+#2.1.3、在Mycat里，注解方式添加数据源，指向从机
+/*+ mycat:createDataSource{ "name":"business_center","url":"jdbc:mysql://192.168.1.222:3308/business_center?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai", "user":"root","password":"root" } */;
+/*+ mycat:showDataSources{} */;
+#2.1.4、更新集群信息,添加主从节点
+/*! mycat:createCluster{"name":"business_center","masters":["business_center"],"replicas":["business_center"]} */;
+/*+ mycat:showClusters{} */
+
+#2.2、file-center逻辑库创建
+#2.2.1、file_center
+create database file_center;
+#2.2.2、修改mread_write_splitting.schema.json 指定数据源 "targetName": "business_center"，配置主机数据源,
+# !!!(注意schemaName,一定是和读写数据库名字一样，不一样的话导致表加载不出来)
+vi conf/schemas/file_center.schema.json
+{
+        "customTables":{},
+        "globalTables":{},
+        "normalProcedures":{},
+        "normalTables":{},
+        "schemaName":"file_center",
+        "targetName": "file_center",
+        "shardingTables":{},
+        "views":{}
+}
+#2.2.3、在Mycat里，注解方式添加数据源，指向从机
+/*+ mycat:createDataSource{ "name":"file_center","url":"jdbc:mysql://192.168.1.222:3309/file_center?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai", "user":"root","password":"root" } */;
+/*+ mycat:showDataSources{} */;
+#2.2.4、更新集群信息,添加主从节点
+/*! mycat:createCluster{"name":"file_center","masters":["file_center"],"replicas":["file_center"]} */;
+/*+ mycat:showClusters{} */
+
+#2.3、log-center逻辑库创建
+#2.3.1、log_center
+create database log_center;
+#2.3.2、修改mread_write_splitting.schema.json 指定数据源 "targetName": "business_center"，配置主机数据源,
+# !!!(注意schemaName,一定是和读写数据库名字一样，不一样的话导致表加载不出来)
+vi conf/schemas/log_center.schema.json
+{
+        "customTables":{},
+        "globalTables":{},
+        "normalProcedures":{},
+        "normalTables":{},
+        "schemaName":"log_center",
+        "targetName": "log_center",
+        "shardingTables":{},
+        "views":{}
+}
+#2.3.3、在Mycat里，注解方式添加数据源，指向从机
+/*+ mycat:createDataSource{ "name":"log_center","url":"jdbc:mysql://192.168.1.222:3310/log_center?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai", "user":"root","password":"root" } */;
+/*+ mycat:showDataSources{} */;
+#2.3.4、更新集群信息,添加主从节点
+/*! mycat:createCluster{"name":"log_center","masters":["log_center"],"replicas":["log_center"]} */;
+/*+ mycat:showClusters{} */
+
+#2.4、param_center逻辑库创建
+#2.4.1、param_center
+create database param_center;
+#2.4.2、修改mread_write_splitting.schema.json 指定数据源 "targetName": "business_center"，配置主机数据源,
+# !!!(注意schemaName,一定是和读写数据库名字一样，不一样的话导致表加载不出来)
+vi conf/schemas/param_center.schema.json
+{
+        "customTables":{},
+        "globalTables":{},
+        "normalProcedures":{},
+        "normalTables":{},
+        "schemaName":"param_center",
+        "targetName": "param_center",
+        "shardingTables":{},
+        "views":{}
+}
+#2.4.3、在Mycat里，注解方式添加数据源，指向从机
+/*+ mycat:createDataSource{ "name":"param_center","url":"jdbc:mysql://192.168.1.222:3311/param_center?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai", "user":"root","password":"root" } */;
+/*+ mycat:showDataSources{} */;
+#2.4.4、更新集群信息,添加主从节点
+/*! mycat:createCluster{"name":"param_center","masters":["param_center"],"replicas":["param_center"]} */;
+/*+ mycat:showClusters{} */
+
+#2.5、user_center逻辑库创建
+#2.5.1、user_center
+create database user_center;
+#2.5.2、修改mread_write_splitting.schema.json 指定数据源 "targetName": "business_center"，配置主机数据源,
+# !!!(注意schemaName,一定是和读写数据库名字一样，不一样的话导致表加载不出来)
+vi conf/schemas/user_center.schema.json
+{
+        "customTables":{},
+        "globalTables":{},
+        "normalProcedures":{},
+        "normalTables":{},
+        "schemaName":"user_center",
+        "targetName": "user_center",
+        "shardingTables":{},
+        "views":{}
+}
+#2.5.3、在Mycat里，注解方式添加数据源，指向从机
+/*+ mycat:createDataSource{ "name":"user_center","url":"jdbc:mysql://192.168.1.222:3312/user_center?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai", "user":"root","password":"root" } */;
+/*+ mycat:showDataSources{} */;
+#2.5.4、更新集群信息,添加主从节点
+/*! mycat:createCluster{"name":"user_center","masters":["user_center"],"replicas":["user_center"]} */;
+/*+ mycat:showClusters{} */
+
+#3、重启mycat2
+docker restart mycat2
+
+#4、sharding目录中的vertical目录下目录中application-readwrite-splitting.yml copy至application中的resources下，并修改spring.profiles.active为readwrite-splitting
+
+#5、启动项目验证
 ```

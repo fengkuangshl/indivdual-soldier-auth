@@ -1,6 +1,7 @@
 package com.key.win.file.service.impl;
 
 import com.key.win.basic.util.FileUtils;
+import com.key.win.datasource.annotation.DataSource;
 import com.key.win.file.config.FileServiceFactory;
 import com.key.win.file.dao.ChunkFileDao;
 import com.key.win.file.dao.FileInfoDao;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStream;
 
 @Service("ftpChunkFileServiceImpl")
+@DataSource(name = "file")
 public class FtpChunkFileServiceImpl extends AbstractChunkFileService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

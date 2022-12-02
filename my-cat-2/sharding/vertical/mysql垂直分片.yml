@@ -1,0 +1,53 @@
+#mysql5.7主从配置
+#1、 拉取 mysql:5.7镜像
+docker pull mysql:5.7
+
+  #2、 运行mysql镜像,创建 business-center容器
+docker run -p 3308:3306 \
+--privileged=true \
+--name=business-center \
+-v /mydata/mysql/business-center/log:/var/log/mysql \
+-v /mydata/mysql/business-center/data:/var/lib/mysql \
+-v /mydata/mysql/business-center/conf:/etc/mysql/conf.d \
+-e MYSQL_ROOT_PASSWORD=root \
+-d mysql:5.7
+
+  #3、 运行mysql镜像,创建 file-center容器
+docker run -p 3309:3306 \
+--privileged=true \
+--name=file-center \
+-v /mydata/mysql/file-center/log:/var/log/mysql \
+-v /mydata/mysql/file-center/data:/var/lib/mysql \
+-v /mydata/mysql/file-center/conf:/etc/mysql/conf.d \
+-e MYSQL_ROOT_PASSWORD=root \
+-d mysql:5.7
+
+  #4、 运行mysql镜像,创建 log-center容器
+docker run -p 3310:3306 \
+--privileged=true \
+--name=log-center \
+-v /mydata/mysql/log-center/log:/var/log/mysql \
+-v /mydata/mysql/log-center/data:/var/lib/mysql \
+-v /mydata/mysql/log-center/conf:/etc/mysql/conf.d \
+-e MYSQL_ROOT_PASSWORD=root \
+-d mysql:5.7
+
+  #5、 运行mysql镜像,创建 param-center容器
+docker run -p 3311:3306 \
+--privileged=true \
+--name=param-center \
+-v /mydata/mysql/param-center/log:/var/log/mysql \
+-v /mydata/mysql/param-center/data:/var/lib/mysql \
+-v /mydata/mysql/param-center/conf:/etc/mysql/conf.d \
+-e MYSQL_ROOT_PASSWORD=root \
+-d mysql:5.7
+
+  #6、 运行mysql镜像,创建user-center容器
+docker run -p 3312:3306 \
+--privileged=true \
+--name=user-center \
+-v /mydata/mysql/user-center/log:/var/log/mysql \
+-v /mydata/mysql/user-center/data:/var/lib/mysql \
+-v /mydata/mysql/user-center/conf:/etc/mysql/conf.d \
+-e MYSQL_ROOT_PASSWORD=root \
+-d mysql:5.7

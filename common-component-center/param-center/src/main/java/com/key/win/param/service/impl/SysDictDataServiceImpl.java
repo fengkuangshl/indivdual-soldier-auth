@@ -8,6 +8,7 @@ import com.key.win.basic.exception.BizException;
 import com.key.win.basic.util.BeanUtils;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
+import com.key.win.datasource.annotation.DataSource;
 import com.key.win.mybatis.page.MybatisPageServiceTemplate;
 import com.key.win.param.dao.SysDictDataDao;
 import com.key.win.param.model.SysDictData;
@@ -24,6 +25,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 
 @Service
+@DataSource(name = "param")
 public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictData> implements SysDictDataService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 

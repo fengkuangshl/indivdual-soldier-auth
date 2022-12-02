@@ -40,6 +40,24 @@ public class DataSourceAutoConfig {
         return DruidDataSourceBuilder.create().build();
     }
 
+    @Bean
+    @ConfigurationProperties("spring.datasource.druid.file")
+    public DataSource dataSourceFile() {
+        return DruidDataSourceBuilder.create().build();
+    }
+
+
+    @Bean
+    @ConfigurationProperties("spring.datasource.druid.param")
+    public DataSource dataSourceParam() {
+        return DruidDataSourceBuilder.create().build();
+    }
+
+    @Bean
+    @ConfigurationProperties("spring.datasource.druid.business")
+    public DataSource dataSourceBusiness() {
+        return DruidDataSourceBuilder.create().build();
+    }
 
     @Primary
     @Bean // 只需要纳入动态数据源到spring容器
@@ -47,8 +65,14 @@ public class DataSourceAutoConfig {
         DynamicDataSource dataSource = new DynamicDataSource();
         DataSource coreDataSource = dataSourceCore();
         DataSource logDataSource = dataSourceLog();
+        DataSource paramDataSource = dataSourceParam();
+        DataSource fileDataSource = dataSourceFile();
+        DataSource businessDataSource = dataSourceBusiness();
         dataSource.addDataSource(DataSourceKey.core, coreDataSource);
         dataSource.addDataSource(DataSourceKey.log, logDataSource);
+        dataSource.addDataSource(DataSourceKey.param,paramDataSource);
+        dataSource.addDataSource(DataSourceKey.file,fileDataSource);
+        dataSource.addDataSource(DataSourceKey.business,businessDataSource);
         dataSource.setDefaultTargetDataSource(coreDataSource);
         return dataSource;
     }

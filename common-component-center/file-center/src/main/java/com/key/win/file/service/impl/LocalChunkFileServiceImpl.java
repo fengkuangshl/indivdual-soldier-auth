@@ -1,6 +1,7 @@
 package com.key.win.file.service.impl;
 
 import com.key.win.basic.util.FileUtils;
+import com.key.win.datasource.annotation.DataSource;
 import com.key.win.file.config.FileServiceFactory;
 import com.key.win.file.dao.ChunkFileDao;
 import com.key.win.file.dao.FileInfoDao;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service("localChunkFileServiceImpl")
+@DataSource(name = "file")
 public class LocalChunkFileServiceImpl extends AbstractChunkFileService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

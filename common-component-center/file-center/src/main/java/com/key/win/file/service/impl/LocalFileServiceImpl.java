@@ -1,6 +1,7 @@
 package com.key.win.file.service.impl;
 
 import com.key.win.basic.util.FileUtils;
+import com.key.win.datasource.annotation.DataSource;
 import com.key.win.file.dao.FileInfoDao;
 import com.key.win.file.model.FileInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStream;
 
 @Service("localFileServiceImpl")
+@DataSource(name = "file")
 public class LocalFileServiceImpl extends AbstractFileInfoService {
 
 

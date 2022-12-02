@@ -8,6 +8,7 @@ import com.key.win.basic.util.DefaultIdentifierGeneratorUtils;
 import com.key.win.basic.util.FileUtils;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
+import com.key.win.datasource.annotation.DataSource;
 import com.key.win.file.dao.FileInfoDao;
 import com.key.win.file.model.FileInfo;
 import com.key.win.file.service.FileInfoService;
@@ -23,7 +24,7 @@ import java.io.InputStream;
 import java.util.Calendar;
 import java.util.List;
 import java.util.regex.Matcher;
-
+@DataSource(name = "file")
 public abstract class AbstractFileInfoService extends ServiceImpl<FileInfoDao, FileInfo> implements FileInfoService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

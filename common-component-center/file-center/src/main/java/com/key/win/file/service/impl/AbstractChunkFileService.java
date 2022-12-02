@@ -7,6 +7,7 @@ import com.key.win.basic.util.FileUtils;
 import com.key.win.basic.util.IndividualSoldierAuthConstantUtils;
 import com.key.win.basic.web.PageRequest;
 import com.key.win.basic.web.PageResult;
+import com.key.win.datasource.annotation.DataSource;
 import com.key.win.file.config.FileServiceFactory;
 import com.key.win.file.dao.ChunkFileDao;
 import com.key.win.file.model.ChunkFile;
@@ -29,7 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
-
+@DataSource(name = "file")
 public abstract class AbstractChunkFileService extends ServiceImpl<ChunkFileDao, ChunkFile> implements ChunkFileService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
