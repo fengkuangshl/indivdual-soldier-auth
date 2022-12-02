@@ -1,0 +1,10 @@
+{
+	"customTables":{},
+	"globalTables":{},
+	"normalProcedures":{},
+	"normalTables":{},
+	"schemaName":"individual-soldier-auth",
+	"shardingTables":{},
+	"targetName":"prototype",
+	"views":{}
+}
