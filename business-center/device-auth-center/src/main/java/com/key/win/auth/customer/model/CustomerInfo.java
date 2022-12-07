@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
 import java.util.Date;
 
 @Data
-@TableName("DEVICE_CUSTOMER_INFO")
+@TableName("device_customer_info")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel("客户实体")
 public class CustomerInfo extends MybatisID {

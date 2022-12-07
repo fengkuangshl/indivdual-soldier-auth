@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
 import java.util.Date;
 
 @Data
-@TableName("DEVICE_AUTH")
+@TableName("device_auth")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel("设备认证")
 public class DeviceAuth extends MybatisID {

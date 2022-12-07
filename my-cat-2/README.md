@@ -220,7 +220,7 @@ vi conf/schemas/file_center.schema.json
 #2.3、log-center逻辑库创建
 #2.3.1、log_center
 create database log_center;
-#2.3.2、修改mread_write_splitting.schema.json 指定数据源 "targetName": "business_center"，配置主机数据源,
+#2.3.2、修改mread_write_splitting.schema.json 指定数据源 "targetName": "log_center"，配置主机数据源,
 # !!!(注意schemaName,一定是和读写数据库名字一样，不一样的话导致表加载不出来)
 vi conf/schemas/log_center.schema.json
 {
@@ -243,7 +243,7 @@ vi conf/schemas/log_center.schema.json
 #2.4、param_center逻辑库创建
 #2.4.1、param_center
 create database param_center;
-#2.4.2、修改mread_write_splitting.schema.json 指定数据源 "targetName": "business_center"，配置主机数据源,
+#2.4.2、修改mread_write_splitting.schema.json 指定数据源 "targetName": "param_center"，配置主机数据源,
 # !!!(注意schemaName,一定是和读写数据库名字一样，不一样的话导致表加载不出来)
 vi conf/schemas/param_center.schema.json
 {
@@ -266,7 +266,7 @@ vi conf/schemas/param_center.schema.json
 #2.5、user_center逻辑库创建
 #2.5.1、user_center
 create database user_center;
-#2.5.2、修改mread_write_splitting.schema.json 指定数据源 "targetName": "business_center"，配置主机数据源,
+#2.5.2、修改mread_write_splitting.schema.json 指定数据源 "targetName": "user_center"，配置主机数据源,
 # !!!(注意schemaName,一定是和读写数据库名字一样，不一样的话导致表加载不出来)
 vi conf/schemas/user_center.schema.json
 {
@@ -298,29 +298,149 @@ docker restart mycat2
 #1、按照sharding目录中的vertical目录下的mysql垂直分片.yml文件进行mysql的docker化集群配置
 #2、在Mycat里创建垂直分库分表逻辑库
 
-#2.1、business_center逻辑库创建
-#2.1.1、business_center
-create database business_center;
-#2.1.2、修改mread_write_splitting.schema.json 指定数据源 "targetName": "business_center"，配置主机数据源,
-# !!!(注意schemaName,一定是和读写数据库名字一样，不一样的话导致表加载不出来)
-vi conf/schemas/business_center.schema.json
-{
-        "customTables":{},
-        "globalTables":{},
-        "normalProcedures":{},
-        "normalTables":{},
-        "schemaName":"business_center",
-        "targetName": "business_center",
-        "shardingTables":{},
-        "views":{}
-}
-#2.1.3、在Mycat里，注解方式添加数据源，指向从机
-/*+ mycat:createDataSource{ "name":"business_center_0","url":"jdbc:mysql://192.168.1.222:3313/business_center?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai", "user":"root","password":"root" } */;
-/*+ mycat:createDataSource{ "name":"business_center_1","url":"jdbc:mysql://192.168.1.222:3314/business_center?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai", "user":"root","password":"root" } */;
+#2.1.3、在Mycat里，注解方式添加数据源
+/*+ mycat:createDataSource{ "name":"dw0","url":"jdbc:mysql://192.168.1.222:3313/business_center?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai", "user":"root","password":"root" } */;
+/*+ mycat:createDataSource{ "name":"dr0","url":"jdbc:mysql://192.168.1.222:3313/business_center?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai", "user":"root","password":"root" } */;
+/*+ mycat:createDataSource{ "name":"dw1","url":"jdbc:mysql://192.168.1.222:3314/business_center?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai", "user":"root","password":"root" } */;
+/*+ mycat:createDataSource{ "name":"dr1","url":"jdbc:mysql://192.168.1.222:3314/business_center?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai", "user":"root","password":"root" } */;
 /*+ mycat:showDataSources{} */;
 #2.1.4、更新集群信息,添加主从节点
-/*! mycat:createCluster{"name":"business_center","masters":["business_center_0","business_center_1"],"replicas":["business_center_0","business_center_1"]} */;
+/*! mycat:createCluster{"name":"c0","masters":["dw0"],"replicas":["dr0"]} */;
+/*! mycat:createCluster{"name":"c1","masters":["dw1"],"replicas":["dr1"]} */;
 /*+ mycat:showClusters{} */
+  
+CREATE DATABASE business_center_cluster;
+CREATE TABLE business_center_cluster.`sys_dic_data`  (
+  `id` BIGINT NOT NULL AUTO_INCREMENT  COMMENT 'id自增',
+  `create_date` datetime NULL DEFAULT NULL COMMENT '创建时间',
+  `create_user_id` int(11) NOT NULL COMMENT '创建者Id',
+  `create_user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者名称',
+  `enable_flag` bit(1) NOT NULL COMMENT '是否删除1:正常，0：删除',
+  `update_date` datetime NULL DEFAULT NULL COMMENT '更新时间',
+  `update_user_id` int(11) NULL DEFAULT NULL COMMENT '更新者Id',
+  `update_user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者名称',
+  `version` int(3) NOT NULL COMMENT '版本号',
+  `label` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `sort` int(11) NULL DEFAULT NULL,
+  `is_Default` bit(1) NULL DEFAULT NULL,
+  `status` bit(1) NULL DEFAULT NULL,
+  `value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `attr1` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `attr2` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `attr3` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `attr4` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `attr5` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `remark` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB  CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic BROADCAST;
+
+CREATE TABLE business_center_cluster.`sys_dic_type`  (
+  `id` BIGINT NOT NULL AUTO_INCREMENT  COMMENT 'id自增',
+  `create_date` datetime NULL DEFAULT NULL COMMENT '创建时间',
+  `create_user_id` int(11) NOT NULL COMMENT '创建者Id',
+  `create_user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者名称',
+  `enable_flag` bit(1) NOT NULL COMMENT '是否删除1:正常，0：删除',
+  `update_date` datetime NULL DEFAULT NULL COMMENT '更新时间',
+  `update_user_id` int(11) NULL DEFAULT NULL COMMENT '更新者Id',
+  `update_user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者名称',
+  `version` int(3) NOT NULL COMMENT '版本号',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `type` int(11) NULL DEFAULT NULL,
+  `status` int(11) NULL DEFAULT NULL,
+  `remark` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB  CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic BROADCAST;
+
+CREATE TABLE business_center_cluster.`sys_dict_tree`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id自增',
+  `create_date` datetime NULL DEFAULT NULL COMMENT '创建时间',
+  `create_user_id` int(11) NOT NULL COMMENT '创建者Id',
+  `create_user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者名称',
+  `enable_flag` bit(1) NOT NULL COMMENT '是否删除1:正常，0：删除',
+  `update_date` datetime NULL DEFAULT NULL COMMENT '更新时间',
+  `update_user_id` int(11) NULL DEFAULT NULL COMMENT '更新者Id',
+  `update_user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者名称',
+  `version` int(3) NOT NULL COMMENT '版本号',
+  `label` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `type` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `sort` int(11) NULL DEFAULT NULL,
+  `parent_Id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `status` bit(1) NULL DEFAULT NULL,
+  `cascade_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `attr1` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `attr2` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `attr3` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `attr4` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `attr5` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `remark` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 26 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic BROADCAST;
+
+CREATE TABLE business_center_cluster.`device_customer_info`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id自增',
+  `create_date` datetime NULL DEFAULT NULL COMMENT '创建时间',
+  `create_user_id` int(11) NOT NULL COMMENT '创建者Id',
+  `create_user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者名称',
+  `enable_flag` bit(1) NOT NULL COMMENT '是否删除1:正常，0：删除',
+  `update_date` datetime NULL DEFAULT NULL COMMENT '更新时间',
+  `update_user_id` int(11) NULL DEFAULT NULL COMMENT '更新者Id',
+  `update_user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者名称',
+  `version` int(3) NOT NULL COMMENT '版本号',
+  `sequence` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '客户编号',
+  `auth_device_code` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '授权码',
+  `expire_device_date` datetime NULL DEFAULT NULL COMMENT '客户设备授权到期日',
+  `auth_device_Num` int(3) NOT NULL COMMENT '授权设备数',
+  `is_verify` bit(1) NOT NULL COMMENT '是否校验日期：1-启用，0-禁用',
+  `company_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '公司名称',
+  `company_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '公司地址',
+  `company_phone` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '公司电话',
+  `lead_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '负责人姓名',
+  `lead_mobile` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '负责人手机',
+  `lead_phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '负责人座机',
+  `project_no` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '项目号',
+  `project_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '项目名称',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 23 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic
+dbpartition BY mod_hash(update_user_id) tbpartition BY mod_hash(auth_device_code) tbpartitions 2 dbpartitions 2;
+
+
+
+CREATE TABLE business_center_cluster.`device_auth`  (
+  `id` BIGINT NOT NULL COMMENT 'id自增',
+  `create_date` datetime NULL DEFAULT NULL COMMENT '创建时间',
+  `create_user_id` int(11) NOT NULL COMMENT '创建者Id',
+  `create_user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者名称',
+  `enable_flag` bit(1) NOT NULL COMMENT '是否删除1:正常，0：删除',
+  `update_date` datetime NULL DEFAULT NULL COMMENT '更新时间',
+  `update_user_id` int(11) NULL DEFAULT NULL COMMENT '更新者Id',
+  `update_user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者名称',
+  `version` int(3) NOT NULL COMMENT '版本号',
+  `api_Level` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'android APILevel',
+  `density_Dpi` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '屏幕对角线的像素值/对角线的尺寸',
+  `height_Pixels` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '高',
+  `width_Pixels` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '宽',
+  `android_Id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'androidId',
+  `board` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '主板名称',
+  `brand` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '厂商名称',
+  `build_Time` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '公司电话',
+  `finger_Print` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '硬件识别码',
+  `hardware` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '硬件名称',
+  `mac_Address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'Mac地址',
+  `radio` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '无线电固件版本号',
+  `serial_Number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'serialNumber',
+  `software_Version` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '软件版本',
+  `auth_Code` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '授权code',
+  `unique_Code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '设备唯一码',
+  `verify_Code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '验证码',
+  `expire_Device_Date` datetime NULL DEFAULT NULL COMMENT '客户设备授权到期日',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB  CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic 
+dbpartition BY mod_hash(create_user_id) tbpartition BY mod_hash(auth_Code) tbpartitions 2 dbpartitions 2;
+
+
 
 #2.2、file-center逻辑库创建
 #2.2.1、file_center

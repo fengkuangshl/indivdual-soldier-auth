@@ -1,0 +1,21 @@
+{
+	"dbType":"mysql",
+	"idleTimeout":60000,
+	"initSqls":[],
+	"initSqlsGetConnection":true,
+	"instanceType":"READ_WRITE",
+	"logAbandoned":true,
+	"maxCon":1000,
+	"maxConnectTimeout":30000,
+	"maxRetryCount":5,
+	"minCon":1,
+	"name":"log_center",
+	"password":"root",
+	"queryTimeout":0,
+	"removeAbandoned":false,
+	"removeAbandonedTimeoutSecond":180,
+	"type":"JDBC",
+	"url":"jdbc:mysql://192.168.1.222:3310/log_center?useUnicode=true&useJDBCCompliantTimezoneShift=true&serverTimezone=Asia/Shanghai&useLegacyDatetimeCode=false&characterEncoding=UTF-8&autoReconnect=true",
+	"user":"root",
+	"weight":0
+}

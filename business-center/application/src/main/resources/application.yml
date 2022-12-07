@@ -3,7 +3,7 @@ server:
 
 spring:
   profiles:
-    active: sharding-vertical
+    active: sharding-horizontal
   servlet:
     multipart:
       max-file-size: 300MB

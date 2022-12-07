@@ -47,11 +47,11 @@ public class DataSourceAutoConfig {
     }
 
 
-    @Bean
-    @ConfigurationProperties("spring.datasource.druid.param")
-    public DataSource dataSourceParam() {
-        return DruidDataSourceBuilder.create().build();
-    }
+//    @Bean
+//    @ConfigurationProperties("spring.datasource.druid.param")
+//    public DataSource dataSourceParam() {
+//        return DruidDataSourceBuilder.create().build();
+//    }
 
     @Bean
     @ConfigurationProperties("spring.datasource.druid.business")
@@ -65,12 +65,12 @@ public class DataSourceAutoConfig {
         DynamicDataSource dataSource = new DynamicDataSource();
         DataSource coreDataSource = dataSourceCore();
         DataSource logDataSource = dataSourceLog();
-        DataSource paramDataSource = dataSourceParam();
+//        DataSource paramDataSource = dataSourceParam();
         DataSource fileDataSource = dataSourceFile();
         DataSource businessDataSource = dataSourceBusiness();
         dataSource.addDataSource(DataSourceKey.core, coreDataSource);
         dataSource.addDataSource(DataSourceKey.log, logDataSource);
-        dataSource.addDataSource(DataSourceKey.param,paramDataSource);
+//        dataSource.addDataSource(DataSourceKey.param,paramDataSource);
         dataSource.addDataSource(DataSourceKey.file,fileDataSource);
         dataSource.addDataSource(DataSourceKey.business,businessDataSource);
         dataSource.setDefaultTargetDataSource(coreDataSource);

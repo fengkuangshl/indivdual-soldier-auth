@@ -22,7 +22,7 @@ import com.key.win.param.utils.ParamUtils;
 import java.util.List;
 
 @Service
-@DataSource(name = "param")
+@DataSource(name = "business")
 public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictType> implements SysDictTypeService {
     @Override
     public PageResult<SysDictType> getSysDictTypeByPaged(PageRequest<SysDictType> t) {

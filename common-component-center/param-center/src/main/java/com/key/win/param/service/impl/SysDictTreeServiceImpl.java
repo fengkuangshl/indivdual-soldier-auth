@@ -25,7 +25,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.*;
 
 @Service
-@DataSource(name = "param")
+@DataSource(name = "business")
 public class SysDictTreeServiceImpl extends ServiceImpl<SysDictTreeDao, SysDictTree> implements SysDictTreeService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

@@ -1,0 +1,10 @@
+{
+	"customTables":{},
+	"globalTables":{},
+	"normalProcedures":{},
+	"normalTables":{},
+	"schemaName":"log_center",
+        "targetName": "log_center",
+	"shardingTables":{},
+	"views":{}
+}

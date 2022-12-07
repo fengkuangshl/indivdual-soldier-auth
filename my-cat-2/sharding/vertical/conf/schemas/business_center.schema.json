@@ -1,0 +1,10 @@
+{
+	"customTables":{},
+	"globalTables":{},
+	"normalProcedures":{},
+	"normalTables":{},
+	"schemaName":"business_center",
+        "targetName": "business_center",
+	"shardingTables":{},
+	"views":{}
+}

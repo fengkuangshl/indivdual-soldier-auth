@@ -1,0 +1,10 @@
+{
+	"customTables":{},
+	"globalTables":{},
+	"normalProcedures":{},
+	"normalTables":{},
+	"schemaName":"file_center",
+        "targetName": "file_center",
+	"shardingTables":{},
+	"views":{}
+}

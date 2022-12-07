@@ -25,7 +25,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 
 @Service
-@DataSource(name = "param")
+@DataSource(name = "business")
 public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictData> implements SysDictDataService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
